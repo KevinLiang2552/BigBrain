@@ -10,8 +10,11 @@ import {
   TextField,
 } from '@material-ui/core';
 import FeatherIcon from 'feather-icons-react';
+import API from '../../api/api.js';
 
 export const LoginPage = () => {
+  const api = new API('http://localhost:5005');
+
   const [details, setDetails] = useState({
     email: '',
     password: '',
@@ -26,11 +29,20 @@ export const LoginPage = () => {
     setDetails({ ...details, showPassword: !details.showPassword });
   };
 
+  const handleLogin = () => async (event) => {
+    const loginResult = await api.nonAuthorisedRequest(
+      'POST',
+      'admin/auth/login',
+      { email: details.email, password: details.password },
+    );
+    console.log(loginResult);
+  };
+
   return (
     <>
       <Container className={styles.mainBackground}>
         <form className={styles.authForm}>
-          <h2>Login!</h2>
+          <h1>Login</h1>
           <Box mt={2}>
             <TextField
               id="loginEmail"
@@ -67,7 +79,7 @@ export const LoginPage = () => {
               }}
             />
           </Box>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleLogin()}>
             Log In
           </Button>
           <hr className={styles.authHR}></hr>
