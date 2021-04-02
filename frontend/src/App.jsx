@@ -1,5 +1,6 @@
 import React from 'react';
 import { LoginPage } from './routes/admin/Login.jsx';
+import { RegisterPage } from './routes/admin/Register.jsx';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 function App() {
@@ -16,7 +17,9 @@ function App() {
           <Route path="/login">
             <LoginPage></LoginPage>
           </Route>
-          <Route path="/register">hey</Route>
+          <Route path="/register">
+            <RegisterPage></RegisterPage>
+          </Route>
         </Switch>
       </BrowserRouter>
     </>

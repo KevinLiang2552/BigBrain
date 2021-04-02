@@ -9,12 +9,14 @@ import {
   PasswordInput,
 } from '../../components/auth/AuthInputs.jsx';
 
-export const LoginPage = () => {
+export const RegisterPage = () => {
   const api = new API('http://localhost:5005');
 
   const [details, setDetails] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
+    name: '',
     showPassword: false,
   });
 
@@ -26,11 +28,16 @@ export const LoginPage = () => {
     setDetails({ ...details, showPassword: !details.showPassword });
   };
 
-  const handleLogin = () => async (event) => {
+  const handleRegister = () => async (event) => {
+    if (details.confirmPassword !== details.password) {
+      console.log('password have to be the same');
+      return;
+    }
+
     const loginResult = await api.nonAuthorisedRequest(
       'POST',
-      'admin/auth/login',
-      { email: details.email, password: details.password },
+      'admin/auth/register',
+      { email: details.email, password: details.password, name: details.name },
     );
     console.log(loginResult);
   };
@@ -39,24 +46,38 @@ export const LoginPage = () => {
     <>
       <Container className={styles.mainBackground}>
         <form className={styles.authForm}>
-          <h1>Login</h1>
+          <h1>Register</h1>
+          <Box mt={2}>
+            <DefaultInput type="name" handleFormChange={handleFormChange} />
+          </Box>
           <Box mt={2}>
             <DefaultInput type="email" handleFormChange={handleFormChange} />
           </Box>
-          <Box mt={2} mb={2}>
+          <Box mt={2}>
             <PasswordInput
               showPassword={details.showPassword}
               handleFormChange={handleFormChange}
               handleShowPassword={handleShowPassword}
             />
           </Box>
-          <Button variant="contained" color="primary" onClick={handleLogin()}>
-            Log In
+          <Box mt={2} mb={2}>
+            <PasswordInput
+              showPassword={details.showPassword}
+              handleFormChange={handleFormChange}
+              handleShowPassword={handleShowPassword}
+              confirmPassword={true}
+            />
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRegister()}>
+            Register
           </Button>
           <hr className={styles.authHR}></hr>
 
-          <Link to="/register" className={styles.bottomText}>
-            Not a member?
+          <Link to="/login" className={styles.bottomText}>
+            Already a member?
           </Link>
         </form>
       </Container>

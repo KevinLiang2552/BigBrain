@@ -13,7 +13,7 @@ export const DefaultInput = ({ type, handleFormChange }) => {
 
   return (
     <TextField
-      id="loginEmail"
+      id={'input' + capitalizeFirstLetter(type)}
       className={styles.authInput}
       label={capitalizeFirstLetter(type)}
       onChange={handleFormChange({ type })}
@@ -26,21 +26,27 @@ export const PasswordInput = ({
   showPassword,
   handleFormChange,
   handleShowPassword,
+  confirmPassword = false,
 }) => {
   // Define the prop types
   PasswordInput.propTypes = {
     showPassword: PropTypes.bool,
     handleFormChange: PropTypes.func,
     handleShowPassword: PropTypes.func,
+    confirmPassword: PropTypes.bool,
   };
 
   return (
     <TextField
-      id="loginPassword"
+      id={confirmPassword ? 'inputConfirmPassword' : 'inputPassword'}
       className={styles.authInput}
       type={showPassword ? 'text' : 'password'}
-      label="Password"
-      onChange={handleFormChange('password')}
+      label={confirmPassword ? 'Confirm Password' : 'Password'}
+      onChange={
+        confirmPassword
+          ? handleFormChange('confirmPassword')
+          : handleFormChange('password')
+      }
       variant="outlined"
       InputProps={{
         endAdornment: (
