@@ -1,36 +1,35 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
-import { LoginPage } from '../routes/admin/Login.jsx';
+import { Link } from 'react-router-dom';
+import styles from '../styles/components/Header.module.css';
+import { Box, Button } from '@material-ui/core';
 
 export const Header = () => {
   return (
-    <BrowserRouter>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/register">Register</Link>
-          </li>
-        </ul>
-        <hr />
+    <header className={styles.header}>
+      <Box m={2}>
+        <Button variant="contained" color="primary">
+          <Link className={styles.navLink} to="/">
+            Home
+          </Link>
+        </Button>
+      </Box>
 
-        <Switch>
-          <Route exact path="/">
-            <></>
-          </Route>
-          <Route path="/login">
-            <LoginPage></LoginPage>
-          </Route>
-          <Route path="/register">
-            <a>Register</a>
-          </Route>
-        </Switch>
-      </div>
-    </BrowserRouter>
+      <nav className={styles.navBar}>
+        <Box mr={1}>
+          <Button variant="contained" color="primary">
+            <Link className={styles.navLink} to="/login">
+              Login
+            </Link>
+          </Button>
+        </Box>
+        <Box mr={2}>
+          <Button variant="contained" color="secondary">
+            <Link className={styles.navLink} to="/register">
+              Register
+            </Link>
+          </Button>
+        </Box>
+      </nav>
+    </header>
   );
 };
