@@ -1,23 +1,26 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "standard"
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["standard", "prettier"],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always",
+        "objects": "always",
+        "imports": "always",
+        "exports": "always",
+        "functions": "never"
+      }
     ],
-    "parserOptions": {
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "rules": {
-        "comma-dangle": ["error", {
-            "arrays": "always",
-            "objects": "always",
-            "imports": "always",
-            "exports": "always",
-            "functions": "never"
-        }],
-        "semi": ["error", "always"]
-    }
+    "prettier/prettier": ["error"],
+    "semi": ["error", "always"]
+  }
 }

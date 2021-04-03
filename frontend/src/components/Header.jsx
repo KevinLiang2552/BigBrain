@@ -8,25 +8,25 @@ export const Header = () => {
       <div>
         <ul>
           <li>
-            <Link to='/'>Home</Link>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to='/login'>Login</Link>
+            <Link to="/login">Login</Link>
           </li>
           <li>
-            <Link to='/register'>Register</Link>
+            <Link to="/register">Register</Link>
           </li>
         </ul>
         <hr />
 
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <></>
           </Route>
-          <Route path='/login'>
+          <Route path="/login">
             <LoginPage></LoginPage>
           </Route>
-          <Route path='/register'>
+          <Route path="/register">
             <a>Register</a>
           </Route>
         </Switch>
