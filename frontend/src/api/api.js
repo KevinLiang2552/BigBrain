@@ -17,6 +17,8 @@ export default class API {
     this.url = url;
   }
 
+  // Request (login/register) that requires no auth token
+  // If u have a better way of doing this im all ears.
   nonAuthorisedRequest(method, path, payload) {
     const options = {
       method: method,
