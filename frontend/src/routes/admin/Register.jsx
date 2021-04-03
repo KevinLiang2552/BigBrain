@@ -10,19 +10,24 @@ import {
   PasswordInput,
 } from '../../components/auth/AuthInputs.jsx';
 
-export const LoginPage = () => {
+// Register Page
+export const RegisterPage = () => {
   const api = new API('http://localhost:5005');
 
   // Form details
   const [details, setDetails] = useState({
+    name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     showPassword: false,
   });
 
   const defaultErrors = {
+    name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   };
 
   // Form errors message for each detail
@@ -39,11 +44,15 @@ export const LoginPage = () => {
     setDetails({ ...details, showPassword: !details.showPassword });
   };
 
-  // Handle the login and update relevant errors
-  const handleLogin = () => async (event) => {
+  // Handle the register and update relevant errors
+  const handleRegister = () => async (event) => {
     setErrors(defaultErrors);
 
     const errorList = defaultErrors;
+
+    if (details.name === '') {
+      errorList.name = 'Name must not be empty';
+    }
 
     if (details.email === '') {
       errorList.email = 'Email must not be empty';
@@ -53,13 +62,30 @@ export const LoginPage = () => {
       errorList.password = 'Password must not be empty';
     }
 
+    if (details.confirmPassword === '') {
+      errorList.confirmPassword = 'Password must not be empty';
+    }
+
+    if (details.confirmPassword !== details.password) {
+      errorList.confirmPassword = 'Passwords must match';
+    }
+
     if (!isObjectValueEmpty(errorList)) {
-      setErrors({ email: errorList.email, password: errorList.password });
+      setErrors({
+        email: errorList.email,
+        password: errorList.password,
+        name: errorList.name,
+        confirmPassword: errorList.confirmPassword,
+      });
     } else {
       const loginResult = await api.nonAuthorisedRequest(
         'POST',
-        'admin/auth/login',
-        { email: details.email, password: details.password },
+        'admin/auth/register',
+        {
+          email: details.email,
+          password: details.password,
+          name: details.name,
+        },
       );
       console.log(loginResult);
     }
@@ -69,7 +95,15 @@ export const LoginPage = () => {
     <>
       <Container className={styles.mainBackground}>
         <form className={styles.authForm}>
-          <h1>Login</h1>
+          <h1>Register</h1>
+          <Box mt={2}>
+            <DefaultInput
+              type="name"
+              handleFormChange={handleFormChange}
+              error={errors.name !== ''}
+              errorMessage={errors.name}
+            />
+          </Box>
           <Box mt={2}>
             <DefaultInput
               type="email"
@@ -78,7 +112,7 @@ export const LoginPage = () => {
               errorMessage={errors.email}
             />
           </Box>
-          <Box mt={2} mb={2}>
+          <Box mt={2}>
             <PasswordInput
               showPassword={details.showPassword}
               handleFormChange={handleFormChange}
@@ -87,13 +121,26 @@ export const LoginPage = () => {
               errorMessage={errors.password}
             />
           </Box>
-          <Button variant="contained" color="primary" onClick={handleLogin()}>
-            Log In
+          <Box mt={2} mb={2}>
+            <PasswordInput
+              showPassword={details.showPassword}
+              handleFormChange={handleFormChange}
+              handleShowPassword={handleShowPassword}
+              confirmPassword={true}
+              error={errors.confirmPassword !== ''}
+              errorMessage={errors.confirmPassword}
+            />
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleRegister()}>
+            Register
           </Button>
           <hr className={styles.authHR}></hr>
 
-          <Link to="/register" className={styles.bottomText}>
-            Not a member?
+          <Link to="/login" className={styles.bottomText}>
+            Already a member?
           </Link>
         </form>
       </Container>
