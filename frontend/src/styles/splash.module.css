@@ -1,0 +1,22 @@
+.mainWrapper {
+  padding-top: 1em;
+}
+
+.descriptionText {
+  background-color: var(--primary-color);
+}
+
+.authText {
+  text-align: center;
+  font-size: 1.5em;
+}
+
+a:link {
+  text-decoration: none;
+  color: white;
+}
+
+a:visited {
+  text-decoration: none;
+  color: white;
+}

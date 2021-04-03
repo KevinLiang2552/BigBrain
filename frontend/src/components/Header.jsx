@@ -17,17 +17,15 @@ export const Header = () => {
       <nav className={styles.navBar}>
         <Box mr={1}>
           <Button variant="contained" color="primary">
-            <Link className={styles.navLink} to="/login">
-              Login
-            </Link>
+            <Link to="/login">Login</Link>
           </Button>
         </Box>
         <Box mr={2}>
-          <Button variant="contained" color="secondary">
-            <Link className={styles.navLink} to="/register">
+          <Link to="/register">
+            <Button variant="contained" color="secondary">
               Register
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </Box>
       </nav>
     </header>

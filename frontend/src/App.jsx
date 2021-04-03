@@ -1,8 +1,10 @@
 import React from 'react';
+import { SplashPage } from './routes/Splash.jsx';
 import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Header } from './components/Header';
+
 function App() {
   return (
     <>
@@ -12,7 +14,7 @@ function App() {
         <Header />
         <Switch>
           <Route exact path="/">
-            <LoginPage></LoginPage>
+            <SplashPage></SplashPage>
           </Route>
           <Route path="/login">
             <LoginPage></LoginPage>
