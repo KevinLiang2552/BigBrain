@@ -11,3 +11,8 @@
 .authHR {
   width: 500px;
 }
+
+.errorText {
+  margin: 0px 0px 10px;
+  color: var(--red);
+}

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/auth.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
 import {
   checkEmailValid,
   isObjectValueEmpty,
 } from '../../helpers/authHelpers.js';
+
+import { setAuthToken } from '../../helpers/user.js';
 
 import {
   DefaultInput,
@@ -15,6 +17,7 @@ import {
 
 export const LoginPage = () => {
   const api = new API('http://localhost:5005');
+  const history = useHistory();
 
   // Form details
   const [details, setDetails] = useState({
@@ -30,6 +33,8 @@ export const LoginPage = () => {
 
   // Form errors message for each detail
   const [errors, setErrors] = useState(defaultErrors);
+
+  const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
     window.addEventListener('keydown', handleEnterKey());
@@ -55,7 +60,7 @@ export const LoginPage = () => {
 
   // Handle the login and update relevant errors
   const handleLogin = () => async (event) => {
-    console.log('HELLO');
+    setLoginError('');
     setErrors(defaultErrors);
 
     const errorList = defaultErrors;
@@ -78,7 +83,14 @@ export const LoginPage = () => {
         'admin/auth/login',
         { email: details.email, password: details.password },
       );
-      console.log(loginResult);
+
+      // If sucessful set token and move to dashboard else print error
+      if (loginResult.status === 200) {
+        setAuthToken(loginResult.data.token);
+        history.push('/dashboard');
+      } else {
+        setLoginError(loginResult.data.error);
+      }
     }
   };
 
@@ -104,18 +116,22 @@ export const LoginPage = () => {
               errorMessage={errors.password}
             />
           </Box>
-          <Button
-            id="loginButton"
-            variant="contained"
-            color="primary"
-            onClick={handleLogin()}>
-            Log In
-          </Button>
+          <p className={styles.errorText}>{loginError}</p>
+          <Box mb={1}>
+            <Button
+              id="loginButton"
+              variant="contained"
+              color="primary"
+              onClick={handleLogin()}>
+              Log In
+            </Button>
+          </Box>
           <hr className={styles.authHR}></hr>
-
-          <Link to="/register" className={styles.bottomText}>
-            <Button variant="outlined">Not a member?</Button>
-          </Link>
+          <Box mt={1}>
+            <Link to="/register" className={styles.bottomText}>
+              <Button variant="outlined">Not a member?</Button>
+            </Link>
+          </Box>
         </form>
       </Container>
     </>
