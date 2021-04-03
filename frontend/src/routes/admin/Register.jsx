@@ -3,7 +3,10 @@ import styles from '../../styles/auth.module.css';
 import { Link } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
-import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
+import {
+  checkEmailValid,
+  isObjectValueEmpty,
+} from '../../helpers/authHelpers.js';
 
 import {
   DefaultInput,
@@ -56,6 +59,8 @@ export const RegisterPage = () => {
 
     if (details.email === '') {
       errorList.email = 'Email must not be empty';
+    } else if (checkEmailValid(details.email) === null) {
+      errorList.email = 'Email is not valid';
     }
 
     if (details.password === '') {
@@ -139,8 +144,8 @@ export const RegisterPage = () => {
           </Button>
           <hr className={styles.authHR}></hr>
 
-          <Link to="/login" className={styles.bottomText}>
-            Already a member?
+          <Link to="/login">
+            <Button variant="outlined">Already a member?</Button>
           </Link>
         </form>
       </Container>
