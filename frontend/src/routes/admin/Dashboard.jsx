@@ -30,6 +30,8 @@ export const DashboardPage = () => {
     }
   };
 
+  //  +++++++++++++++++++++++++++++++++++++++++++  CREATE NAME HANDLING
+
   // AnchorEl location of popover for create button
   const [createAnchorEl, setCreateAnchorEl] = useState(null);
 
@@ -69,6 +71,21 @@ export const DashboardPage = () => {
       } else {
         setCreateNameError(createQuizRes.data.error);
       }
+    }
+  };
+
+  //  +++++++++++++++++++++++++++++++++++++++++++  QUIZ CARD HANDLING
+
+  const deleteQuiz = async (id) => {
+    const deleteQuizRes = await api.authorisedRequest(
+      'DELETE',
+      `admin/quiz/${id}`,
+    );
+    if (deleteQuizRes.status === 200) {
+      console.log('Successful delete of ' + id);
+      getAdminQuizzes();
+    } else {
+      console.log(deleteQuizRes.data.error);
     }
   };
 
@@ -126,7 +143,12 @@ export const DashboardPage = () => {
             alignItems="flex-start"
             className={styles.quizsWrapper}>
             {quizzes.map((quiz, index) => {
-              return <QuizCard key={quiz.id} name={quiz.name}></QuizCard>;
+              return (
+                <QuizCard
+                  key={quiz.id}
+                  quiz={quiz}
+                  deleteQuiz={deleteQuiz}></QuizCard>
+              );
             })}
           </Grid>
         </Grid>
