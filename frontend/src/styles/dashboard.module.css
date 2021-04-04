@@ -6,8 +6,34 @@
   background-color: var(--primary-color);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
+  color: white;
+
+  display: flex;
+  justify-content: space-between;
 }
 
-.createButton {
+.createText {
   color: white;
+}
+
+.createPlus {
+  margin-right: 5px;
+  color: white;
+}
+
+.quizsWrapper {
+  background-color: #aaaaaa;
+  min-height: 550px;
+}
+
+.quizCard {
+  width: 390px;
+  height: 250px;
+}
+
+.quizWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0px;
 }
