@@ -16,14 +16,20 @@ import API from '../../api/api.js';
 export const DashboardPage = () => {
   const api = new API('http://localhost:5005');
 
+  // Hold quizzes from admin/quiz
   const [quizzes, setQuizzes] = useState([]);
-  useEffect(async () => {
+  useEffect(() => {
+    getAdminQuizzes();
+  }, []);
+
+  const getAdminQuizzes = async () => {
     const adminQuizRes = await api.authorisedRequest('GET', 'admin/quiz');
     if (adminQuizRes.status === 200) {
       setQuizzes(adminQuizRes.data.quizzes);
     }
-  }, []);
+  };
 
+  // AnchorEl location of popover for create button
   const [createAnchorEl, setCreateAnchorEl] = useState(null);
 
   const handleCreateButtonOpen = (event) => {
@@ -32,9 +38,28 @@ export const DashboardPage = () => {
 
   const handleCreateButtonClose = () => {
     setCreateAnchorEl(null);
+    setCreateName('');
   };
 
-  const handleCreateQuiz = () => {};
+  const [createName, setCreateName] = useState('');
+  const handleCreateNameChange = (event) => {
+    setCreateName(event.target.value);
+  };
+
+  const handleCreateQuiz = async () => {
+    if (createName === '') {
+      console.log(createName);
+    } else {
+      const createQuizRes = await api.authorisedRequest(
+        'POST',
+        'admin/quiz/new',
+        { name: createName },
+      );
+      if (createQuizRes.status === 200) {
+        getAdminQuizzes();
+      }
+    }
+  };
 
   return (
     <Container>
@@ -67,6 +92,7 @@ export const DashboardPage = () => {
                 <div className={styles.createPopover}>
                   <TextField
                     className={styles.createName}
+                    onChange={handleCreateNameChange}
                     label="Quiz Name"></TextField>
                   <Button
                     color="primary"
