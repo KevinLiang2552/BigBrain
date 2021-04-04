@@ -4,6 +4,8 @@
  * @param {*} options Additiona options to pass to fetch.
  */
 
+import { getAuthToken } from '../helpers/user';
+
 const getJSON = (path, options) =>
   fetch(path, options)
     .then((res) =>
@@ -25,6 +27,21 @@ export default class API {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    };
+    return getJSON(`${this.url}/${path}`, options);
+  }
+
+  authorisedRequest(method, path, payload) {
+    if (getAuthToken() === '') return;
+    console.log(getAuthToken());
+    const options = {
+      method: method,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: getAuthToken(),
       },
       body: JSON.stringify(payload),
     };

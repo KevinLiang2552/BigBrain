@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
 import { Card, CardContent, Grid, Typography } from '@material-ui/core';
 
-export const QuizCard = ({ title }) => {
+export const QuizCard = ({ name }) => {
   QuizCard.propTypes = {
-    title: PropTypes.string,
+    name: PropTypes.string,
   };
   return (
-    <Grid xs={12} md={4} className={styles.quizWrapper}>
+    <Grid item xs={12} md={4} className={styles.quizWrapper}>
       <Card className={styles.quizCard}>
         <CardContent>
-          <Typography>{title}</Typography>
+          <Typography>{name}</Typography>
         </CardContent>
       </Card>
     </Grid>

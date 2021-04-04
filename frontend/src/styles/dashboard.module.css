@@ -21,6 +21,20 @@
   color: white;
 }
 
+.createPopover {
+  width: 250px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.createName {
+  width: 200px;
+  height: 50px;
+}
+
 .quizsWrapper {
   background-color: #aaaaaa;
   min-height: 550px;
