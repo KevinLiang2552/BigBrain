@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/auth.module.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
@@ -8,16 +9,25 @@ import {
   isObjectValueEmpty,
 } from '../../helpers/authHelpers.js';
 
-import { setAuthToken } from '../../helpers/user.js';
-
 import {
   DefaultInput,
   PasswordInput,
 } from '../../components/auth/AuthInputs.jsx';
 
-export const LoginPage = () => {
+import { getAuthToken } from '../../helpers/user.js';
+
+export const LoginPage = ({ setAuthToken }) => {
+  LoginPage.propTypes = {
+    setAuthToken: PropTypes.func,
+  };
+
   const api = new API('http://localhost:5005');
   const history = useHistory();
+
+  // Redirect if user is already logged in
+  if (getAuthToken() !== '') {
+    history.push('/dashboard');
+  }
 
   // Form details
   const [details, setDetails] = useState({
@@ -33,9 +43,9 @@ export const LoginPage = () => {
 
   // Form errors message for each detail
   const [errors, setErrors] = useState(defaultErrors);
-
   const [loginError, setLoginError] = useState('');
 
+  // Enter key event listner
   useEffect(() => {
     window.addEventListener('keydown', handleEnterKey());
   }, []);
@@ -65,6 +75,7 @@ export const LoginPage = () => {
 
     const errorList = defaultErrors;
 
+    // Error checking
     if (details.email === '') {
       errorList.email = 'Email must not be empty';
     } else if (checkEmailValid(details.email) === null) {
