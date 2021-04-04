@@ -22,6 +22,7 @@ export const DashboardPage = () => {
     getAdminQuizzes();
   }, []);
 
+  // Get current user quizzes
   const getAdminQuizzes = async () => {
     const adminQuizRes = await api.authorisedRequest('GET', 'admin/quiz');
     if (adminQuizRes.status === 200) {
@@ -32,23 +33,31 @@ export const DashboardPage = () => {
   // AnchorEl location of popover for create button
   const [createAnchorEl, setCreateAnchorEl] = useState(null);
 
+  // When clicking on create button link popover to button
   const handleCreateButtonOpen = (event) => {
     setCreateAnchorEl(event.target);
   };
 
+  // When closing popover unlink it from button and reset name values
   const handleCreateButtonClose = () => {
     setCreateAnchorEl(null);
     setCreateName('');
+    setCreateNameError('');
   };
 
+  // Create name useState
   const [createName, setCreateName] = useState('');
   const handleCreateNameChange = (event) => {
     setCreateName(event.target.value);
+    setCreateNameError('');
   };
 
+  const [createNameError, setCreateNameError] = useState('');
+
+  // Create quiz with given name, show error if blank
   const handleCreateQuiz = async () => {
     if (createName === '') {
-      console.log(createName);
+      setCreateNameError('Quiz name must not be blank');
     } else {
       const createQuizRes = await api.authorisedRequest(
         'POST',
@@ -57,6 +66,8 @@ export const DashboardPage = () => {
       );
       if (createQuizRes.status === 200) {
         getAdminQuizzes();
+      } else {
+        setCreateNameError(createQuizRes.data.error);
       }
     }
   };
@@ -93,6 +104,8 @@ export const DashboardPage = () => {
                   <TextField
                     className={styles.createName}
                     onChange={handleCreateNameChange}
+                    error={createNameError !== ''}
+                    helperText={createNameError}
                     label="Quiz Name"></TextField>
                   <Button
                     color="primary"
