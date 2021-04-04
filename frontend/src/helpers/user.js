@@ -1,6 +1,7 @@
-// Get Authorisation token from storage
+// Get Authorisation token from storage, return empty string if null
 export const getAuthToken = () => {
-  localStorage.getItem('bigBrain-UserAuthToken');
+  const authToken = localStorage.getItem('bigBrain-UserAuthToken');
+  return authToken === null ? '' : authToken;
 };
 
 // Set Authorisation token from storage

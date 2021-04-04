@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/auth.module.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
@@ -8,15 +9,17 @@ import {
   isObjectValueEmpty,
 } from '../../helpers/authHelpers.js';
 
-import { setAuthToken } from '../../helpers/user.js';
-
 import {
   DefaultInput,
   PasswordInput,
 } from '../../components/auth/AuthInputs.jsx';
 
 // Register Page
-export const RegisterPage = () => {
+export const RegisterPage = ({ setAuthToken }) => {
+  RegisterPage.propTypes = {
+    setAuthToken: PropTypes.func,
+  };
+
   const api = new API('http://localhost:5005');
   const history = useHistory();
 
