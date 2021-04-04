@@ -15,10 +15,8 @@ function App() {
   /// If auth token updates update local storage
   useEffect(() => setAuthToken(authenToken), [authenToken]);
 
-  // Require function wrapper around setAuthToken as it can not be passdown to
+  // Required function wrapper around setAuthToken as it can not be passdown to
   const childSetAuthToken = (token) => {
-    console.log({ token });
-    console.log({ authenToken });
     setAuthenToken(token);
   };
 
@@ -27,7 +25,7 @@ function App() {
       {/* This is the main browser router. 
       Whenever you want to add a new page/route add it hear with a unique path */}
       <BrowserRouter>
-        <Header authToken={authenToken} />
+        <Header authToken={authenToken} setAuthToken={childSetAuthToken} />
         <Switch>
           <Route exact path="/">
             <SplashPage></SplashPage>

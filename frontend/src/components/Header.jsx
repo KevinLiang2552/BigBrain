@@ -5,11 +5,18 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/components/Header.module.css';
 import { Box, Button } from '@material-ui/core';
 
-export const Header = ({ authToken }) => {
+export const Header = ({ authToken, setAuthToken }) => {
   console.log('header: ' + authToken);
   Header.propTypes = {
     authToken: PropTypes.string,
+    setAuthToken: PropTypes.func,
   };
+
+  // Reset auth token to empty
+  const handleLogOut = () => {
+    setAuthToken('');
+  };
+
   return (
     <header className={styles.header}>
       <Box m={2}>
@@ -39,7 +46,7 @@ export const Header = ({ authToken }) => {
           </>
         ) : (
           <Box mr={2}>
-            <Link to="/register">
+            <Link to="/" onClick={handleLogOut}>
               <Button variant="contained" color="secondary">
                 Log Out
               </Button>
