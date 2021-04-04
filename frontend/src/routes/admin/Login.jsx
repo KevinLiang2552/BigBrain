@@ -14,6 +14,8 @@ import {
   PasswordInput,
 } from '../../components/auth/AuthInputs.jsx';
 
+import { getAuthToken } from '../../helpers/user.js';
+
 export const LoginPage = ({ setAuthToken }) => {
   LoginPage.propTypes = {
     setAuthToken: PropTypes.func,
@@ -21,6 +23,11 @@ export const LoginPage = ({ setAuthToken }) => {
 
   const api = new API('http://localhost:5005');
   const history = useHistory();
+
+  // Redirect if user is already logged in
+  if (getAuthToken() !== '') {
+    history.push('/dashboard');
+  }
 
   // Form details
   const [details, setDetails] = useState({
@@ -36,9 +43,9 @@ export const LoginPage = ({ setAuthToken }) => {
 
   // Form errors message for each detail
   const [errors, setErrors] = useState(defaultErrors);
-
   const [loginError, setLoginError] = useState('');
 
+  // Enter key event listner
   useEffect(() => {
     window.addEventListener('keydown', handleEnterKey());
   }, []);
@@ -68,6 +75,7 @@ export const LoginPage = ({ setAuthToken }) => {
 
     const errorList = defaultErrors;
 
+    // Error checking
     if (details.email === '') {
       errorList.email = 'Email must not be empty';
     } else if (checkEmailValid(details.email) === null) {
