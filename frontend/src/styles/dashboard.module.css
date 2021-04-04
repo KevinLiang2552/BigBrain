@@ -1,0 +1,13 @@
+.dashboardWrapper {
+  margin-top: 16px;
+}
+
+.dashboardHeader {
+  background-color: var(--primary-color);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.createButton {
+  color: white;
+}
