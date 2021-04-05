@@ -44,7 +44,7 @@ export const SplashPage = () => {
             <Paper>
               <div>Player? Find your game here!</div>
               <Button variant="contained" color="primary">
-                Search for game
+                <Link to="/play">Search for a game</Link>
               </Button>
             </Paper>
           </Grid>

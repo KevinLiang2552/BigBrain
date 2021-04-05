@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { SplashPage } from './routes/Splash.jsx';
 import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
+import { PlayPage } from './routes/user/Play.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 
-import { getAuthToken, setAuthToken } from './helpers/user.js';
+import {
+  getAuthToken,
+  setAuthToken,
+  getPlayerToken,
+  setPlayerToken,
+} from './helpers/user.js';
 
 function App() {
   // current admin auth token NOTE: named authenToken to not conflict with user.js
@@ -18,6 +24,15 @@ function App() {
   // Required function wrapper around setAuthToken as it can not be passdown to
   const childSetAuthToken = (token) => {
     setAuthenToken(token);
+  };
+
+  // Same as above, but for the player
+  const [playToken, setPlayToken] = useState(getPlayerToken());
+
+  useEffect(() => setPlayerToken(playToken), [playToken]);
+
+  const childSetPlayerToken = (token) => {
+    setPlayToken(token);
   };
 
   return (
@@ -38,6 +53,9 @@ function App() {
           </Route>
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
+          </Route>
+          <Route path="/play">
+            <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
           </Route>
         </Switch>
       </BrowserRouter>
