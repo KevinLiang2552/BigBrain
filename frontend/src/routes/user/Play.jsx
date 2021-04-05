@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styles from '../../styles/play.module.css';
 import API from '../../api/api.js';
 import { DefaultInput } from '../../components/FormInputs.jsx';
+import { ErrorModal } from '../../components/ErrorModal.jsx';
 import { Box, Button, Container } from '@material-ui/core';
 import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
 
@@ -24,6 +25,13 @@ export const PlayPage = ({ setPlayerToken }) => {
   };
 
   const [errors, setErrors] = useState(defaultErrors);
+
+  const defaultErrorModalState = {
+    showModal: false,
+    errorMessage: '',
+  };
+
+  const [modalState, setModalState] = useState(defaultErrorModalState);
 
   const handleFormChange = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
@@ -66,7 +74,10 @@ export const PlayPage = ({ setPlayerToken }) => {
         },
       );
       if (joinResult.status !== 200) {
-        console.log(joinResult.data.error);
+        setModalState({
+          showModal: true,
+          errorMessage: joinResult.data.error,
+        });
       } else {
         setPlayerToken(joinResult.data.token);
         console.log(joinResult);
@@ -76,6 +87,11 @@ export const PlayPage = ({ setPlayerToken }) => {
 
   return (
     <>
+      <ErrorModal
+        modalState={modalState.showModal}
+        errorMessage={modalState.errorMessage}
+        setModalState={setModalState}
+      />
       <Container className={styles.playForm}>
         <Box>
           <form>
