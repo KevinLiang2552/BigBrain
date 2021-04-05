@@ -14,11 +14,13 @@ export const PlayPage = ({ setPlayerToken }) => {
 
   const api = new API('http://localhost:5005');
 
+  // The required details for a game (session ID and player's name).
   const [gameDetails, setGameDetails] = useState({
     gameID: '',
     name: '',
   });
 
+  // Any errors that the form might have.
   const defaultErrors = {
     gameID: '',
     name: '',
@@ -26,6 +28,7 @@ export const PlayPage = ({ setPlayerToken }) => {
 
   const [errors, setErrors] = useState(defaultErrors);
 
+  // Any API errors to be displayed
   const defaultErrorModalState = {
     showModal: false,
     errorMessage: '',

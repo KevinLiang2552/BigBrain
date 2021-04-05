@@ -9,6 +9,12 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 
+/***
+ * @param {string} errorMessage What the error message should show
+ * @param {boolean} modalState Whether the modals is displayed or not
+ * @param {function} setModalState To set the state of the modal display
+ */
+
 export const ErrorModal = ({ errorMessage, modalState, setModalState }) => {
   ErrorModal.propTypes = {
     errorMessage: PropTypes.string,
