@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/play.module.css';
 import API from '../../api/api.js';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { Box, Button, Container } from '@material-ui/core';
 import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
 
-export const PlayPage = () => {
+export const PlayPage = ({ setPlayerToken }) => {
+  PlayPage.propTypes = {
+    setPlayerToken: PropTypes.func,
+  };
+
   const api = new API('http://localhost:5005');
 
   const [gameDetails, setGameDetails] = useState({
@@ -23,6 +28,18 @@ export const PlayPage = () => {
   const handleFormChange = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
     setGameDetails({ ...gameDetails, [type]: event.target.value });
+  };
+
+  // Enter key event listner
+  useEffect(() => {
+    window.addEventListener('keydown', handleEnterKey());
+  }, []);
+
+  // Enter key submits form
+  const handleEnterKey = () => (event) => {
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
+      document.getElementById('loginButton').click();
+    }
   };
 
   const handleJoinGame = () => async () => {
@@ -51,6 +68,7 @@ export const PlayPage = () => {
       if (joinResult.status !== 200) {
         console.log(joinResult.data.error);
       } else {
+        setPlayerToken(joinResult.data.token);
         console.log(joinResult);
       }
     }
