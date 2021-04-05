@@ -1,0 +1,53 @@
+.dashboardWrapper {
+  margin-top: 16px;
+}
+
+.dashboardHeader {
+  background-color: var(--primary-color);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: white;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.createText {
+  color: white;
+}
+
+.createPlus {
+  margin-right: 5px;
+  color: white;
+}
+
+.createPopover {
+  width: 250px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.createName {
+  width: 200px;
+  height: 50px;
+}
+
+.quizsWrapper {
+  background-color: #aaaaaa;
+  min-height: 550px;
+}
+
+.quizCard {
+  width: 390px;
+  height: 250px;
+}
+
+.quizWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0px;
+}

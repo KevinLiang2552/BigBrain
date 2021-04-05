@@ -1,15 +1,31 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/auth.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
-import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { PasswordInput } from '../../components/auth/AuthInputs.jsx';
+import {
+  checkEmailValid,
+  isObjectValueEmpty,
+} from '../../helpers/authHelpers.js';
+
+import { getAuthToken } from '../../helpers/user.js';
 
 // Register Page
-export const RegisterPage = () => {
+export const RegisterPage = ({ setAuthToken }) => {
+  RegisterPage.propTypes = {
+    setAuthToken: PropTypes.func,
+  };
+
   const api = new API('http://localhost:5005');
+  const history = useHistory();
+
+  // Redirect if user is already logged in
+  if (getAuthToken() !== '') {
+    history.push('/dashboard');
+  }
 
   // Form details
   const [details, setDetails] = useState({
@@ -29,6 +45,7 @@ export const RegisterPage = () => {
 
   // Form errors message for each detail
   const [errors, setErrors] = useState(defaultErrors);
+  const [registerError, setRegisterError] = useState('');
 
   // After form inpuut change remove all errors on that input and update the details
   const handleFormChange = (type) => (event) => {
@@ -44,6 +61,7 @@ export const RegisterPage = () => {
   // Handle the register and update relevant errors
   const handleRegister = () => async (event) => {
     setErrors(defaultErrors);
+    setRegisterError('');
 
     const errorList = defaultErrors;
 
@@ -53,6 +71,8 @@ export const RegisterPage = () => {
 
     if (details.email === '') {
       errorList.email = 'Email must not be empty';
+    } else if (checkEmailValid(details.email) === null) {
+      errorList.email = 'Email is not valid';
     }
 
     if (details.password === '') {
@@ -75,7 +95,7 @@ export const RegisterPage = () => {
         confirmPassword: errorList.confirmPassword,
       });
     } else {
-      const loginResult = await api.nonAuthorisedRequest(
+      const registerResult = await api.nonAuthorisedRequest(
         'POST',
         'admin/auth/register',
         {
@@ -84,7 +104,17 @@ export const RegisterPage = () => {
           name: details.name,
         },
       );
-      console.log(loginResult);
+
+      // If sucessful set token and move to dashboard else print error
+      if (registerResult.status === 200) {
+        setAuthToken(registerResult.data.token);
+        history.push('/dashboard');
+      } else {
+        setRegisterError(registerResult.data.error);
+        if (registerResult.data.error) {
+          setErrors({ ...errors, email: 'Email address already registered' });
+        }
+      }
     }
   };
 
@@ -128,6 +158,7 @@ export const RegisterPage = () => {
               errorMessage={errors.confirmPassword}
             />
           </Box>
+          <p className={styles.errorText}>{registerError}</p>
           <Button
             variant="contained"
             color="primary"
@@ -136,8 +167,8 @@ export const RegisterPage = () => {
           </Button>
           <hr className={styles.authHR}></hr>
 
-          <Link to="/login" className={styles.bottomText}>
-            Already a member?
+          <Link to="/login">
+            <Button variant="outlined">Already a member?</Button>
           </Link>
         </form>
       </Container>

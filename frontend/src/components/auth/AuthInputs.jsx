@@ -50,7 +50,8 @@ export const PasswordInput = ({
             <IconButton
               aria-label="Toggle password visibility"
               onClick={handleShowPassword()}
-              edge="end">
+              edge="end"
+              tabIndex="-1">
               {showPassword ? (
                 <FeatherIcon icon="eye-off" />
               ) : (

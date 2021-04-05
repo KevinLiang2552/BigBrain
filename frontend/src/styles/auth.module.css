@@ -12,7 +12,7 @@
   width: 500px;
 }
 
-.bottomText {
-  margin: 0px;
-  cursor: pointer;
+.errorText {
+  margin: 0px 0px 10px;
+  color: var(--red);
 }
