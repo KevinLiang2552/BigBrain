@@ -1,8 +1,17 @@
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Container,
+  Typography,
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import styles from '../../styles/edit.module.css';
+import placeholderImage from '../../assets/placeholderImage.png';
 import { useParams } from 'react-router';
 import API from '../../api/api.js';
 
-export const EditQuestionPage = () => {
+export const EditQuizPage = () => {
   const api = new API('http://localhost:5005');
 
   const { id } = useParams();
@@ -17,7 +26,7 @@ export const EditQuestionPage = () => {
     oldSessions: [],
   };
 
-  const [details, setDetails] = useState(emptyDetails);
+  const [quiz, setQuiz] = useState(emptyDetails);
 
   useEffect(async () => {
     setQuizDetails(id);
@@ -29,16 +38,22 @@ export const EditQuestionPage = () => {
       `admin/quiz/${quizId}`,
     );
     if (quizDetailsRes.status === 200) {
-      setDetails(quizDetailsRes.data);
+      setQuiz(quizDetailsRes.data);
     } else {
       console.log(quizDetailsRes.data.error);
     }
   };
 
-  console.log(details);
+  console.log(quiz);
+  const quizImage = quiz.thumbnail === null ? placeholderImage : quiz.thumbnail;
   return (
-    <div>
-      <div>{details.questions.length}</div>
-    </div>
+    <Container>
+      <Card className={styles.editDescription}>
+        <CardMedia image={quizImage} className={styles.editQuizImage} />
+        <CardContent>
+          <Typography>{quiz.name}</Typography>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };

@@ -4,7 +4,7 @@ import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
 import { PlayPage } from './routes/user/Play.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
-import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
+import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './components/Header';
 
@@ -47,21 +47,21 @@ function App() {
             <SplashPage></SplashPage>
           </Route>
           <Route path="/login">
-            {getAuthToken() === '' ? (
+            {authenToken === '' ? (
               <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
             ) : (
               <Redirect to="/dashboard"></Redirect>
             )}
           </Route>
           <Route path="/register">
-            {getAuthToken() === '' ? (
+            {authenToken === '' ? (
               <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
             ) : (
               <Redirect to="/dashboard"></Redirect>
             )}
           </Route>
           <Route path="/dashboard/edit/:id">
-            <EditQuestionPage />
+            <EditQuizPage />
           </Route>
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
@@ -70,7 +70,7 @@ function App() {
             <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
           </Route>
           <Route>
-            <EditQuestionPage />
+            <SplashPage></SplashPage>
           </Route>
         </Switch>
       </BrowserRouter>

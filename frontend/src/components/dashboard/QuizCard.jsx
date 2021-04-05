@@ -32,11 +32,15 @@ export const QuizCard = ({ quiz, deleteQuiz }) => {
     history.push('/dashboard/edit/' + quiz.id);
   };
 
+  // const image
+  const quizCardImage =
+    quiz.thumbnail === null ? placeholderImage : quiz.thumbnail;
+
   return (
     <Grid item xs={12} md={4} className={styles.quizWrapper}>
       <Card className={styles.quizCard}>
         <div className={styles.quizz}></div>
-        <CardMedia className={styles.quizImage} image={placeholderImage}>
+        <CardMedia className={styles.quizImage} image={quizCardImage}>
           <div className={styles.deleteWrapper}>
             <IconButton
               className={styles.deleteButton}
