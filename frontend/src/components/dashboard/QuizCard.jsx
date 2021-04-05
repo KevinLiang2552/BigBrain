@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
 import placeholderImage from '../../assets/placeholderImage.png';
+import { useHistory } from 'react-router-dom';
 
 import {
   Button,
@@ -25,18 +26,26 @@ export const QuizCard = ({ quiz, deleteQuiz }) => {
     deleteQuiz: PropTypes.func,
   };
 
+  const history = useHistory();
+
+  const handleEdit = () => {
+    history.push('/dashboard/edit/' + quiz.id);
+  };
+
   return (
     <Grid item xs={12} md={4} className={styles.quizWrapper}>
       <Card className={styles.quizCard}>
         <div className={styles.quizz}></div>
         <CardMedia className={styles.quizImage} image={placeholderImage}>
-          <IconButton
-            className={styles.deleteButton}
-            onClick={function () {
-              deleteQuiz(quiz.id);
-            }}>
-            <DeleteIcon className={styles.deleteIcon} />
-          </IconButton>
+          <div className={styles.deleteWrapper}>
+            <IconButton
+              className={styles.deleteButton}
+              onClick={function () {
+                deleteQuiz(quiz.id);
+              }}>
+              <DeleteIcon className={styles.deleteIcon} />
+            </IconButton>
+          </div>
         </CardMedia>
         <CardContent>
           <Typography variant="h6">{quiz.name}</Typography>
@@ -60,7 +69,9 @@ export const QuizCard = ({ quiz, deleteQuiz }) => {
               <StopIcon className={styles.controlIcon} />
               <Typography>Stop</Typography>
             </Button>
-            <Button className={`${styles.controls} ${styles.controlsEdit}`}>
+            <Button
+              className={`${styles.controls} ${styles.controlsEdit}`}
+              onClick={handleEdit}>
               <EditIcon className={styles.controlIcon} />
               <Typography>Edit</Typography>
             </Button>

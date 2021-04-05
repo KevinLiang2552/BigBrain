@@ -4,6 +4,7 @@ import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
 import { PlayPage } from './routes/user/Play.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
+import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 
@@ -51,11 +52,17 @@ function App() {
           <Route path="/register">
             <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
           </Route>
+          <Route path="/dashboard/edit/:id">
+            <EditQuestionPage />
+          </Route>
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
           </Route>
           <Route path="/play">
             <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
+          </Route>
+          <Route>
+            <EditQuestionPage />
           </Route>
         </Switch>
       </BrowserRouter>
