@@ -11,8 +11,6 @@ import {
   isObjectValueEmpty,
 } from '../../helpers/authHelpers.js';
 
-import { getAuthToken } from '../../helpers/user.js';
-
 export const LoginPage = ({ setAuthToken }) => {
   LoginPage.propTypes = {
     setAuthToken: PropTypes.func,
@@ -20,11 +18,6 @@ export const LoginPage = ({ setAuthToken }) => {
 
   const api = new API('http://localhost:5005');
   const history = useHistory();
-
-  // Redirect if user is already logged in
-  if (getAuthToken() !== '') {
-    history.push('/dashboard');
-  }
 
   // Form details
   const [details, setDetails] = useState({

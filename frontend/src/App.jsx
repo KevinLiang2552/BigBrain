@@ -5,7 +5,7 @@ import { RegisterPage } from './routes/admin/Register.jsx';
 import { PlayPage } from './routes/user/Play.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './components/Header';
 
 import {
@@ -47,10 +47,18 @@ function App() {
             <SplashPage></SplashPage>
           </Route>
           <Route path="/login">
-            <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
+            {getAuthToken() === '' ? (
+              <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
+            ) : (
+              <Redirect to="/dashboard"></Redirect>
+            )}
           </Route>
           <Route path="/register">
-            <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
+            {getAuthToken() === '' ? (
+              <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
+            ) : (
+              <Redirect to="/dashboard"></Redirect>
+            )}
           </Route>
           <Route path="/dashboard/edit/:id">
             <EditQuestionPage />
