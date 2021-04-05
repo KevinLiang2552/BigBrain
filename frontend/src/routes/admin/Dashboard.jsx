@@ -25,8 +25,35 @@ export const DashboardPage = () => {
   // Get current user quizzes
   const getAdminQuizzes = async () => {
     const adminQuizRes = await api.authorisedRequest('GET', 'admin/quiz');
+
+    if (adminQuizRes.status !== 200) {
+      console.log(adminQuizRes.data.error);
+      return;
+    }
+    const quizzes = adminQuizRes.data.quizzes;
+    for (const quiz of quizzes) {
+      const quizDetailsRes = await getQuizDetails(quiz.id);
+
+      if (quizDetailsRes.status === null) {
+        return;
+      }
+
+      quiz.questions = quizDetailsRes.questions;
+    }
+
+    setQuizzes(quizzes);
+  };
+
+  const getQuizDetails = async (quizId) => {
+    const adminQuizRes = await api.authorisedRequest(
+      'GET',
+      `admin/quiz/${quizId}`,
+    );
     if (adminQuizRes.status === 200) {
-      setQuizzes(adminQuizRes.data.quizzes);
+      return adminQuizRes.data;
+    } else {
+      console.log(adminQuizRes.data.error);
+      return null;
     }
   };
 
@@ -95,44 +122,39 @@ export const DashboardPage = () => {
         <Grid item xs={12}>
           <Toolbar className={styles.dashboardHeader}>
             <Typography variant="h4"> Dashboard</Typography>
-            <div>
-              <Button id="createButton" onClick={handleCreateButtonOpen}>
-                <AddCircleIcon
-                  className={styles.createPlus}
-                  fontSize="default"
-                />
-                <Typography className={styles.createText}>
+
+            <Button id="createButton" onClick={handleCreateButtonOpen}>
+              <AddCircleIcon className={styles.createPlus} fontSize="default" />
+              <Typography className={styles.createText}>Create Quiz</Typography>
+            </Button>
+            <Popover
+              open={Boolean(createAnchorEl)}
+              onClose={handleCreateButtonClose}
+              anchorEl={createAnchorEl}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}>
+              <div className={styles.createPopover}>
+                <TextField
+                  className={styles.createName}
+                  onChange={handleCreateNameChange}
+                  error={createNameError !== ''}
+                  helperText={createNameError}
+                  label="Quiz Name"></TextField>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleCreateQuiz}>
                   Create Quiz
-                </Typography>
-              </Button>
-              <Popover
-                open={Boolean(createAnchorEl)}
-                onClose={handleCreateButtonClose}
-                anchorEl={createAnchorEl}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}>
-                <div className={styles.createPopover}>
-                  <TextField
-                    className={styles.createName}
-                    onChange={handleCreateNameChange}
-                    error={createNameError !== ''}
-                    helperText={createNameError}
-                    label="Quiz Name"></TextField>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    onClick={handleCreateQuiz}>
-                    Create Quiz
-                  </Button>
-                </div>
-              </Popover>
-            </div>
+                </Button>
+              </div>
+            </Popover>
+
             {/* <div> Extension add sort quiz here</div> */}
           </Toolbar>
         </Grid>

@@ -6,7 +6,6 @@ import styles from '../styles/components/Header.module.css';
 import { Box, Button } from '@material-ui/core';
 
 export const Header = ({ authToken, setAuthToken }) => {
-  console.log('header: ' + authToken);
   Header.propTypes = {
     authToken: PropTypes.string,
     setAuthToken: PropTypes.func,
