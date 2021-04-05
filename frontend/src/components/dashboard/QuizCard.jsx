@@ -61,18 +61,20 @@ export const QuizCard = ({ quiz, deleteQuiz }) => {
           </div>
 
           <div className={styles.controlsWrapper}>
-            <Button className={`${styles.controls} ${styles.controlsPlay}`}>
-              <PlayArrowIcon className={styles.controlIcon} />
+            <Button
+              className={`${styles.controls} ${styles.controlsPlay}`}
+              startIcon={<PlayArrowIcon />}>
               <Typography>Start</Typography>
             </Button>
-            <Button className={`${styles.controls} ${styles.controlsStop}`}>
-              <StopIcon className={styles.controlIcon} />
+            <Button
+              className={`${styles.controls} ${styles.controlsStop}`}
+              startIcon={<StopIcon />}>
               <Typography>Stop</Typography>
             </Button>
             <Button
               className={`${styles.controls} ${styles.controlsEdit}`}
+              startIcon={<EditIcon />}
               onClick={handleEdit}>
-              <EditIcon className={styles.controlIcon} />
               <Typography>Edit</Typography>
             </Button>
           </div>
