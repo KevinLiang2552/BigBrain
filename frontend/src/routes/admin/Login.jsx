@@ -4,11 +4,8 @@ import { Link } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
 import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
-
-import {
-  DefaultInput,
-  PasswordInput,
-} from '../../components/auth/AuthInputs.jsx';
+import { DefaultInput } from '../../components/FormInputs.jsx';
+import { PasswordInput } from '../../components/auth/AuthInputs.jsx';
 
 export const LoginPage = () => {
   const api = new API('http://localhost:5005');
