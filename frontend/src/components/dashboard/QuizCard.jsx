@@ -20,6 +20,12 @@ import EditIcon from '@material-ui/icons/Edit';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
 
+/**
+ *
+ * @param {object} quiz Quiz object with all value e.g. id, question
+ * @param {function} deleteQuiz Delete quiz function
+ */
+
 export const QuizCard = ({ quiz, deleteQuiz }) => {
   QuizCard.propTypes = {
     quiz: PropTypes.object,

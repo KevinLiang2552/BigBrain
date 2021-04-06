@@ -12,8 +12,6 @@ import { useParams } from 'react-router';
 import API from '../../api/api.js';
 import { EditInput } from '../../components/FormInputs.jsx';
 
-// const handleEditName = () => {};
-
 export const EditQuizPage = () => {
   const api = new API('http://localhost:5005');
 
@@ -35,6 +33,7 @@ export const EditQuizPage = () => {
     setQuizDetails(id);
   }, []);
 
+  // Get quiz details and set them
   const setQuizDetails = async (quizId) => {
     const quizDetailsRes = await api.authorisedRequest(
       'GET',
@@ -47,6 +46,7 @@ export const EditQuizPage = () => {
     }
   };
 
+  // Update name via API
   const handleNameUpdate = async (value) => {
     const updateNameRes = await api.authorisedRequest(
       'PUT',
