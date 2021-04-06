@@ -4,8 +4,7 @@ import styles from '../../styles/auth.module.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
-import { DefaultInput } from '../../components/FormInputs.jsx';
-import { PasswordInput } from '../../components/auth/AuthInputs.jsx';
+import { DefaultInput, PasswordInput } from '../../components/FormInputs.jsx';
 import {
   checkEmailValid,
   isObjectValueEmpty,

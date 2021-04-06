@@ -3,13 +3,16 @@ import {
   CardContent,
   CardMedia,
   Container,
-  Typography,
+  CircularProgress,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/edit.module.css';
 import placeholderImage from '../../assets/placeholderImage.png';
 import { useParams } from 'react-router';
 import API from '../../api/api.js';
+import { EditInput } from '../../components/FormInputs.jsx';
+
+// const handleEditName = () => {};
 
 export const EditQuizPage = () => {
   const api = new API('http://localhost:5005');
@@ -44,14 +47,39 @@ export const EditQuizPage = () => {
     }
   };
 
-  console.log(quiz);
+  const handleNameUpdate = async (value) => {
+    const updateNameRes = await api.authorisedRequest(
+      'PUT',
+      `admin/quiz/${id}`,
+      { name: value },
+    );
+
+    if (updateNameRes.status === 200) {
+      setQuizDetails(id);
+    } else {
+      console.log(updateNameRes.data.error);
+    }
+  };
+
   const quizImage = quiz.thumbnail === null ? placeholderImage : quiz.thumbnail;
   return (
     <Container>
       <Card className={styles.editDescription}>
-        <CardMedia image={quizImage} className={styles.editQuizImage} />
+        {quizImage ? (
+          <CardMedia
+            image={quizImage}
+            alt="Quiz Image"
+            className={styles.editQuizImage}
+          />
+        ) : (
+          <CircularProgress />
+        )}
         <CardContent>
-          <Typography>{quiz.name}</Typography>
+          <EditInput
+            type="Name"
+            value={quiz.name}
+            handleUpdate={handleNameUpdate}
+          />
         </CardContent>
       </Card>
     </Container>
