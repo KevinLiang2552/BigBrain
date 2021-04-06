@@ -35,7 +35,6 @@ export default class API {
 
   authorisedRequest(method, path, payload) {
     if (getAuthToken() === '') return;
-    console.log(getAuthToken());
     const options = {
       method: method,
       headers: {

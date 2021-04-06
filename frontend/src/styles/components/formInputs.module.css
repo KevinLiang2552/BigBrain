@@ -1,0 +1,36 @@
+.textfield {
+  width: 400px;
+}
+
+.editInput {
+  width: 700px;
+}
+
+.editTextWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0px 10px;
+}
+
+.editButtonList {
+  display: flex;
+  align-items: baseline;
+}
+
+.editButton {
+  height: 40px;
+  width: 40px;
+}
+
+.editIcon:hover {
+  color: var(--spectrum-color-4);
+}
+
+.editClose:hover {
+  color: var(--red);
+}
+
+.editCheck:hover {
+  color: var(--green);
+}

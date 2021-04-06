@@ -1,20 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styles from '../styles/components/Header.module.css';
 import { Box, Button } from '@material-ui/core';
 
 export const Header = ({ authToken, setAuthToken }) => {
-  console.log('header: ' + authToken);
   Header.propTypes = {
     authToken: PropTypes.string,
     setAuthToken: PropTypes.func,
   };
 
+  const history = useHistory();
   // Reset auth token to empty
   const handleLogOut = () => {
     setAuthToken('');
+    history.push('/');
   };
 
   return (
@@ -46,11 +47,12 @@ export const Header = ({ authToken, setAuthToken }) => {
           </>
         ) : (
           <Box mr={2}>
-            <Link to="/" onClick={handleLogOut}>
-              <Button variant="contained" color="secondary">
-                Log Out
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleLogOut}>
+              Log Out
+            </Button>
           </Box>
         )}
       </nav>

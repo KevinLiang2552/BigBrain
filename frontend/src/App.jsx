@@ -4,7 +4,8 @@ import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
 import { PlayPage } from './routes/user/Play.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './components/Header';
 
 import {
@@ -46,16 +47,30 @@ function App() {
             <SplashPage></SplashPage>
           </Route>
           <Route path="/login">
-            <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
+            {authenToken === '' ? (
+              <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
+            ) : (
+              <Redirect to="/dashboard"></Redirect>
+            )}
           </Route>
           <Route path="/register">
-            <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
+            {authenToken === '' ? (
+              <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
+            ) : (
+              <Redirect to="/dashboard"></Redirect>
+            )}
+          </Route>
+          <Route path="/dashboard/edit/:id">
+            <EditQuizPage />
           </Route>
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
           </Route>
           <Route path="/play">
             <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
+          </Route>
+          <Route>
+            <SplashPage></SplashPage>
           </Route>
         </Switch>
       </BrowserRouter>

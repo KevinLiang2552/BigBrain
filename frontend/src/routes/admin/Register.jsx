@@ -4,14 +4,11 @@ import styles from '../../styles/auth.module.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
-import { DefaultInput } from '../../components/FormInputs.jsx';
-import { PasswordInput } from '../../components/auth/AuthInputs.jsx';
+import { DefaultInput, PasswordInput } from '../../components/FormInputs.jsx';
 import {
   checkEmailValid,
   isObjectValueEmpty,
 } from '../../helpers/authHelpers.js';
-
-import { getAuthToken } from '../../helpers/user.js';
 
 // Register Page
 export const RegisterPage = ({ setAuthToken }) => {
@@ -21,11 +18,6 @@ export const RegisterPage = ({ setAuthToken }) => {
 
   const api = new API('http://localhost:5005');
   const history = useHistory();
-
-  // Redirect if user is already logged in
-  if (getAuthToken() !== '') {
-    history.push('/dashboard');
-  }
 
   // Form details
   const [details, setDetails] = useState({
