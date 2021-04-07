@@ -50,9 +50,9 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
       aria-describedby={`${quiz.name} quiz controls whic allows the admin to stop, advance the current quiz. Also has a link to the play screen`}>
       <DialogTitle>{`${quiz.name} quiz has started!`}</DialogTitle>
       <DialogContent className={styles.modalLinkWrapper}>
-        <Link to={`play/${quiz.id}`} target="_blank">
+        <Link to={`play/${quiz.active}`} target="_blank">
           <Typography id="linkBox" className={styles.linkBox}>
-            {`localhost:3000/play/${quiz.id}`}
+            {`localhost:3000/play/${quiz.active}`}
           </Typography>
         </Link>
         <CopyButton onClick={handleCopyButton}>Copy Link</CopyButton>

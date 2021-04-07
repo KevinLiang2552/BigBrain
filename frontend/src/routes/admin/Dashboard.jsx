@@ -112,24 +112,8 @@ export const DashboardPage = () => {
     setModalState(!modalState);
   };
 
-  const startQuiz = async (quiz) => {
+  const childSetModalQuiz = (quiz) => {
     setModalQuiz(quiz);
-    changeModalState();
-    const startQuizRes = await api.authorisedRequest(
-      'POST',
-      `admin/quiz/${quiz.id}/start`,
-    );
-    console.log(startQuizRes);
-  };
-
-  const stopQuiz = async (quiz) => {
-    changeModalState();
-    setModalQuiz(quiz);
-    const startQuizRes = await api.authorisedRequest(
-      'POST',
-      `admin/quiz/${quiz.id}/end`,
-    );
-    console.log(startQuizRes);
   };
 
   const deleteQuiz = async (id) => {
@@ -202,9 +186,9 @@ export const DashboardPage = () => {
               return (
                 <QuizCard
                   key={quiz.id}
-                  quiz={quiz}
-                  startQuiz={startQuiz}
-                  stopQuiz={stopQuiz}
+                  quizData={quiz}
+                  setModalQuiz={childSetModalQuiz}
+                  changeModalState={changeModalState}
                   deleteQuiz={deleteQuiz}></QuizCard>
               );
             })}
