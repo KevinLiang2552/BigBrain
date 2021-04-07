@@ -160,7 +160,7 @@ export const EditInput = ({ type, value, handleUpdate }) => {
 
   // Handle confirm of change of value
   const handleConfirm = () => {
-    if (inputValue === '') {
+    if (inputValue === '' && !firstLoad) {
       setError(true);
       setHelperText('Name can not be empty');
     } else {
