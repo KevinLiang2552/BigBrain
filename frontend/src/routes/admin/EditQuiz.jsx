@@ -6,15 +6,6 @@ import {
   CircularProgress,
   Button,
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
   Typography,
   Grid,
 } from '@material-ui/core';
@@ -23,11 +14,12 @@ import styles from '../../styles/edit.module.css';
 import placeholderImage from '../../assets/placeholderImage.png';
 import { useParams } from 'react-router';
 import API from '../../api/api.js';
-import { DefaultInput, EditInput } from '../../components/FormInputs.jsx';
+import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
 import QuestionCard from '../../components/editQuiz/QuestionCard';
 import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
+import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
 
 export const EditQuizPage = () => {
   const api = new API('http://localhost:5005');
@@ -67,7 +59,7 @@ export const EditQuizPage = () => {
     question: '',
     duration: '',
     points: '',
-    answers: '',
+    answer: '',
     correctAnswers: '',
   };
 
@@ -97,6 +89,7 @@ export const EditQuizPage = () => {
   };
 
   const closeModal = () => {
+    setQuestionDetails(defaultQuestionDetails);
     setModalState(false);
   };
 
@@ -155,15 +148,6 @@ export const EditQuizPage = () => {
   const handleImageUpload = () => {
     const imageUpload = document.getElementById('imageUpload');
     reader.readAsDataURL(imageUpload.files[0]);
-  };
-
-  const handleRadioChange = (event) => {
-    setQuestionDetails({ ...questionDetails, type: event.target.value });
-  };
-
-  const handleFormChange = (type) => (event) => {
-    setErrors({ ...errors, [type]: '' });
-    setQuestionDetails({ ...questionDetails, [type]: event.target.value });
   };
 
   const handleAddQuestion = async (id) => {
@@ -297,72 +281,15 @@ export const EditQuizPage = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Dialog
-        open={modalState}
-        onClose={closeModal}
-        aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Create Question</DialogTitle>
-        <form>
-          <DialogContent>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Question Type</FormLabel>
-              <RadioGroup
-                aria-label="Question Type"
-                name="questionType"
-                value={questionDetails.type}
-                onChange={handleRadioChange}>
-                <FormControlLabel
-                  value="single"
-                  control={<Radio />}
-                  label="Single"
-                />
-                <FormControlLabel
-                  value="multiple"
-                  control={<Radio />}
-                  label="Multiple"
-                />
-              </RadioGroup>
-              <br />
-              <FormLabel component="legend">Question to ask</FormLabel>
-              <br />
-              <DefaultInput
-                type="question"
-                handleFormChange={handleFormChange}
-                error={errors.question !== ''}
-                errorMessage={errors.question}
-              />
-              <br />
-              <FormLabel component="legend">Duration in seconds</FormLabel>
-              <br />
-              <DefaultInput
-                type="duration"
-                handleFormChange={handleFormChange}
-                error={errors.duration !== ''}
-                errorMessage={errors.duration}
-              />
-              <br />
-              <FormLabel component="legend">
-                Number of points for the question
-              </FormLabel>
-              <br />
-              <DefaultInput
-                type="points"
-                handleFormChange={handleFormChange}
-                error={errors.points !== ''}
-                errorMessage={errors.points}
-              />
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeModal} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleAddQuestion} color="primary">
-              Add Question
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
+      <AddQuestionModal
+        modalState={modalState}
+        closeModal={closeModal}
+        handleAddQuestion={handleAddQuestion}
+        questionDetails={questionDetails}
+        setQuestionDetails={setQuestionDetails}
+        errors={errors}
+        setErrors={setErrors}
+      />
     </Container>
   );
 };
