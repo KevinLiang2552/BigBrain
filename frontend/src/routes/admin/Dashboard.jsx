@@ -11,7 +11,9 @@ import {
 import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
+import { emptyQuizDetails } from '../../helpers/emptyTypes.js';
 import API from '../../api/api.js';
+import { QuizModal } from '../../components/dashboard/QuizModal';
 
 export const DashboardPage = () => {
   const api = new API('http://localhost:5005');
@@ -103,6 +105,33 @@ export const DashboardPage = () => {
 
   //  +++++++++++++++++++++++++++++++++++++++++++  QUIZ CARD HANDLING
 
+  const [modalState, setModalState] = useState(false);
+  const [modalQuiz, setModalQuiz] = useState(emptyQuizDetails);
+
+  const changeModalState = () => {
+    setModalState(!modalState);
+  };
+
+  const startQuiz = async (quiz) => {
+    setModalQuiz(quiz);
+    changeModalState();
+    const startQuizRes = await api.authorisedRequest(
+      'POST',
+      `admin/quiz/${quiz.id}/start`,
+    );
+    console.log(startQuizRes);
+  };
+
+  const stopQuiz = async (quiz) => {
+    changeModalState();
+    setModalQuiz(quiz);
+    const startQuizRes = await api.authorisedRequest(
+      'POST',
+      `admin/quiz/${quiz.id}/end`,
+    );
+    console.log(startQuizRes);
+  };
+
   const deleteQuiz = async (id) => {
     const deleteQuizRes = await api.authorisedRequest(
       'DELETE',
@@ -118,6 +147,11 @@ export const DashboardPage = () => {
 
   return (
     <Container>
+      <QuizModal
+        modalState={modalState}
+        quiz={modalQuiz}
+        changeModalState={changeModalState}
+      />
       <Grid container className={styles.dashboardWrapper}>
         <Grid item xs={12}>
           <Toolbar className={styles.dashboardHeader}>
@@ -169,6 +203,8 @@ export const DashboardPage = () => {
                 <QuizCard
                   key={quiz.id}
                   quiz={quiz}
+                  startQuiz={startQuiz}
+                  stopQuiz={stopQuiz}
                   deleteQuiz={deleteQuiz}></QuizCard>
               );
             })}

@@ -19,7 +19,6 @@ import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
-import API from '../../api/api.js';
 
 /**
  *
@@ -27,32 +26,17 @@ import API from '../../api/api.js';
  * @param {function} deleteQuiz Delete quiz function
  */
 
-export const QuizCard = ({ quiz, deleteQuiz }) => {
+export const QuizCard = ({ quiz, deleteQuiz, startQuiz, stopQuiz }) => {
   QuizCard.propTypes = {
     quiz: PropTypes.object,
     deleteQuiz: PropTypes.func,
+    startQuiz: PropTypes.func,
+    stopQuiz: PropTypes.func,
   };
-  const api = new API('http://localhost:5005');
   const history = useHistory();
 
   const handleEdit = () => {
     history.push('/dashboard/edit/' + quiz.id);
-  };
-
-  const handleStartQuiz = async () => {
-    const startQuizRes = await api.authorisedRequest(
-      'POST',
-      `admin/quiz/${quiz.id}/start`,
-    );
-    console.log(startQuizRes);
-  };
-
-  const handleStopQuiz = async () => {
-    const startQuizRes = await api.authorisedRequest(
-      'POST',
-      `admin/quiz/${quiz.id}/end`,
-    );
-    console.log(startQuizRes);
   };
 
   // const image
@@ -91,13 +75,17 @@ export const QuizCard = ({ quiz, deleteQuiz }) => {
             <Button
               className={`${styles.controls} ${styles.controlsPlay}`}
               startIcon={<PlayArrowIcon />}
-              onClick={handleStartQuiz}>
+              onClick={function () {
+                startQuiz(quiz);
+              }}>
               <Typography>Start</Typography>
             </Button>
             <Button
               className={`${styles.controls} ${styles.controlsStop}`}
               startIcon={<StopIcon />}
-              onClick={handleStopQuiz}>
+              onClick={function () {
+                stopQuiz(quiz);
+              }}>
               <Typography>Stop</Typography>
             </Button>
             <Button
