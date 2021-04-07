@@ -9,30 +9,34 @@ import {
   DialogTitle,
   Typography,
 } from '@material-ui/core';
-
-// const CopyButton = withStyles({
-//   root: {
-//     'background-color': '#7400b8',
-//     color: 'white',
-//     boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-//   },
-// })(Button);
-
-const StyledButton = withStyles({
-  root: {
-    background: 'linear-gradient(to right, #7400b8 70%, #6930c3 )',
-    color: 'white',
-    height: '37px',
-    borderTopLeftRadius: '0px',
-    borderBottomLeftRadius: '0px',
-  },
-})(Button);
-
+/**
+ *
+ * @param {bool} modalState  State of modal true = visible, false = hidden
+ * @param {object} quiz  Quiz object
+ * @param {changeModalState} changeModalState  Flip the modalState
+ * @returns
+ */
 export const QuizModal = ({ modalState, quiz, changeModalState }) => {
   QuizModal.propTypes = {
     modalState: PropTypes.bool,
     quiz: PropTypes.object,
     changeModalState: PropTypes.func,
+  };
+
+  const CopyButton = withStyles({
+    root: {
+      background: 'linear-gradient(to right, #7400b8 70%, #6930c3 )',
+      color: 'white',
+      height: '37px',
+      borderTopLeftRadius: '0px',
+      borderBottomLeftRadius: '0px',
+    },
+  })(Button);
+
+  // Copys link to clipboard
+  const handleCopyButton = () => {
+    const linkBox = document.getElementById('linkBox');
+    navigator.clipboard.writeText(linkBox.innerText);
   };
 
   return (
@@ -44,10 +48,10 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
       aria-describedby={`${quiz.name} quiz controls whic allows the admin to stop, advance the current quiz. Also has a link to the play screen`}>
       <DialogTitle>{`${quiz.name} quiz has started!`}</DialogTitle>
       <DialogContent className={styles.modalLinkWrapper}>
-        <Typography className={styles.linkBox}>
+        <Typography id="linkBox" className={styles.linkBox}>
           {`localhost:3000/play/${quiz.id}`}
         </Typography>
-        <StyledButton>Copy Link</StyledButton>
+        <CopyButton onClick={handleCopyButton}>Copy Link</CopyButton>
       </DialogContent>
     </Dialog>
   );
