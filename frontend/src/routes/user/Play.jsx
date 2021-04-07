@@ -5,7 +5,7 @@ import API from '../../api/api.js';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { ErrorModal } from '../../components/ErrorModal.jsx';
 import { Box, Button, Container } from '@material-ui/core';
-import { isObjectValueEmpty } from '../../helpers/authHelpers.js';
+import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 
 export const PlayPage = ({ setPlayerToken }) => {
   PlayPage.propTypes = {
