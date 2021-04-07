@@ -9,13 +9,11 @@ export const emptyQuizDetails = {
 };
 
 export const emptySessionStatus = {
-  results: {
-    active: false,
-    answerAvailable: false,
-    isoTimeLastQuestionStarted: '',
-    position: 0,
-    questions: [{}],
-    numQuestions: 0,
-    players: [],
-  },
+  active: false,
+  answerAvailable: false,
+  isoTimeLastQuestionStarted: '',
+  position: 0,
+  questions: [{}],
+  numQuestions: 0,
+  players: [],
 };

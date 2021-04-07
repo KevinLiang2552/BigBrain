@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
-import { Link } from 'react-router-dom';
+import API from '../../api/api.js';
+import { emptySessionStatus } from '../../helpers/emptyTypes.js';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -35,6 +37,42 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
     },
   })(Button);
 
+  const api = new API('http://localhost:5005');
+
+  const [sessionStatus, setSessionStatus] = useState(emptySessionStatus);
+
+  useEffect(() => {
+    if (quiz.active !== null) {
+      getSessionStatus();
+    }
+  }, [quiz]);
+
+  const getSessionStatus = async () => {
+    const result = await api.authorisedRequest(
+      'GET',
+      `admin/session/${quiz.active}/status`,
+    );
+    if (result.status === 200) {
+      setSessionStatus(result.data.results);
+      console.log(sessionStatus);
+    } else {
+      console.log(result.data.error);
+    }
+  };
+
+  const handleAdvance = async () => {
+    // WIP WIP WIP
+    // const result = await api.authorisedRequest(
+    //   'POST',
+    //   `admin/quiz/${quiz.id}/advance`,
+    // );
+    // if (result.status === 200) {
+    //   getSessionStatus();
+    // } else {
+    //   console.log(result.data.error);
+    // }
+  };
+
   // Copys link to clipboard
   const handleCopyButton = () => {
     const linkBox = document.getElementById('linkBox');
@@ -47,8 +85,8 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
       open={modalState}
       onClose={changeModalState}
       aria-labelledby={`${quiz.name} Quiz controls`}
-      aria-describedby={`${quiz.name} quiz controls whic allows the admin to stop, advance the current quiz. Also has a link to the play screen`}>
-      <DialogTitle>{`${quiz.name} quiz has started!`}</DialogTitle>
+      aria-describedby={`${quiz.name} quiz link and advance controls`}>
+      <DialogTitle>{`${quiz.name} quiz`}</DialogTitle>
       <DialogContent className={styles.modalLinkWrapper}>
         <Link to={`play/${quiz.active}`} target="_blank">
           <Typography id="linkBox" className={styles.linkBox}>
@@ -56,6 +94,17 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
           </Typography>
         </Link>
         <CopyButton onClick={handleCopyButton}>Copy Link</CopyButton>
+      </DialogContent>
+      <DialogContent>
+        <Typography>Position: {sessionStatus.position}</Typography>
+        <Button color="primary" variant="contained" onClick={handleAdvance}>
+          {sessionStatus.position > sessionStatus.questions.length - 1 ||
+          sessionStatus.questions.length === 0
+            ? 'End Quiz'
+            : sessionStatus.position === -1
+            ? 'Start Quiz'
+            : 'Next Question'}
+        </Button>
       </DialogContent>
     </Dialog>
   );
