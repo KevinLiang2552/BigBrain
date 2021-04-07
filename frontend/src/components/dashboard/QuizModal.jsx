@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
+import { Link } from 'react-router-dom';
+
 import { withStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -48,9 +50,11 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
       aria-describedby={`${quiz.name} quiz controls whic allows the admin to stop, advance the current quiz. Also has a link to the play screen`}>
       <DialogTitle>{`${quiz.name} quiz has started!`}</DialogTitle>
       <DialogContent className={styles.modalLinkWrapper}>
-        <Typography id="linkBox" className={styles.linkBox}>
-          {`localhost:3000/play/${quiz.id}`}
-        </Typography>
+        <Link to={`play/${quiz.id}`} target="_blank">
+          <Typography id="linkBox" className={styles.linkBox}>
+            {`localhost:3000/play/${quiz.id}`}
+          </Typography>
+        </Link>
         <CopyButton onClick={handleCopyButton}>Copy Link</CopyButton>
       </DialogContent>
     </Dialog>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/play.module.css';
 import API from '../../api/api.js';
+import { useParams } from 'react-router';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { ErrorModal } from '../../components/ErrorModal.jsx';
 import { Box, Button, Container } from '@material-ui/core';
@@ -13,6 +14,7 @@ export const PlayPage = ({ setPlayerToken }) => {
   };
 
   const api = new API('http://localhost:5005');
+  const { id } = useParams();
 
   // The required details for a game (session ID and player's name).
   const [gameDetails, setGameDetails] = useState({
@@ -105,6 +107,7 @@ export const PlayPage = ({ setPlayerToken }) => {
                 handleFormChange={handleFormChange}
                 error={errors.gameID !== ''}
                 errorMessage={errors.gameID}
+                defaultValue={id !== undefined ? id : ''}
               />
             </Box>
             <Box mt={2}>
