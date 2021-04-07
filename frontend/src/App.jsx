@@ -66,6 +66,9 @@ function App() {
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
           </Route>
+          <Route path="/play/:id">
+            <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
+          </Route>
           <Route path="/play">
             <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
           </Route>
