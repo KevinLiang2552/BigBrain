@@ -110,6 +110,8 @@ export const PasswordInput = ({
  *  @param {string} type Name of the detail
  *  @param {string} type Value of the detail
  *  @param {function} handleUpdate Function that will handle the api call to update the value (e.g. update the name)
+ *  @param {boolean} error Set if the text field is in an error state
+ *  @param {string} errorMessage Error message helper text
  */
 export const EditInput = ({ type, value, handleUpdate }) => {
   EditInput.propTypes = {
@@ -120,9 +122,13 @@ export const EditInput = ({ type, value, handleUpdate }) => {
 
   // Value of textfield
   const [inputValue, setInputValue] = useState(value);
+  const [firstLoad, setfirstLoad] = useState(true);
 
   // Edit state
   const [editDisplay, setEditDisplay] = useState(false);
+
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState('');
 
   // Display of text or input
   const editing = editDisplay ? 'block' : 'none';
@@ -137,6 +143,8 @@ export const EditInput = ({ type, value, handleUpdate }) => {
   const handleEditName = () => {
     if (editDisplay) {
       setInputValue(value);
+      setError(false);
+      setHelperText('');
       setEditDisplay(false);
     } else {
       setEditDisplay(true);
@@ -146,13 +154,21 @@ export const EditInput = ({ type, value, handleUpdate }) => {
   // Change value textfield and input value
   const handleOnChange = () => {
     const textfield = document.getElementById('edit' + type);
+    setfirstLoad(false);
     setInputValue(textfield.value);
   };
 
   // Handle confirm of change of value
   const handleConfirm = () => {
-    setEditDisplay(false);
-    handleUpdate(inputValue);
+    if (inputValue === '' && !firstLoad) {
+      setError(true);
+      setHelperText('Name can not be empty');
+    } else {
+      setError(false);
+      setHelperText('');
+      setEditDisplay(false);
+      handleUpdate(inputValue);
+    }
   };
 
   return (
@@ -162,9 +178,11 @@ export const EditInput = ({ type, value, handleUpdate }) => {
       </Typography>
       <TextField
         fullWidth
+        error={error}
+        helperText={helperText}
         id={'edit' + type}
         label={type}
-        value={inputValue === '' ? value : inputValue}
+        value={inputValue === '' && firstLoad ? value : inputValue}
         onChange={handleOnChange}
         className={styles.editInput}
         style={{ display: editing }}
