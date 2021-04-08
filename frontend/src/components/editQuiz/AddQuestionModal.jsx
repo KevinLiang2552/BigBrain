@@ -1,16 +1,19 @@
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Fab,
   FormControl,
   FormControlLabel,
   FormLabel,
-  Grid,
   List,
   ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+  IconButton,
   Radio,
   RadioGroup,
   TextField,
@@ -19,6 +22,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export const AddQuestionModal = ({
   modalState,
@@ -40,6 +44,26 @@ export const AddQuestionModal = ({
   };
 
   const [newAnswer, setNewAnswer] = useState('');
+  const [correctAnswerRadio, setCorrectAnswerRadio] = useState(0);
+  const [checked, setChecked] = useState([]);
+
+  const handleToggleCorrectAnswers = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
+  };
+
+  const handleSelectCorrectAnswer = (event) => {
+    console.log(event.target.value);
+    setCorrectAnswerRadio(event.target.value);
+  };
 
   const handleRadioChange = (event) => {
     setQuestionDetails({ ...questionDetails, type: event.target.value });
@@ -58,7 +82,8 @@ export const AddQuestionModal = ({
   const handleAddAnswer = () => {
     if (newAnswer === '') {
       setErrors({ ...errors, answer: 'Cannot add an empty answer' });
-      console.log(errors);
+    } else if (questionDetails.answers.length >= 6) {
+      setErrors({ ...errors, answer: 'Cannot add more than 6 answers' });
     } else {
       setQuestionDetails({
         ...questionDetails,
@@ -69,6 +94,21 @@ export const AddQuestionModal = ({
       });
       setNewAnswer('');
     }
+  };
+
+  const handleDeleteAnswer = (answerID) => () => {
+    const filteredAnswer = questionDetails.answers.filter(
+      (answer) => answer.id !== answerID,
+    );
+
+    for (const i in filteredAnswer) {
+      filteredAnswer[i].id = parseInt(i);
+    }
+
+    setQuestionDetails({
+      ...questionDetails,
+      answers: filteredAnswer,
+    });
   };
 
   return (
@@ -128,32 +168,83 @@ export const AddQuestionModal = ({
                 errorMessage={errors.points}
               />
               <br />
-              <FormLabel component="legend">Add answers</FormLabel>
+              <FormLabel component="legend">Attach a video</FormLabel>
+              <br />
+              <DefaultInput
+                type="videoURL"
+                handleFormChange={handleFormChange}
+              />
+              <br />
+              <FormLabel component="legend">
+                Add answer & select correct Answer/s
+              </FormLabel>
               <List>
                 {questionDetails.answers.map((answer, index) => {
+                  let selectCorrectAnswer;
+
+                  if (questionDetails.type === 'single') {
+                    selectCorrectAnswer = (
+                      <Radio
+                        edge="start"
+                        checked={correctAnswerRadio === answer.id}
+                        onChange={handleSelectCorrectAnswer}
+                        value={answer.id}
+                        name="correctAnswerRadioButton"
+                        inputProps={{
+                          'aria-label': 'correctAnswer' + answer.answer,
+                        }}
+                      />
+                    );
+                  } else if (questionDetails.type === 'multiple') {
+                    selectCorrectAnswer = (
+                      <Checkbox
+                        edge="start"
+                        checked={checked.indexOf(answer.id) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{
+                          'aria-labelledby': 'correctAnswer' + answer.answer,
+                        }}
+                      />
+                    );
+                  }
+
                   return (
-                    <ListItem key={answer.id}>
-                      Answer {answer.id + 1}: {answer.answer}
+                    <ListItem
+                      key={answer.id}
+                      onClick={handleToggleCorrectAnswers(answer.id)}>
+                      <ListItemIcon>{selectCorrectAnswer}</ListItemIcon>
+                      <ListItemText
+                        id={answer.id}
+                        primary={`Answer ${answer.id + 1}: ${answer.answer}`}
+                      />
+                      <ListItemSecondaryAction>
+                        <IconButton
+                          edge="end"
+                          aria-label="delete"
+                          onClick={handleDeleteAnswer(answer.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
                     </ListItem>
                   );
                 })}
                 <ListItem>
-                  <Grid>
-                    <TextField
-                      type="answer"
-                      onChange={handleAnswersFormChange}
-                      error={errors.answer !== ''}
-                      helperText={errors.answer}
-                      value={newAnswer}
-                    />
-                    <Fab
-                      color="primary"
+                  <TextField
+                    type="answer"
+                    onChange={handleAnswersFormChange}
+                    error={errors.answer !== ''}
+                    helperText={errors.answer}
+                    value={newAnswer}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
                       aria-label="add"
-                      size="small"
                       onClick={handleAddAnswer}>
                       <AddIcon />
-                    </Fab>
-                  </Grid>
+                    </IconButton>
+                  </ListItemSecondaryAction>
                 </ListItem>
               </List>
             </FormControl>

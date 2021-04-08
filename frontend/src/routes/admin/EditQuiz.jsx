@@ -52,7 +52,7 @@ export const EditQuizPage = () => {
     answers: [],
     correctAnswers: [],
     imgSrc: null,
-    vidSrc: null,
+    videoURL: null,
   };
 
   const defaultErrors = {
@@ -179,6 +179,13 @@ export const EditQuizPage = () => {
       errorList.points = 'Points must be a whole number';
     } else if (points <= 0) {
       errorList.points = 'Points has to be greater than 0';
+    }
+
+    if (
+      questionDetails.answers.length < 2 ||
+      questionDetails.answers.length > 6
+    ) {
+      errorList.answer = 'Have have between 2 and 6 answers';
     }
 
     if (!isObjectValueEmpty(errorList)) {
