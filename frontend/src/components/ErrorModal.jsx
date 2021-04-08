@@ -46,3 +46,5 @@ export const ErrorModal = ({ errorMessage, modalState, setModalState }) => {
     </>
   );
 };
+
+export default ErrorModal;
