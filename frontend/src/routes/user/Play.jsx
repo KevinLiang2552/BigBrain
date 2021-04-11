@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/play.module.css';
 import API from '../../api/api.js';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { ErrorModal } from '../../components/ErrorModal.jsx';
 import { Box, Button, Container } from '@material-ui/core';
@@ -15,6 +15,7 @@ export const PlayPage = ({ setPlayerToken }) => {
 
   const api = new API('http://localhost:5005');
   const { id } = useParams();
+  const history = useHistory();
 
   // The required details for a game (session ID and player's name).
   const [gameDetails, setGameDetails] = useState({
@@ -37,6 +38,13 @@ export const PlayPage = ({ setPlayerToken }) => {
   };
 
   const [modalState, setModalState] = useState(defaultErrorModalState);
+
+  // Set game id value to id parameters on load
+  useEffect(() => {
+    if (id !== undefined) {
+      setGameDetails({ ...gameDetails, gameID: id });
+    }
+  }, []);
 
   const handleFormChange = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
@@ -84,8 +92,9 @@ export const PlayPage = ({ setPlayerToken }) => {
           errorMessage: joinResult.data.error,
         });
       } else {
-        setPlayerToken(joinResult.data.token);
+        setPlayerToken(joinResult.data.playerId);
         console.log(joinResult);
+        history.push(`${gameDetails.gameID}/lobby`);
       }
     }
   };
@@ -110,7 +119,7 @@ export const PlayPage = ({ setPlayerToken }) => {
                 defaultValue={id !== undefined ? id : ''}
               />
             </Box>
-            <Box mt={2}>
+            <Box mt={2} mb={2}>
               <DefaultInput
                 type="name"
                 handleFormChange={handleFormChange}
