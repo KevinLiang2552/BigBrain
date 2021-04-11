@@ -77,6 +77,7 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
   const handleCopyButton = () => {
     const linkBox = document.getElementById('linkBox');
     navigator.clipboard.writeText(linkBox.innerText);
+    console.log(sessionStatus);
   };
 
   return (
