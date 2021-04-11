@@ -6,7 +6,7 @@ export const testErrorModal = () => {
   describe('Error Modal', () => {
     const noop = () => {};
 
-    it('use custom error message', () => {
+    it('uses custom error message', () => {
       const errorMessage = "IT DOESN'T WORK AHHH";
       const errorModal = shallow(
         <ErrorModal
@@ -15,7 +15,27 @@ export const testErrorModal = () => {
           setModalState={noop}
         />,
       );
+      expect(errorModal.text().includes(errorMessage)).toBe(true);
       expect(errorModal.text()).toBe('Error' + errorMessage + 'Close');
+    });
+
+    // it('has correct modal state', () => {
+    //   const errorModal = shallow(
+    //     <ErrorModal errorMessage="" modalState={true} setModalState={noop} />,
+    //   );
+    //   expect(errorModal).to.
+    //   expect(errorModal).to.have.property('onClose', true);
+    // });
+
+    // Snapshot
+    it('Error modal renders correctly', () => {
+      const errorModal = shallow(
+        <ErrorModal
+          errorMessage=""
+          modalState={true}
+          setModalState={noop}></ErrorModal>,
+      );
+      expect(errorModal).toMatchSnapshot();
     });
   });
 };

@@ -9,5 +9,7 @@
 // });
 
 import testErrorModal from './tests/components/testErrorModal.js';
+import testPasswordInput from './tests/components/testPasswordInput';
 
 testErrorModal();
+testPasswordInput();
