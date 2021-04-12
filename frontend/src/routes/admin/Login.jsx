@@ -5,10 +5,8 @@ import { Link, useHistory } from 'react-router-dom';
 import { Box, Button, Container } from '@material-ui/core';
 import API from '../../api/api.js';
 import { DefaultInput, PasswordInput } from '../../components/FormInputs.jsx';
-import {
-  checkEmailValid,
-  isObjectValueEmpty,
-} from '../../helpers/authHelpers.js';
+import { checkEmailValid } from '../../helpers/authHelpers.js';
+import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 
 export const LoginPage = ({ setAuthToken }) => {
   LoginPage.propTypes = {

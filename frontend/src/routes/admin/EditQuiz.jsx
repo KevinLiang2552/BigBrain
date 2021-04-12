@@ -18,6 +18,8 @@ import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
 
+import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
+
 export const EditQuizPage = () => {
   const api = new API('http://localhost:5005');
 
@@ -43,6 +45,8 @@ export const EditQuizPage = () => {
   const [quiz, setQuiz] = useState(emptyDetails);
   const [quizImage, setQuizImage] = useState(placeholderImage);
   const [imageButtonText, setImageButtonText] = useState('Upload Image');
+  const [questionList, setQuestionList] = useState([]);
+  const [modalState, setModalState] = useState(false);
 
   useEffect(async () => {
     setQuizDetails(id);
@@ -55,6 +59,10 @@ export const EditQuizPage = () => {
     }
   }, [quiz]);
 
+  const openModal = () => {
+    setModalState(true);
+  };
+
   // Get quiz details and set them
   const setQuizDetails = async (quizId) => {
     const quizDetailsRes = await api.authorisedRequest(
@@ -63,6 +71,8 @@ export const EditQuizPage = () => {
     );
     if (quizDetailsRes.status === 200) {
       setQuiz(quizDetailsRes.data);
+      setQuestionList(quizDetailsRes.data.questions);
+      console.log(quizDetailsRes.data.questions);
     } else {
       console.log(quizDetailsRes.data.error);
     }
@@ -110,7 +120,21 @@ export const EditQuizPage = () => {
     const imageUpload = document.getElementById('imageUpload');
     reader.readAsDataURL(imageUpload.files[0]);
   };
-
+  /*
+  const deleteQuestion = async (id) => {
+    const deleteQuestionRes = await api.authorisedRequest(
+      'PUT',
+      `admin/quiz/${id}`,
+      { questions: questionList },
+    );
+    if (deleteQuestionRes.status === 200) {
+      console.log('Successful delete of ' + id);
+      setQuizDetails(id);
+    } else {
+      console.log(deleteQuestionRes.data.error);
+    }
+  };
+  */
   return (
     <Container>
       {/* Details */}
@@ -157,12 +181,32 @@ export const EditQuizPage = () => {
           <Box mr={1}>
             <StyledButton
               className={styles.addQuestion}
-              startIcon={<AddCircleIcon />}>
+              startIcon={<AddCircleIcon />}
+              onClick={openModal}>
               Add Question
             </StyledButton>
           </Box>
         </Grid>
+        <Grid item xs={12}>
+          <Grid container justify="flex-start" alignItems="flex-start">
+            {questionList.map((question, index) => {
+              return (
+                <>
+                  <div> PLACE QUESTION HERE </div>
+                  <br />
+                </>
+              );
+            })}
+          </Grid>
+        </Grid>
       </Grid>
+      <AddQuestionModal
+        quizID={id}
+        questionList={questionList}
+        modalState={modalState}
+        setModalState={setModalState}
+        setQuizDetails={setQuizDetails}
+      />
     </Container>
   );
 };

@@ -45,7 +45,11 @@ function App() {
         <Header authToken={authenToken} setAuthToken={childSetAuthToken} />
         <Switch>
           <Route exact path="/">
-            <SplashPage></SplashPage>
+            {authenToken === '' ? (
+              <SplashPage></SplashPage>
+            ) : (
+              <Redirect to="/dashboard"></Redirect>
+            )}
           </Route>
           <Route path="/login">
             {authenToken === '' ? (
@@ -60,6 +64,9 @@ function App() {
             ) : (
               <Redirect to="/dashboard"></Redirect>
             )}
+          </Route>
+          <Route path="/dashboard/edit/:id/question">
+            <EditQuizPage />
           </Route>
           <Route path="/dashboard/edit/:id">
             <EditQuizPage />

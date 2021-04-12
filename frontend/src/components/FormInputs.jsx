@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { capitalizeFirstLetter } from '../helpers/authHelpers.js';
+import { capitalizeFirstLetter } from '../helpers/generalHelpers.js';
 import FeatherIcon from 'feather-icons-react';
 import EditIcon from '@material-ui/icons/Edit';
 import CheckIcon from '@material-ui/icons/Check';
