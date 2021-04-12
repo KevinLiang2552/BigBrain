@@ -17,8 +17,7 @@ import API from '../../api/api.js';
 import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
-import QuestionCard from '../../components/editQuiz/QuestionCard';
-import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
+
 import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
 
 export const EditQuizPage = () => {
@@ -43,35 +42,11 @@ export const EditQuizPage = () => {
     oldSessions: [],
   };
 
-  const defaultQuestionDetails = {
-    id: 0,
-    type: 'single',
-    question: '',
-    duration: 0,
-    points: 0,
-    answers: [],
-    correctAnswers: [],
-    imgSrc: null,
-    videoURL: null,
-  };
-
-  const defaultErrors = {
-    question: '',
-    duration: '',
-    points: '',
-    answer: '',
-    correctAnswers: '',
-  };
-
   const [quiz, setQuiz] = useState(emptyDetails);
   const [quizImage, setQuizImage] = useState(placeholderImage);
   const [imageButtonText, setImageButtonText] = useState('Upload Image');
-  const [questionDetails, setQuestionDetails] = useState(
-    defaultQuestionDetails,
-  );
   const [questionList, setQuestionList] = useState([]);
   const [modalState, setModalState] = useState(false);
-  const [errors, setErrors] = useState(defaultErrors);
 
   useEffect(async () => {
     setQuizDetails(id);
@@ -88,11 +63,6 @@ export const EditQuizPage = () => {
     setModalState(true);
   };
 
-  const closeModal = () => {
-    setQuestionDetails(defaultQuestionDetails);
-    setModalState(false);
-  };
-
   // Get quiz details and set them
   const setQuizDetails = async (quizId) => {
     const quizDetailsRes = await api.authorisedRequest(
@@ -102,6 +72,7 @@ export const EditQuizPage = () => {
     if (quizDetailsRes.status === 200) {
       setQuiz(quizDetailsRes.data);
       setQuestionList(quizDetailsRes.data.questions);
+      console.log(quizDetailsRes.data.questions);
     } else {
       console.log(quizDetailsRes.data.error);
     }
@@ -149,66 +120,7 @@ export const EditQuizPage = () => {
     const imageUpload = document.getElementById('imageUpload');
     reader.readAsDataURL(imageUpload.files[0]);
   };
-
-  const handleAddQuestion = async (id) => {
-    console.log('wah');
-    console.log(questionDetails);
-    setErrors(defaultErrors);
-
-    const errorList = defaultErrors;
-    if (questionDetails.question === '') {
-      errorList.question = 'Question must not be empty';
-    }
-
-    const duration = parseInt(questionDetails.duration);
-
-    if (questionDetails.duration === '') {
-      errorList.duration = 'Duration must not be empty';
-    } else if (isNaN(duration)) {
-      errorList.duration = 'Duration must be a number';
-    } else if (duration <= 0) {
-      errorList.duration = 'Duration has to be greater than 0';
-    }
-
-    const points = parseInt(questionDetails.points);
-
-    if (questionDetails.points === '') {
-      errorList.points = 'Points must not be empty';
-    } else if (isNaN(points)) {
-      console.log('wah2');
-      errorList.points = 'Points must be a whole number';
-    } else if (points <= 0) {
-      errorList.points = 'Points has to be greater than 0';
-    }
-
-    if (
-      questionDetails.answers.length < 2 ||
-      questionDetails.answers.length > 6
-    ) {
-      errorList.answer = 'Have have between 2 and 6 answers';
-    }
-
-    if (!isObjectValueEmpty(errorList)) {
-      setErrors(errorList);
-    } else {
-      setQuestionDetails(defaultQuestionDetails);
-      setModalState(false);
-    }
-    /*
-    const addQuestionRes = await api.authorisedRequest(
-      'PUT',
-      `admin/quiz/${id}`,
-      { questions: questionList },
-    );
-    if (addQuestionRes.status === 200) {
-      console.log('Successful delete of ' + id);
-      setQuizDetails(id);
-    } else {
-      console.log(addQuestionRes.data.error);
-    }
-    */
-  };
-
+  /*
   const deleteQuestion = async (id) => {
     const deleteQuestionRes = await api.authorisedRequest(
       'PUT',
@@ -222,7 +134,7 @@ export const EditQuizPage = () => {
       console.log(deleteQuestionRes.data.error);
     }
   };
-
+  */
   return (
     <Container>
       {/* Details */}
@@ -279,23 +191,21 @@ export const EditQuizPage = () => {
           <Grid container justify="flex-start" alignItems="flex-start">
             {questionList.map((question, index) => {
               return (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  deleteQuiz={deleteQuestion}></QuestionCard>
+                <>
+                  <div> PLACE QUESTION HERE </div>
+                  <br />
+                </>
               );
             })}
           </Grid>
         </Grid>
       </Grid>
       <AddQuestionModal
+        quizID={id}
+        questionList={questionList}
         modalState={modalState}
-        closeModal={closeModal}
-        handleAddQuestion={handleAddQuestion}
-        questionDetails={questionDetails}
-        setQuestionDetails={setQuestionDetails}
-        errors={errors}
-        setErrors={setErrors}
+        setModalState={setModalState}
+        setQuizDetails={setQuizDetails}
       />
     </Container>
   );

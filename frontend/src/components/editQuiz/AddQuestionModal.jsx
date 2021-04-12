@@ -20,32 +20,62 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import placeholderImage from '../../assets/placeholderImage.png';
 import { DefaultInput } from '../../components/FormInputs.jsx';
+import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
+import Image from 'material-ui-image';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
+import API from '../../api/api.js';
 
 export const AddQuestionModal = ({
+  quizID,
+  questionList,
   modalState,
-  closeModal,
-  handleAddQuestion,
-  questionDetails,
-  setQuestionDetails,
-  errors,
-  setErrors,
+  setModalState,
+  setQuizDetails,
 }) => {
   AddQuestionModal.propTypes = {
+    quizID: PropTypes.string,
+    questionList: PropTypes.array,
     modalState: PropTypes.bool,
-    closeModal: PropTypes.func,
-    handleAddQuestion: PropTypes.func,
-    questionDetails: PropTypes.object,
-    setQuestionDetails: PropTypes.func,
-    errors: PropTypes.object,
-    setErrors: PropTypes.func,
+    setModalState: PropTypes.func,
+    setQuizDetails: PropTypes.func,
+  };
+
+  const api = new API('http://localhost:5005');
+
+  const defaultQuestionDetails = {
+    id: 0,
+    type: 'single',
+    question: '',
+    duration: 0,
+    points: 0,
+    answers: [],
+    correctAnswers: [0],
+    imgSrc: null,
+    videoURL: null,
+  };
+
+  const defaultErrors = {
+    question: '',
+    duration: '',
+    points: '',
+    answer: '',
   };
 
   const [newAnswer, setNewAnswer] = useState('');
   const [correctAnswerRadio, setCorrectAnswerRadio] = useState(0);
   const [checked, setChecked] = useState([]);
+  const [questionDetails, setQuestionDetails] = useState(
+    defaultQuestionDetails,
+  );
+  const [errors, setErrors] = useState(defaultErrors);
+
+  const closeModal = () => {
+    setQuestionDetails(defaultQuestionDetails);
+    setModalState(false);
+  };
 
   const handleToggleCorrectAnswers = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -58,11 +88,15 @@ export const AddQuestionModal = ({
     }
 
     setChecked(newChecked);
+    setQuestionDetails({ ...questionDetails, correctAnswers: newChecked });
   };
 
   const handleSelectCorrectAnswer = (event) => {
-    console.log(event.target.value);
-    setCorrectAnswerRadio(event.target.value);
+    setCorrectAnswerRadio(parseInt(event.target.value));
+    setQuestionDetails({
+      ...questionDetails,
+      correctAnswers: [parseInt(event.target.value)],
+    });
   };
 
   const handleRadioChange = (event) => {
@@ -109,6 +143,83 @@ export const AddQuestionModal = ({
       ...questionDetails,
       answers: filteredAnswer,
     });
+  };
+
+  const reader = new FileReader();
+
+  const handleImageUpload = () => {
+    const imageUpload = document.getElementById('questionImageUpload');
+    reader.readAsDataURL(imageUpload.files[0]);
+  };
+
+  reader.addEventListener('load', () => {
+    setQuestionDetails({ ...questionDetails, imgSrc: reader.result });
+  });
+
+  const resetAddQuestion = () => {
+    setQuestionDetails({
+      ...defaultQuestionDetails,
+      id: parseInt(questionList.length + 1),
+    });
+    setChecked([]);
+    setCorrectAnswerRadio(0);
+  };
+
+  const handleAddQuestion = async () => {
+    setErrors(defaultErrors);
+
+    const errorList = defaultErrors;
+    if (questionDetails.question === '') {
+      errorList.question = 'Question must not be empty';
+    }
+
+    const duration = parseInt(questionDetails.duration);
+
+    if (questionDetails.duration === '') {
+      errorList.duration = 'Duration must not be empty';
+    } else if (isNaN(duration)) {
+      errorList.duration = 'Duration must be a number';
+    } else if (duration <= 0) {
+      errorList.duration = 'Duration has to be greater than 0';
+    }
+
+    const points = parseInt(questionDetails.points);
+
+    if (questionDetails.points === '') {
+      errorList.points = 'Points must not be empty';
+    } else if (isNaN(points)) {
+      errorList.points = 'Points must be a whole number';
+    } else if (points <= 0) {
+      errorList.points = 'Points has to be greater than 0';
+    }
+
+    if (
+      questionDetails.answers.length < 2 ||
+      questionDetails.answers.length > 6
+    ) {
+      errorList.answer = 'Have have between 2 and 6 answers';
+    }
+
+    if (questionDetails.correctAnswers.length === 0) {
+      errorList.answer = 'Must have at least one correct answer';
+    }
+
+    if (!isObjectValueEmpty(errorList)) {
+      setErrors(errorList);
+    } else {
+      const addQuestionRes = await api.authorisedRequest(
+        'PUT',
+        `admin/quiz/${quizID}`,
+        { questions: [...questionList, questionDetails] },
+      );
+      if (addQuestionRes.status === 200) {
+        setQuizDetails(quizID);
+        resetAddQuestion();
+        setModalState(false);
+      } else {
+        console.log(addQuestionRes.data.error);
+      }
+    }
   };
 
   return (
@@ -174,6 +285,25 @@ export const AddQuestionModal = ({
                 type="videoURL"
                 handleFormChange={handleFormChange}
               />
+              <br />
+              <Image
+                src={
+                  questionDetails.imgSrc === null
+                    ? placeholderImage
+                    : questionDetails.imgSrc
+                }
+                alt={'placeholder image'}
+              />
+              <Button variant="contained" component="label">
+                Upload picture
+                <input
+                  type="file"
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  id="questionImageUpload"
+                  hidden
+                />
+              </Button>
               <br />
               <FormLabel component="legend">
                 Add answer & select correct Answer/s
