@@ -28,6 +28,14 @@ import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import API from '../../api/api.js';
 
+/**
+ * @param {string} quizID ID of the quiz in which questions are added to
+ * @param {array[objects]} questionList List of existing questions found in the database.
+ * @param {boolean} modalState State of whether the modal is being shown or not
+ * @param {function} setModalState Sets the state of the modal
+ * @param {function} setQuizDetails Sets the details of the quiz again.
+ */
+
 export const AddQuestionModal = ({
   quizID,
   questionList,
@@ -45,6 +53,7 @@ export const AddQuestionModal = ({
 
   const api = new API('http://localhost:5005');
 
+  // The default details of each question
   const defaultQuestionDetails = {
     id: 0,
     type: 'single',
@@ -57,6 +66,7 @@ export const AddQuestionModal = ({
     videoURL: null,
   };
 
+  // Errors to be displayed.
   const defaultErrors = {
     question: '',
     duration: '',
@@ -72,11 +82,15 @@ export const AddQuestionModal = ({
   );
   const [errors, setErrors] = useState(defaultErrors);
 
+  // Function for closing the modal and resetting the form within
   const closeModal = () => {
     setQuestionDetails(defaultQuestionDetails);
+    setCorrectAnswerRadio(0);
+    setChecked([]);
     setModalState(false);
   };
 
+  // Function for selecting multiple correct answers
   const handleToggleCorrectAnswers = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -91,6 +105,7 @@ export const AddQuestionModal = ({
     setQuestionDetails({ ...questionDetails, correctAnswers: newChecked });
   };
 
+  // Function for selecting a singular correct answer
   const handleSelectCorrectAnswer = (event) => {
     setCorrectAnswerRadio(parseInt(event.target.value));
     setQuestionDetails({
@@ -99,20 +114,24 @@ export const AddQuestionModal = ({
     });
   };
 
-  const handleRadioChange = (event) => {
+  // Function for selecting the type of question
+  const handleQuestionTypeChange = (event) => {
     setQuestionDetails({ ...questionDetails, type: event.target.value });
   };
 
+  // Function for setting the details of a DefaultInput field
   const handleFormChange = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
     setQuestionDetails({ ...questionDetails, [type]: event.target.value });
   };
 
+  // Function for handling the new answers field.
   const handleAnswersFormChange = (event) => {
     setErrors({ ...errors, answer: '' });
     setNewAnswer(event.target.value);
   };
 
+  // Function for adding new answers to the question.
   const handleAddAnswer = () => {
     if (newAnswer === '') {
       setErrors({ ...errors, answer: 'Cannot add an empty answer' });
@@ -130,6 +149,7 @@ export const AddQuestionModal = ({
     }
   };
 
+  // Function for deleting answers from the question.
   const handleDeleteAnswer = (answerID) => () => {
     const filteredAnswer = questionDetails.answers.filter(
       (answer) => answer.id !== answerID,
@@ -145,6 +165,7 @@ export const AddQuestionModal = ({
     });
   };
 
+  // Functions for handling photo upload
   const reader = new FileReader();
 
   const handleImageUpload = () => {
@@ -156,18 +177,11 @@ export const AddQuestionModal = ({
     setQuestionDetails({ ...questionDetails, imgSrc: reader.result });
   });
 
-  const resetAddQuestion = () => {
-    setQuestionDetails({
-      ...defaultQuestionDetails,
-      id: parseInt(questionList.length + 1),
-    });
-    setChecked([]);
-    setCorrectAnswerRadio(0);
-  };
-
+  // Main Function for adding a question to the database
   const handleAddQuestion = async () => {
     setErrors(defaultErrors);
 
+    // Basic error checking
     const errorList = defaultErrors;
     if (questionDetails.question === '') {
       errorList.question = 'Question must not be empty';
@@ -204,6 +218,7 @@ export const AddQuestionModal = ({
       errorList.answer = 'Must have at least one correct answer';
     }
 
+    // Adding question
     if (!isObjectValueEmpty(errorList)) {
       setErrors(errorList);
     } else {
@@ -214,7 +229,12 @@ export const AddQuestionModal = ({
       );
       if (addQuestionRes.status === 200) {
         setQuizDetails(quizID);
-        resetAddQuestion();
+        setQuestionDetails({
+          ...defaultQuestionDetails,
+          id: parseInt(questionList.length + 1),
+        });
+        setChecked([]);
+        setCorrectAnswerRadio(0);
         setModalState(false);
       } else {
         console.log(addQuestionRes.data.error);
@@ -237,7 +257,7 @@ export const AddQuestionModal = ({
                 aria-label="Question Type"
                 name="questionType"
                 value={questionDetails.type}
-                onChange={handleRadioChange}>
+                onChange={handleQuestionTypeChange}>
                 <FormControlLabel
                   value="single"
                   control={<Radio />}
@@ -261,22 +281,26 @@ export const AddQuestionModal = ({
               <br />
               <FormLabel component="legend">Duration in seconds</FormLabel>
               <br />
-              <DefaultInput
-                type="duration"
-                handleFormChange={handleFormChange}
+              <TextField
+                label="Duration"
+                type="number"
+                onChange={handleFormChange('duration')}
                 error={errors.duration !== ''}
-                errorMessage={errors.duration}
+                helperText={errors.duration}
+                variant="outlined"
               />
               <br />
               <FormLabel component="legend">
                 Number of points for the question
               </FormLabel>
               <br />
-              <DefaultInput
-                type="points"
-                handleFormChange={handleFormChange}
+              <TextField
+                label="Points"
+                type="number"
+                onChange={handleFormChange('points')}
                 error={errors.points !== ''}
-                errorMessage={errors.points}
+                helperText={errors.points}
+                variant="outlined"
               />
               <br />
               <FormLabel component="legend">Attach a video</FormLabel>
