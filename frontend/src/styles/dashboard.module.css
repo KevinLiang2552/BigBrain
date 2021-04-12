@@ -1,3 +1,21 @@
+/*  Modal css */
+
+.modalLinkWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.linkBox {
+  border-top: solid 2px #cccccc;
+  border-left: solid 2px #cccccc;
+  border-bottom: solid 2px #cccccc;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  padding: 5px 10px;
+  color: var(--spectrum-color-4);
+}
+
 .dashboardWrapper {
   margin-top: 16px;
 }

@@ -24,12 +24,14 @@ export const DefaultInput = ({
   handleFormChange,
   error = false,
   errorMessage,
+  defaultValue = '',
 }) => {
   DefaultInput.propTypes = {
     type: PropTypes.string,
     handleFormChange: PropTypes.func,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
+    defaultValue: PropTypes.string,
   };
 
   return (
@@ -37,6 +39,7 @@ export const DefaultInput = ({
       id={'input' + capitalizeFirstLetter(type)}
       className={styles.textfield}
       label={capitalizeFirstLetter(type)}
+      defaultValue={defaultValue}
       error={error}
       helperText={errorMessage}
       onChange={handleFormChange(type)}

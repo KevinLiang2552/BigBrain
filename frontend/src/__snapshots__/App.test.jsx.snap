@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error Modal Error modal renders correctly 1`] = `ShallowWrapper {}`;
+
+exports[`password input Password Input renders correctly 1`] = `ShallowWrapper {}`;

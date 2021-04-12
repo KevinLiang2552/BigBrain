@@ -3,6 +3,7 @@ import { SplashPage } from './routes/Splash.jsx';
 import { LoginPage } from './routes/admin/Login.jsx';
 import { RegisterPage } from './routes/admin/Register.jsx';
 import { PlayPage } from './routes/user/Play.jsx';
+import { LobbyPage } from './routes/user/Lobby.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
@@ -72,6 +73,12 @@ function App() {
           </Route>
           <Route path="/dashboard">
             <DashboardPage></DashboardPage>
+          </Route>
+          <Route path="/play/:id/lobby">
+            <LobbyPage />
+          </Route>
+          <Route path="/play/:id">
+            <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
           </Route>
           <Route path="/play">
             <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>

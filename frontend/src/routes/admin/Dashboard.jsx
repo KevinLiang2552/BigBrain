@@ -11,7 +11,9 @@ import {
 import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
+import { emptyQuizDetails } from '../../helpers/emptyTypes.js';
 import API from '../../api/api.js';
+import { QuizModal } from '../../components/dashboard/QuizModal';
 
 export const DashboardPage = () => {
   const api = new API('http://localhost:5005');
@@ -103,6 +105,17 @@ export const DashboardPage = () => {
 
   //  +++++++++++++++++++++++++++++++++++++++++++  QUIZ CARD HANDLING
 
+  const [modalState, setModalState] = useState(false);
+  const [modalQuiz, setModalQuiz] = useState(emptyQuizDetails);
+
+  const changeModalState = () => {
+    setModalState(!modalState);
+  };
+
+  const childSetModalQuiz = (quiz) => {
+    setModalQuiz(quiz);
+  };
+
   const deleteQuiz = async (id) => {
     const deleteQuizRes = await api.authorisedRequest(
       'DELETE',
@@ -118,6 +131,11 @@ export const DashboardPage = () => {
 
   return (
     <Container>
+      <QuizModal
+        modalState={modalState}
+        quiz={modalQuiz}
+        changeModalState={changeModalState}
+      />
       <Grid container className={styles.dashboardWrapper}>
         <Grid item xs={12}>
           <Toolbar className={styles.dashboardHeader}>
@@ -168,7 +186,9 @@ export const DashboardPage = () => {
               return (
                 <QuizCard
                   key={quiz.id}
-                  quiz={quiz}
+                  quizData={quiz}
+                  setModalQuiz={childSetModalQuiz}
+                  changeModalState={changeModalState}
                   deleteQuiz={deleteQuiz}></QuizCard>
               );
             })}
