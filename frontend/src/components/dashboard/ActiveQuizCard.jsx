@@ -9,13 +9,15 @@ import {
   Box,
   Button,
   Card,
-  CardContent,
+  Grid,
+  IconButton,
   List,
   Typography,
 } from '@material-ui/core';
 import StopIcon from '@material-ui/icons/Stop';
 import LinkIcon from '@material-ui/icons/Link';
 import PersonIcon from '@material-ui/icons/Person';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 /**
  *
@@ -85,7 +87,6 @@ export const ActiveQuizCard = ({
     const quizRes = await api.authorisedRequest('GET', `admin/quiz/${quiz.id}`);
     if (quizRes.status === 200) {
       quizRes.data.id = quiz.id;
-      setModalQuiz(quizRes.data);
       setQuiz(quizRes.data);
       updateDashboardQuizzes();
     }
@@ -104,6 +105,11 @@ export const ActiveQuizCard = ({
     } else {
       console.log(stopQuizRes.data.error);
     }
+  };
+
+  const handleLink = () => {
+    setModalQuiz(quiz);
+    changeModalState();
   };
 
   // Get text value for the position the quiz is currently in
@@ -145,63 +151,80 @@ export const ActiveQuizCard = ({
   const PlayerList = withStyles({
     root: {
       overflowY: 'scroll',
+      overflowX: 'hidden',
       width: '300px',
       height: '100px',
     },
   })(List);
 
   return (
-    <Card className={styles.activateQuizCard}>
-      <CardContent className={styles.activeQuizContent}>
-        <div className={styles.activeQuizDetails}>
-          <Box mb={2}>
-            <Typography variant="h5">{quiz.name}</Typography>
-          </Box>
-          <div className={styles.activeQuizButtons}>
-            <Box mr={1}>
-              <Button variant="contained" startIcon={<LinkIcon />}>
-                <Typography>Quiz Link</Typography>
+    <Grid item xs={12}>
+      <Card className={styles.activateQuizCard}>
+        <Grid container>
+          <Grid item xs={12} md={4} className={styles.activeQuizDetails}>
+            <Box mb={2}>
+              <Typography variant="h5">{quiz.name}</Typography>
+            </Box>
+            <div className={styles.activeQuizButtons}>
+              <Box mr={1}>
+                <Button
+                  variant="contained"
+                  startIcon={<LinkIcon />}
+                  onClick={handleLink}>
+                  <Typography>Quiz Link</Typography>
+                </Button>
+              </Box>
+              <Button
+                className={styles.activeQuizStop}
+                variant="contained"
+                startIcon={<StopIcon />}
+                onClick={handleStopQuiz}>
+                <Typography>Stop Quiz</Typography>
+              </Button>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={4} className={styles.activeQuizPlayers}>
+            <div className={styles.activePlayersHeading}>
+              <Typography variant="h6">Players</Typography>
+              <div className={styles.activePlayersDisplay}>
+                <PersonIcon />
+                <Typography>{sessionStatus.players.length}</Typography>
+              </div>
+              <IconButton onClick={getSessionStatus}>
+                <RefreshIcon />
+              </IconButton>
+            </div>
+            <PlayerList>
+              {sessionStatus.players.length === 0 ? (
+                <li>
+                  <Typography>No players</Typography>
+                </li>
+              ) : (
+                sessionStatus.players.map((player, index) => {
+                  return (
+                    <li key={index}>
+                      <Typography>{player}</Typography>
+                    </li>
+                  );
+                })
+              )}
+            </PlayerList>
+          </Grid>
+          <Grid item xs={12} md={4} className={styles.activeQuizStatus}>
+            <Typography variant="h6">Status</Typography>
+            <Typography>{getPositionLabel()}</Typography>
+            <Box mt={2}>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={handleAdvance}>
+                {getAdvanceButtonLabel()}
               </Button>
             </Box>
-            <Button
-              className={styles.activeQuizStop}
-              variant="contained"
-              startIcon={<StopIcon />}
-              onClick={handleStopQuiz}>
-              <Typography>Stop Quiz</Typography>
-            </Button>
-          </div>
-        </div>
-        <div className={styles.activeQuizPlayers}>
-          <Typography variant="h6">Players</Typography>
-          <PersonIcon />
-          <PlayerList>
-            {sessionStatus.players.length === 0 ? (
-              <li>
-                <Typography>No players</Typography>
-              </li>
-            ) : (
-              sessionStatus.players.map((player, index) => {
-                return (
-                  <li key={index}>
-                    <Typography>{player}</Typography>
-                  </li>
-                );
-              })
-            )}
-          </PlayerList>
-        </div>
-        <div className={styles.activeQuizStatus}>
-          <Typography variant="h6">Status</Typography>
-          <Typography>{getPositionLabel()}</Typography>
-          <Box mt={2}>
-            <Button color="primary" variant="contained" onClick={handleAdvance}>
-              {getAdvanceButtonLabel()}
-            </Button>
-          </Box>
-        </div>
-      </CardContent>
-    </Card>
+          </Grid>
+        </Grid>
+      </Card>
+    </Grid>
   );
 };
 

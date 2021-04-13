@@ -181,28 +181,32 @@ export const DashboardPage = () => {
             {/* <div> Extension add sort quiz here</div> */}
           </Toolbar>
         </Grid>
+
+        {/* Active Quizzes */}
         <Grid item xs={12}>
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="active quizzes">
-              <Typography>Active Quizzes</Typography>
+              <Typography variant="h5">Active Quizzes</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              {quizzes.map((quiz, index) => {
-                if (quiz.active !== null) {
-                  return (
-                    <ActiveQuizCard
-                      key={quiz.id}
-                      quizData={quiz}
-                      updateDashboardQuizzes={updateDashboardQuizzes}
-                      setModalQuiz={childSetModalQuiz}
-                      changeModalState={changeModalState}></ActiveQuizCard>
-                  );
-                } else {
-                  return <></>;
-                }
-              })}
+              <Grid container>
+                {quizzes.map((quiz, index) => {
+                  if (quiz.active !== null) {
+                    return (
+                      <ActiveQuizCard
+                        key={quiz.id}
+                        quizData={quiz}
+                        updateDashboardQuizzes={updateDashboardQuizzes}
+                        setModalQuiz={childSetModalQuiz}
+                        changeModalState={changeModalState}></ActiveQuizCard>
+                    );
+                  } else {
+                    return <></>;
+                  }
+                })}
+              </Grid>
             </AccordionDetails>
           </Accordion>
         </Grid>
@@ -210,8 +214,8 @@ export const DashboardPage = () => {
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls="active quizzes">
-              <Typography>Your Quizzes</Typography>
+              aria-controls="My quizzes">
+              <Typography variant="h5">My Quizzes</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Grid
