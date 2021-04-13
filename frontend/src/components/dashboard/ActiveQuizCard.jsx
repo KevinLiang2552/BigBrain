@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import StopIcon from '@material-ui/icons/Stop';
 import LinkIcon from '@material-ui/icons/Link';
+import PersonIcon from '@material-ui/icons/Person';
 
 /**
  *
@@ -144,15 +145,15 @@ export const ActiveQuizCard = ({
   const PlayerList = withStyles({
     root: {
       overflowY: 'scroll',
-      width: '400px',
-      maxHeight: '100px',
+      width: '300px',
+      height: '100px',
     },
   })(List);
 
   return (
     <Card className={styles.activateQuizCard}>
       <CardContent className={styles.activeQuizContent}>
-        <div className={styles.activeQuizCol}>
+        <div className={styles.activeQuizDetails}>
           <Box mb={2}>
             <Typography variant="h5">{quiz.name}</Typography>
           </Box>
@@ -171,35 +172,33 @@ export const ActiveQuizCard = ({
             </Button>
           </div>
         </div>
-        <div>
-          <Typography>Players</Typography>
-          <PlayerList className={styles.activeQuizPlayers}>
-            {sessionStatus.players.map((player, index) => {
-              console.log(player);
-              return (
-                <>
+        <div className={styles.activeQuizPlayers}>
+          <Typography variant="h6">Players</Typography>
+          <PersonIcon />
+          <PlayerList>
+            {sessionStatus.players.length === 0 ? (
+              <li>
+                <Typography>No players</Typography>
+              </li>
+            ) : (
+              sessionStatus.players.map((player, index) => {
+                return (
                   <li key={index}>
                     <Typography>{player}</Typography>
                   </li>
-                  <li key={index}>
-                    <Typography>{player}</Typography>
-                  </li>
-                  <li key={index}>
-                    <Typography>{player}</Typography>
-                  </li>
-                  <li key={index}>
-                    <Typography>{player}</Typography>
-                  </li>
-                </>
-              );
-            })}
+                );
+              })
+            )}
           </PlayerList>
         </div>
-        <div>
+        <div className={styles.activeQuizStatus}>
+          <Typography variant="h6">Status</Typography>
           <Typography>{getPositionLabel()}</Typography>
-          <Button color="primary" variant="contained" onClick={handleAdvance}>
-            {getAdvanceButtonLabel()}
-          </Button>
+          <Box mt={2}>
+            <Button color="primary" variant="contained" onClick={handleAdvance}>
+              {getAdvanceButtonLabel()}
+            </Button>
+          </Box>
         </div>
       </CardContent>
     </Card>
