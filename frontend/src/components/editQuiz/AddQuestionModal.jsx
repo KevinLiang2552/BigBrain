@@ -55,7 +55,7 @@ export const AddQuestionModal = ({
 
   // The default details of each question
   const defaultQuestionDetails = {
-    id: 0,
+    id: questionList.length,
     type: 'single',
     question: '',
     duration: 0,

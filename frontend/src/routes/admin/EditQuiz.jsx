@@ -17,7 +17,7 @@ import API from '../../api/api.js';
 import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
-
+import QuestionCard from '../../components/editQuiz/QuestionCard';
 import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
 
 export const EditQuizPage = () => {
@@ -148,7 +148,7 @@ export const EditQuizPage = () => {
             alt="Quiz Image"
             className={styles.editQuizImage}>
             <div className={styles.uploadButtonWrapper}>
-              <Box mt={1} mr={1}>
+              <Box mt={1} mr={1} xs={1}>
                 <input
                   accept="image/*"
                   onChange={handleImageUpload}
@@ -188,13 +188,12 @@ export const EditQuizPage = () => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Grid container justify="flex-start" alignItems="flex-start">
+          <Grid container spacing={2}>
             {questionList.map((question, index) => {
               return (
-                <>
-                  <div> PLACE QUESTION HERE </div>
-                  <br />
-                </>
+                <Grid key={index} item md={12} xs={12}>
+                  <QuestionCard question={question} />
+                </Grid>
               );
             })}
           </Grid>
