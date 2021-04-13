@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   Container,
   Grid,
@@ -10,6 +13,7 @@ import {
 } from '@material-ui/core';
 import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
 import { emptyQuizDetails } from '../../helpers/emptyTypes.js';
 import API from '../../api/api.js';
@@ -21,11 +25,11 @@ export const DashboardPage = () => {
   // Hold quizzes from admin/quiz
   const [quizzes, setQuizzes] = useState([]);
   useEffect(() => {
-    getAdminQuizzes();
+    updateDashboardQuizzes();
   }, []);
 
   // Get current user quizzes
-  const getAdminQuizzes = async () => {
+  const updateDashboardQuizzes = async () => {
     const adminQuizRes = await api.authorisedRequest('GET', 'admin/quiz');
 
     if (adminQuizRes.status !== 200) {
@@ -96,7 +100,7 @@ export const DashboardPage = () => {
         { name: createName },
       );
       if (createQuizRes.status === 200) {
-        getAdminQuizzes();
+        updateDashboardQuizzes();
       } else {
         setCreateNameError(createQuizRes.data.error);
       }
@@ -123,7 +127,7 @@ export const DashboardPage = () => {
     );
     if (deleteQuizRes.status === 200) {
       console.log('Successful delete of ' + id);
-      getAdminQuizzes();
+      updateDashboardQuizzes();
     } else {
       console.log(deleteQuizRes.data.error);
     }
@@ -177,22 +181,58 @@ export const DashboardPage = () => {
           </Toolbar>
         </Grid>
         <Grid item xs={12}>
-          <Grid
-            container
-            justify="flex-start"
-            alignItems="flex-start"
-            className={styles.quizsWrapper}>
-            {quizzes.map((quiz, index) => {
-              return (
-                <QuizCard
-                  key={quiz.id}
-                  quizData={quiz}
-                  setModalQuiz={childSetModalQuiz}
-                  changeModalState={changeModalState}
-                  deleteQuiz={deleteQuiz}></QuizCard>
-              );
-            })}
-          </Grid>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="active quizzes">
+              <Typography>Active Quizzes</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              {quizzes.map((quiz, index) => {
+                if (quiz.active !== null) {
+                  return (
+                    <QuizCard
+                      key={quiz.id}
+                      quizData={quiz}
+                      updateDashboardQuizzes={updateDashboardQuizzes}
+                      setModalQuiz={childSetModalQuiz}
+                      changeModalState={changeModalState}
+                      deleteQuiz={deleteQuiz}></QuizCard>
+                  );
+                } else {
+                  return <div></div>;
+                }
+              })}
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+        <Grid item xs={12}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="active quizzes">
+              <Typography>Your Quizzes</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid
+                container
+                justify="flex-start"
+                alignItems="flex-start"
+                className={styles.quizsWrapper}>
+                {quizzes.map((quiz, index) => {
+                  return (
+                    <QuizCard
+                      key={quiz.id}
+                      quizData={quiz}
+                      updateDashboardQuizzes={updateDashboardQuizzes}
+                      setModalQuiz={childSetModalQuiz}
+                      changeModalState={changeModalState}
+                      deleteQuiz={deleteQuiz}></QuizCard>
+                  );
+                })}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       </Grid>
     </Container>

@@ -62,15 +62,15 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
 
   const handleAdvance = async () => {
     // WIP WIP WIP
-    // const result = await api.authorisedRequest(
-    //   'POST',
-    //   `admin/quiz/${quiz.id}/advance`,
-    // );
-    // if (result.status === 200) {
-    //   getSessionStatus();
-    // } else {
-    //   console.log(result.data.error);
-    // }
+    const result = await api.authorisedRequest(
+      'POST',
+      `admin/quiz/${quiz.id}/advance`,
+    );
+    if (result.status === 200) {
+      getSessionStatus();
+    } else {
+      console.log(result.data.error);
+    }
   };
 
   // Copys link to clipboard

@@ -20,6 +20,7 @@ import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
+import LinkIcon from '@material-ui/icons/Link';
 
 /**
  *
@@ -31,11 +32,13 @@ import StopIcon from '@material-ui/icons/Stop';
 export const QuizCard = ({
   quizData,
   deleteQuiz,
+  updateDashboardQuizzes,
   setModalQuiz,
   changeModalState,
 }) => {
   QuizCard.propTypes = {
     quizData: PropTypes.object,
+    updateDashboardQuizzes: PropTypes.func,
     deleteQuiz: PropTypes.func,
     setModalQuiz: PropTypes.func,
     changeModalState: PropTypes.func,
@@ -46,12 +49,14 @@ export const QuizCard = ({
   const [quiz, setQuiz] = useState(quizData);
 
   // Get quiz data and updaate dashboard and quizcard quiz useState
+  // Active property changes if active has an id otherwise it is null
   const updateQuiz = async () => {
     const quizRes = await api.authorisedRequest('GET', `admin/quiz/${quiz.id}`);
     if (quizRes.status === 200) {
       quizRes.data.id = quiz.id;
       setModalQuiz(quizRes.data);
       setQuiz(quizRes.data);
+      updateDashboardQuizzes();
     }
   };
 
@@ -69,6 +74,8 @@ export const QuizCard = ({
       } else {
         console.log(startQuizRes.data.error);
       }
+    } else {
+      setModalQuiz(quiz);
     }
     changeModalState();
   };
@@ -124,14 +131,15 @@ export const QuizCard = ({
               <Typography>{quiz.questions.length + ' questions'}</Typography>
             </div>
           </div>
-
           <div className={styles.controlsWrapper}>
             <Button
               className={`${styles.controls} ${styles.controlsPlay}`}
-              startIcon={<PlayArrowIcon />}
+              startIcon={
+                quiz.active !== null ? <LinkIcon /> : <PlayArrowIcon />
+              }
               onClick={handleStartQuiz}>
               <Typography>
-                {quiz.active !== null ? 'Active' : 'Start'}
+                {quiz.active !== null ? 'Quiz Link' : 'Start'}
               </Typography>
             </Button>
             <Button
