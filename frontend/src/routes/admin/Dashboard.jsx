@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   Container,
   Grid,
@@ -10,7 +13,9 @@ import {
 } from '@material-ui/core';
 import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
+import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
 import { emptyQuizDetails } from '../../helpers/emptyTypes.js';
 import API from '../../api/api.js';
 import { QuizModal } from '../../components/dashboard/QuizModal';
@@ -21,19 +26,20 @@ export const DashboardPage = () => {
   // Hold quizzes from admin/quiz
   const [quizzes, setQuizzes] = useState([]);
   useEffect(() => {
-    getAdminQuizzes();
+    updateDashboardQuizzes();
   }, []);
 
   // Get current user quizzes
-  const getAdminQuizzes = async () => {
+  const updateDashboardQuizzes = async () => {
     const adminQuizRes = await api.authorisedRequest('GET', 'admin/quiz');
 
     if (adminQuizRes.status !== 200) {
       console.log(adminQuizRes.data.error);
       return;
     }
-    const quizzes = adminQuizRes.data.quizzes;
-    for (const quiz of quizzes) {
+
+    const newQuizzes = adminQuizRes.data.quizzes;
+    for (const quiz of newQuizzes) {
       const quizDetailsRes = await getQuizDetails(quiz.id);
 
       if (quizDetailsRes.status === null) {
@@ -43,7 +49,7 @@ export const DashboardPage = () => {
       quiz.questions = quizDetailsRes.questions;
     }
 
-    setQuizzes(quizzes);
+    setQuizzes(newQuizzes);
   };
 
   const getQuizDetails = async (quizId) => {
@@ -96,7 +102,7 @@ export const DashboardPage = () => {
         { name: createName },
       );
       if (createQuizRes.status === 200) {
-        getAdminQuizzes();
+        updateDashboardQuizzes();
       } else {
         setCreateNameError(createQuizRes.data.error);
       }
@@ -122,8 +128,7 @@ export const DashboardPage = () => {
       `admin/quiz/${id}`,
     );
     if (deleteQuizRes.status === 200) {
-      console.log('Successful delete of ' + id);
-      getAdminQuizzes();
+      updateDashboardQuizzes();
     } else {
       console.log(deleteQuizRes.data.error);
     }
@@ -176,23 +181,62 @@ export const DashboardPage = () => {
             {/* <div> Extension add sort quiz here</div> */}
           </Toolbar>
         </Grid>
+
+        {/* Active Quizzes */}
         <Grid item xs={12}>
-          <Grid
-            container
-            justify="flex-start"
-            alignItems="flex-start"
-            className={styles.quizsWrapper}>
-            {quizzes.map((quiz, index) => {
-              return (
-                <QuizCard
-                  key={quiz.id}
-                  quizData={quiz}
-                  setModalQuiz={childSetModalQuiz}
-                  changeModalState={changeModalState}
-                  deleteQuiz={deleteQuiz}></QuizCard>
-              );
-            })}
-          </Grid>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="active quizzes">
+              <Typography variant="h5">Active Quizzes</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container>
+                {quizzes.map((quiz, index) => {
+                  if (quiz.active !== null) {
+                    return (
+                      <ActiveQuizCard
+                        key={quiz.id}
+                        quizData={quiz}
+                        updateDashboardQuizzes={updateDashboardQuizzes}
+                        setModalQuiz={childSetModalQuiz}
+                        changeModalState={changeModalState}></ActiveQuizCard>
+                    );
+                  } else {
+                    return <></>;
+                  }
+                })}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        </Grid>
+        <Grid item xs={12}>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="My quizzes">
+              <Typography variant="h5">My Quizzes</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid
+                container
+                justify="flex-start"
+                alignItems="flex-start"
+                className={styles.quizsWrapper}>
+                {quizzes.map((quiz, index) => {
+                  return (
+                    <QuizCard
+                      key={quiz.id}
+                      quizData={quiz}
+                      updateDashboardQuizzes={updateDashboardQuizzes}
+                      setModalQuiz={childSetModalQuiz}
+                      changeModalState={changeModalState}
+                      deleteQuiz={deleteQuiz}></QuizCard>
+                  );
+                })}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       </Grid>
     </Container>
