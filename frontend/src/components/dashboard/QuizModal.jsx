@@ -11,6 +11,8 @@ import {
   DialogTitle,
   Typography,
 } from '@material-ui/core';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+
 /**
  *
  * @param {bool} modalState  State of modal true = visible, false = hidden
@@ -55,7 +57,9 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
             {`localhost:3000/play/${quiz.active}`}
           </Typography>
         </Link>
-        <CopyButton onClick={handleCopyButton}>Copy Link</CopyButton>
+        <CopyButton startIcon={<FileCopyIcon />} onClick={handleCopyButton}>
+          Copy Link
+        </CopyButton>
       </DialogContent>
     </Dialog>
   );
