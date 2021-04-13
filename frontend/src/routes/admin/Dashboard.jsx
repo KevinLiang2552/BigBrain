@@ -15,6 +15,7 @@ import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
+import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
 import { emptyQuizDetails } from '../../helpers/emptyTypes.js';
 import API from '../../api/api.js';
 import { QuizModal } from '../../components/dashboard/QuizModal';
@@ -36,8 +37,9 @@ export const DashboardPage = () => {
       console.log(adminQuizRes.data.error);
       return;
     }
-    const quizzes = adminQuizRes.data.quizzes;
-    for (const quiz of quizzes) {
+
+    const newQuizzes = adminQuizRes.data.quizzes;
+    for (const quiz of newQuizzes) {
       const quizDetailsRes = await getQuizDetails(quiz.id);
 
       if (quizDetailsRes.status === null) {
@@ -47,7 +49,7 @@ export const DashboardPage = () => {
       quiz.questions = quizDetailsRes.questions;
     }
 
-    setQuizzes(quizzes);
+    setQuizzes(newQuizzes);
   };
 
   const getQuizDetails = async (quizId) => {
@@ -126,7 +128,6 @@ export const DashboardPage = () => {
       `admin/quiz/${id}`,
     );
     if (deleteQuizRes.status === 200) {
-      console.log('Successful delete of ' + id);
       updateDashboardQuizzes();
     } else {
       console.log(deleteQuizRes.data.error);
@@ -191,16 +192,15 @@ export const DashboardPage = () => {
               {quizzes.map((quiz, index) => {
                 if (quiz.active !== null) {
                   return (
-                    <QuizCard
+                    <ActiveQuizCard
                       key={quiz.id}
                       quizData={quiz}
                       updateDashboardQuizzes={updateDashboardQuizzes}
                       setModalQuiz={childSetModalQuiz}
-                      changeModalState={changeModalState}
-                      deleteQuiz={deleteQuiz}></QuizCard>
+                      changeModalState={changeModalState}></ActiveQuizCard>
                   );
                 } else {
-                  return <div></div>;
+                  return <></>;
                 }
               })}
             </AccordionDetails>

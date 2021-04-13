@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
 import placeholderImage from '../../assets/placeholderImage.png';
@@ -47,6 +47,10 @@ export const QuizCard = ({
   const api = new API('http://localhost:5005');
 
   const [quiz, setQuiz] = useState(quizData);
+
+  useEffect(() => {
+    setQuiz(quizData);
+  }, [quizData]);
 
   // Get quiz data and updaate dashboard and quizcard quiz useState
   // Active property changes if active has an id otherwise it is null
@@ -107,7 +111,6 @@ export const QuizCard = ({
   return (
     <Grid item xs={12} md={4} className={styles.quizWrapper}>
       <Card className={styles.quizCard}>
-        <div className={styles.quizz}></div>
         <CardMedia className={styles.quizImage} image={quizCardImage}>
           <div className={styles.deleteWrapper}>
             <IconButton

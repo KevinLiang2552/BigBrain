@@ -145,3 +145,22 @@
 .controlsEdit:hover {
   color: var(--spectrum-color-4);
 }
+
+/* Active Quiz Card */
+.activateQuizCard {
+  width: 100%;
+}
+
+.activeQuizContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.activeQuizCol {
+  display: flex;
+  flex-direction: column;
+}
+.activeQuizButtons {
+  display: flex;
+}
