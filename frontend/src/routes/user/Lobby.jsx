@@ -15,7 +15,13 @@ export const LobbyPage = () => {
   const { id } = useParams();
   console.log(id);
 
+  // Status of lobby = true or false
   const [started, setStarted] = useState(false);
+
+  // interval value of status inteval, so we can clear the interval
+  const [statusInterval, setStatusInterval] = useState(-100);
+
+  // const [currentQuestion, setCurrentQuestion] = useState();
 
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
@@ -46,20 +52,29 @@ export const LobbyPage = () => {
     return () => clearInterval(funnyInterval);
   });
 
-  // get status of user
+  // When started value changes usually to true, get the first question
   useEffect(async () => {
-    const statusInterval = setInterval(function () {
-      if (started) {
-        clearInterval(statusInterval);
-      }
-      updateStatus();
-    }, 1000);
+    if (started) {
+      clearInterval(statusInterval);
+      const res = await api.authorisedRequest(
+        'GET',
+        `play/${getPlayerToken()}/question`,
+      );
+      console.log(res);
+    } else {
+      const interval = setInterval(function () {
+        updateStatus();
+      }, 1000);
+      setStatusInterval(interval);
+    }
+
+    // If the interval is not cleaned up (player left before lobby started) remove interval
     return () => {
       if (!started) {
         clearInterval(statusInterval);
       }
     };
-  }, []);
+  }, [started]);
 
   const updateStatus = async () => {
     const res = await api.nonAuthorisedRequest(
