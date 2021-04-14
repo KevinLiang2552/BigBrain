@@ -120,6 +120,7 @@ export const EditQuizPage = () => {
     reader.readAsDataURL(imageUpload.files[0]);
   };
 
+  // Function for deleting questions and resetting ids of questions.
   const handleDeleteQuestion = (questionID) => async () => {
     const filteredQuestion = questionList.filter(
       (question) => question.id !== questionID,

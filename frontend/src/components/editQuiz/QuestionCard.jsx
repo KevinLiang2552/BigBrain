@@ -32,6 +32,7 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
     deleteQuestion: PropTypes.func,
   };
 
+  // Display the image if it exists, if not currently displays a placeholder
   let image;
   if (question.imgSrc !== null) {
     image = <Image src={question.imgSrc} />;
@@ -39,6 +40,7 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
     image = <Image src={placeholderImage} />;
   }
 
+  // Provide a link to the video if it exists, else say that there is no link.
   let videoURL;
   if (question.videoURL !== null) {
     videoURL = (
@@ -63,9 +65,11 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={1}>
+            {/* Image found in the question */}
             <Grid item md={3} xs={12}>
               {image}
             </Grid>
+            {/* Details found in the question */}
             <Grid item md={5} xs={12}>
               <Typography variant="h4">Details:</Typography>
               <List>
@@ -78,6 +82,7 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
                 <ListItem key={3}>{videoURL}</ListItem>
               </List>
             </Grid>
+            {/* Answers found in the question & the correct answer/s */}
             <Grid item md={3} xs={12}>
               <Typography variant="h4">Answers:</Typography>
               <List>
