@@ -18,7 +18,7 @@ import {
   RadioGroup,
   TextField,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import placeholderImage from '../../assets/placeholderImage.png';
 import { DefaultInput } from '../../components/FormInputs.jsx';
@@ -81,6 +81,14 @@ export const AddQuestionModal = ({
     defaultQuestionDetails,
   );
   const [errors, setErrors] = useState(defaultErrors);
+
+  useEffect(async () => {
+    setQuizDetails(quizID);
+  }, []);
+
+  useEffect(async () => {
+    setQuestionDetails({ ...defaultQuestionDetails, id: questionList.length });
+  }, [questionList]);
 
   // Function for closing the modal and resetting the form within
   const closeModal = () => {

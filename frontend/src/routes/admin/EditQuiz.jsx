@@ -72,7 +72,6 @@ export const EditQuizPage = () => {
     if (quizDetailsRes.status === 200) {
       setQuiz(quizDetailsRes.data);
       setQuestionList(quizDetailsRes.data.questions);
-      console.log(quizDetailsRes.data.questions);
     } else {
       console.log(quizDetailsRes.data.error);
     }
@@ -116,25 +115,32 @@ export const EditQuizPage = () => {
     handleImageUpdate(reader.result);
   });
 
-  const handleImageUpload = () => {
+  const handleImageUpload = async () => {
     const imageUpload = document.getElementById('imageUpload');
     reader.readAsDataURL(imageUpload.files[0]);
   };
-  /*
-  const deleteQuestion = async (id) => {
-    const deleteQuestionRes = await api.authorisedRequest(
+
+  const handleDeleteQuestion = (questionID) => async () => {
+    const filteredQuestion = questionList.filter(
+      (question) => question.id !== questionID,
+    );
+
+    for (const i in filteredQuestion) {
+      filteredQuestion[i].id = parseInt(i);
+    }
+
+    const addQuestionRes = await api.authorisedRequest(
       'PUT',
       `admin/quiz/${id}`,
-      { questions: questionList },
+      { questions: filteredQuestion },
     );
-    if (deleteQuestionRes.status === 200) {
-      console.log('Successful delete of ' + id);
+    if (addQuestionRes.status === 200) {
       setQuizDetails(id);
     } else {
-      console.log(deleteQuestionRes.data.error);
+      console.log(addQuestionRes.data.error);
     }
   };
-  */
+
   return (
     <Container>
       {/* Details */}
@@ -192,7 +198,10 @@ export const EditQuizPage = () => {
             {questionList.map((question, index) => {
               return (
                 <Grid key={index} item md={12} xs={12}>
-                  <QuestionCard question={question} />
+                  <QuestionCard
+                    question={question}
+                    deleteQuestion={handleDeleteQuestion}
+                  />
                 </Grid>
               );
             })}

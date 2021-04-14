@@ -11,12 +11,12 @@
   font-size: 1.5em;
 }
 
-a:link {
+a.link:link {
   text-decoration: none;
   color: white;
 }
 
-a:visited {
+a.link:visited {
   text-decoration: none;
   color: white;
 }
