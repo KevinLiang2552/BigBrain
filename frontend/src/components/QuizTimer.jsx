@@ -34,9 +34,19 @@ export const QuizTimer = ({ duration }) => {
     };
   }, []);
 
+  // Circular progress is determined by a 100 to 1 scale. This adjusts the progress to move the whole circle even if it is above or below 100
+  const getRelativeTimerValue = () => {
+    const interval = 100 / duration;
+    return Math.floor(interval * timeLeft);
+  };
+
   return (
     <Box className={styles.quizTimerWrapper}>
-      <CircularProgress size={60} variant="determinate" value={timeLeft} />
+      <CircularProgress
+        size={60}
+        variant="determinate"
+        value={getRelativeTimerValue()}
+      />
       <Box className={styles.quizTimerTextWrapper}>
         <Typography className={styles.quizTimerText}>{timeLeft}</Typography>
       </Box>
