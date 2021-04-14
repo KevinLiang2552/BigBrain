@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+// import { useParams } from 'react-router';
 import API from '../../api/api.js';
 import styles from '../../styles/lobby.module.css';
 import { getPlayerToken } from '../../helpers/user.js';
+import { emptyQuestion } from '../../helpers/emptyTypes.js';
+import PlayQuestion from '../../components/PlayQuestion.jsx';
+
 import {
   Box,
   CircularProgress,
@@ -12,8 +15,7 @@ import {
 
 export const LobbyPage = () => {
   const api = new API('http://localhost:5005');
-  const { id } = useParams();
-  console.log(id);
+  // const { id } = useParams();
 
   // Status of lobby = true or false
   const [started, setStarted] = useState(false);
@@ -21,7 +23,7 @@ export const LobbyPage = () => {
   // interval value of status inteval, so we can clear the interval
   const [statusInterval, setStatusInterval] = useState(-100);
 
-  // const [currentQuestion, setCurrentQuestion] = useState();
+  const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
 
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
@@ -56,11 +58,8 @@ export const LobbyPage = () => {
   useEffect(async () => {
     if (started) {
       clearInterval(statusInterval);
-      const res = await api.authorisedRequest(
-        'GET',
-        `play/${getPlayerToken()}/question`,
-      );
-      console.log(res);
+
+      getQuestion();
     } else {
       const interval = setInterval(function () {
         updateStatus();
@@ -76,6 +75,7 @@ export const LobbyPage = () => {
     };
   }, [started]);
 
+  // Get player lobby status
   const updateStatus = async () => {
     const res = await api.nonAuthorisedRequest(
       'GET',
@@ -86,11 +86,26 @@ export const LobbyPage = () => {
     }
   };
 
+  // Get current question of quiz
+  const getQuestion = async () => {
+    const res = await api.authorisedRequest(
+      'GET',
+      `play/${getPlayerToken()}/question`,
+    );
+    if (res.status === 200) {
+      setCurrentQuestion(res.data.question);
+    } else {
+      console.log(res.data.error);
+    }
+  };
+
   return (
     <Container>
+      {/* If quiz has started play question */}
       {started ? (
-        <Typography>STARTED</Typography>
+        <PlayQuestion questionData={currentQuestion} />
       ) : (
+        // Else stuck in a lobby
         <div className={styles.loadingProgress}>
           <CircularProgress size={100} />
           <Box mt={2}>
