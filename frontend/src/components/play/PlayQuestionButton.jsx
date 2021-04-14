@@ -4,9 +4,10 @@ import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/play.module.css';
 
-export const PlayQuestionButton = ({ answer, id }) => {
+export const PlayQuestionButton = ({ answer, handleQuestionClick, id }) => {
   PlayQuestionButton.propTypes = {
     answer: PropTypes.string,
+    handleQuestionClick: PropTypes.func,
     id: PropTypes.number,
   };
 
@@ -48,7 +49,12 @@ export const PlayQuestionButton = ({ answer, id }) => {
 
   return (
     <Grid xs={12} md={6} item>
-      <QuestionButton variant="contained" className={styles.questionButton}>
+      <QuestionButton
+        variant="contained"
+        className={styles.questionButton}
+        onClick={function () {
+          handleQuestionClick(id);
+        }}>
         {answer}
       </QuestionButton>
     </Grid>
