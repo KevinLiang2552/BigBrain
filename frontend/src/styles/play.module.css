@@ -3,3 +3,21 @@
   flex-direction: column;
   align-items: center;
 }
+
+.questionGrid {
+  height: 70vh;
+}
+
+.questionDisplay {
+  text-align: center;
+}
+
+.questionButton {
+  font-size: 2em;
+}
+
+@media (max-width: 960px) {
+  .questionButton {
+    font-size: 1.5em;
+  }
+}

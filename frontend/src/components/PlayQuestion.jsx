@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
+import PlayQuestionButton from '../components/PlayQuestionButton.jsx';
+import styles from '../styles/play.module.css';
 
 /**
  *
@@ -22,16 +24,23 @@ export const PlayQuestion = ({ questionData }) => {
 
   return (
     <>
-      <Typography>{question.question}</Typography>
-
       <Grid container>
-        {question.answers.map((answer) => {
-          return (
-            <Grid xs={12} md={6} item key={answer.id}>
-              <Button>{answer.answer}</Button>
-            </Grid>
-          );
-        })}
+        <Grid xs={12} item>
+          <Box mt={3} mb={3} className={styles.questionDisplay}>
+            <Typography variant="h3">{question.question}</Typography>
+          </Box>
+        </Grid>
+        <Grid container spacing={1} className={styles.questionGrid}>
+          {question.answers.map((ans) => {
+            return (
+              <PlayQuestionButton
+                key={ans.id}
+                answer={ans.answer}
+                id={ans.id}
+              />
+            );
+          })}
+        </Grid>
       </Grid>
     </>
   );

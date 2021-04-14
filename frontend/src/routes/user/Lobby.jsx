@@ -28,8 +28,8 @@ export const LobbyPage = () => {
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
     '"0" == []',
-    'A rabbit and a tortoise crossed the road, only the rabbit survived',
-    'This time will be different',
+    'You are legally allowed to leave after 15 minutes',
+    '"This time will be different"',
     'Maybe you will win this time and not disappoint your family',
     'If you lose at least you can do something else',
   ];
