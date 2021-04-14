@@ -4,7 +4,7 @@ import API from '../../api/api.js';
 import styles from '../../styles/lobby.module.css';
 import { getPlayerToken } from '../../helpers/user.js';
 import { emptyQuestion } from '../../helpers/emptyTypes.js';
-import PlayQuestion from '../../components/PlayQuestion.jsx';
+import PlayQuestion from '../../components/play/PlayQuestion.jsx';
 
 import {
   Box,

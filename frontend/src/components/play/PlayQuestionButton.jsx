@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import styles from '../styles/play.module.css';
+import styles from '../../styles/play.module.css';
 
 export const PlayQuestionButton = ({ answer, id }) => {
   PlayQuestionButton.propTypes = {

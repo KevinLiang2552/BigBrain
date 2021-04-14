@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Grid, Typography } from '@material-ui/core';
-import PlayQuestionButton from '../components/PlayQuestionButton.jsx';
-import QuizTimer from '../components/QuizTimer.jsx';
-import styles from '../styles/play.module.css';
+import PlayQuestionButton from './PlayQuestionButton.jsx';
+import QuizTimer from './QuizTimer.jsx';
+import styles from '../../styles/play.module.css';
 
 /**
  *
