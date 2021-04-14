@@ -17,7 +17,7 @@ import API from '../../api/api.js';
 import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
-
+import QuestionCard from '../../components/editQuiz/QuestionCard';
 import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
 
 export const EditQuizPage = () => {
@@ -72,7 +72,6 @@ export const EditQuizPage = () => {
     if (quizDetailsRes.status === 200) {
       setQuiz(quizDetailsRes.data);
       setQuestionList(quizDetailsRes.data.questions);
-      console.log(quizDetailsRes.data.questions);
     } else {
       console.log(quizDetailsRes.data.error);
     }
@@ -116,25 +115,33 @@ export const EditQuizPage = () => {
     handleImageUpdate(reader.result);
   });
 
-  const handleImageUpload = () => {
+  const handleImageUpload = async () => {
     const imageUpload = document.getElementById('imageUpload');
     reader.readAsDataURL(imageUpload.files[0]);
   };
-  /*
-  const deleteQuestion = async (id) => {
-    const deleteQuestionRes = await api.authorisedRequest(
+
+  // Function for deleting questions and resetting ids of questions.
+  const handleDeleteQuestion = (questionID) => async () => {
+    const filteredQuestion = questionList.filter(
+      (question) => question.id !== questionID,
+    );
+
+    for (const i in filteredQuestion) {
+      filteredQuestion[i].id = parseInt(i);
+    }
+
+    const addQuestionRes = await api.authorisedRequest(
       'PUT',
       `admin/quiz/${id}`,
-      { questions: questionList },
+      { questions: filteredQuestion },
     );
-    if (deleteQuestionRes.status === 200) {
-      console.log('Successful delete of ' + id);
+    if (addQuestionRes.status === 200) {
       setQuizDetails(id);
     } else {
-      console.log(deleteQuestionRes.data.error);
+      console.log(addQuestionRes.data.error);
     }
   };
-  */
+
   return (
     <Container>
       {/* Details */}
@@ -148,7 +155,7 @@ export const EditQuizPage = () => {
             alt="Quiz Image"
             className={styles.editQuizImage}>
             <div className={styles.uploadButtonWrapper}>
-              <Box mt={1} mr={1}>
+              <Box mt={1} mr={1} xs={1}>
                 <input
                   accept="image/*"
                   onChange={handleImageUpload}
@@ -188,13 +195,15 @@ export const EditQuizPage = () => {
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Grid container justify="flex-start" alignItems="flex-start">
+          <Grid container spacing={2}>
             {questionList.map((question, index) => {
               return (
-                <>
-                  <div> PLACE QUESTION HERE </div>
-                  <br />
-                </>
+                <Grid key={index} item md={12} xs={12}>
+                  <QuestionCard
+                    question={question}
+                    deleteQuestion={handleDeleteQuestion}
+                  />
+                </Grid>
               );
             })}
           </Grid>

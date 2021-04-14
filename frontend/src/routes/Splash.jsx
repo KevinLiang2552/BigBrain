@@ -33,10 +33,14 @@ export const SplashPage = () => {
             <Paper>
               <div>Admin? Login or Register!</div>
               <Button variant="contained" color="primary">
-                <Link to="/login">Login</Link>
+                <Link to="/login" className={styles.link}>
+                  Login
+                </Link>
               </Button>
               <Button variant="contained" color="secondary">
-                <Link to="/register">Register</Link>
+                <Link to="/register" className={styles.link}>
+                  Register
+                </Link>
               </Button>
             </Paper>
           </Grid>
@@ -44,7 +48,9 @@ export const SplashPage = () => {
             <Paper>
               <div>Player? Find your game here!</div>
               <Button variant="contained" color="primary">
-                <Link to="/play">Search for a game</Link>
+                <Link to="/play" className={styles.link}>
+                  Search for a game
+                </Link>
               </Button>
             </Paper>
           </Grid>
