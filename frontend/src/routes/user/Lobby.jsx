@@ -48,19 +48,34 @@ export const LobbyPage = () => {
 
   // get status of user
   useEffect(async () => {
+    const statusInterval = setInterval(function () {
+      if (started) {
+        clearInterval(statusInterval);
+      }
+      updateStatus();
+    }, 1000);
+    return () => {
+      if (!started) {
+        clearInterval(statusInterval);
+      }
+    };
+  }, []);
+
+  const updateStatus = async () => {
     const res = await api.nonAuthorisedRequest(
       'GET',
       `play/${getPlayerToken()}/status`,
     );
-
     if (res.status === 200) {
-      setStarted(res.status.started);
+      setStarted(res.data.started);
     }
-  }, []);
+  };
 
   return (
     <Container>
-      {!started && (
+      {started ? (
+        <Typography>STARTED</Typography>
+      ) : (
         <div className={styles.loadingProgress}>
           <CircularProgress size={100} />
           <Box mt={2}>
