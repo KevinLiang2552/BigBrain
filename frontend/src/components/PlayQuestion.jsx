@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Grid, Typography } from '@material-ui/core';
 import PlayQuestionButton from '../components/PlayQuestionButton.jsx';
+import QuizTimer from '../components/QuizTimer.jsx';
 import styles from '../styles/play.module.css';
 
 /**
@@ -27,7 +28,9 @@ export const PlayQuestion = ({ questionData }) => {
       <Grid container>
         <Grid xs={12} item>
           <Box mt={3} mb={3} className={styles.questionDisplay}>
+            <Typography></Typography>
             <Typography variant="h3">{question.question}</Typography>
+            <QuizTimer duration={question.duration} />
           </Box>
         </Grid>
         <Grid container spacing={1} className={styles.questionGrid}>

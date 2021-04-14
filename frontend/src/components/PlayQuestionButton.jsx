@@ -42,6 +42,7 @@ export const PlayQuestionButton = ({ answer, id }) => {
       color: 'white',
       height: '100%',
       width: '100%',
+      fontSize: '2em',
     },
   })(Button);
 
