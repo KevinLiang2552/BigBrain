@@ -41,8 +41,6 @@ export const PlayQuestion = ({ questionData }) => {
     startTimer();
   }, [questionData]);
 
-  const answers = [];
-
   // Set time left depending on when the question started
   // 1 second lag delay leway for loading issues
   const getCurrentTimeLeft = () => {
@@ -60,14 +58,6 @@ export const PlayQuestion = ({ questionData }) => {
       setTimeLeft(questionData.duration - secondsSinceStart + lagDelay);
     } else {
       setTimeLeft(questionData.duration);
-    }
-  };
-
-  const handleQuestionClick = (id) => {
-    answers.push(id);
-    if (question.type === 'single') {
-      putAnswers(answers);
-      setTimeAnswered(timeLeft);
     }
   };
 
@@ -96,38 +86,80 @@ export const PlayQuestion = ({ questionData }) => {
     }
   }, [timeLeft]);
 
+  // Get the answer of the current question (only occurs when the timer runs out)
   const getAnswer = async () => {
     const res = await api.authorisedRequest(
       'GET',
       `play/${getPlayerToken()}/answer`,
     );
     if (res.status === 200) {
-      console.log({ quiz: res.data });
       setQuestionAnswers(res.data.answerIds);
     } else {
       console.log(res.data.error);
     }
   };
 
-  const putAnswers = async (ids) => {
+  // Given an array of ids of players answer, put answer for the current question
+  // Set time the player answered the question at. This is used to determine time points.
+  const putAnswers = async () => {
+    setTimeAnswered(timeLeft);
+
+    // TO DO: TIME POINTS
+
     const res = await api.authorisedRequest(
       'PUT',
       `play/${getPlayerToken()}/answer`,
-      { answerIds: ids },
+      { answerIds: playerAnswers },
     );
-    if (res.status === 200) {
-      setPlayerAnswer(ids);
-    } else {
+    if (res.status !== 200) {
       console.log(res.data.error);
     }
+  };
+
+  /**
+   * Given an id of answer. If single add this to answers and put these answer to api.
+   * If multiple just add to array of answers.
+   * @param {*} id id of answer
+   */
+  const handleQuestionClick = (id) => {
+    playerAnswers.push(id);
+    if (question.type === 'single') {
+      putAnswers(playerAnswers);
+    }
+  };
+
+  // TO DO HANDLE SUBMIT BUTTON FOR MULTIPLE ANSWER
+  // const handleSubmitClick = () => {putAnswers(playerAnswers); }
+
+  /**
+   *
+   * @returns {bool} return if the player has the correct answer/s for the current question
+   */
+  const isPlayerCorrect = () => {
+    let correct = true;
+    console.log({ questionAnswers, playerAnswers });
+    for (const questionAnswer of questionAnswers) {
+      if (!playerAnswers.includes(questionAnswer)) {
+        correct = false;
+        break;
+      }
+    }
+
+    return correct;
   };
 
   // Render the play question screen
   const renderPlayQuestion = () => {
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
-    if (questionAnswers.length > 0) {
-      return <div>{`${questionAnswers[0]} ${playerAnswers[0]}`}</div>;
+    if (questionAnswers.length > 0 || timeLeft <= 0) {
+      if (playerAnswers.length === 0) {
+        return <div>TOO LATE</div>;
+      } else if (isPlayerCorrect()) {
+        return <div>CORRECT</div>;
+      } else {
+        return <div>INCORRECT</div>;
+      }
     }
 
     // Else return the question and answers
@@ -145,7 +177,7 @@ export const PlayQuestion = ({ questionData }) => {
           </Box>
         </Grid>
 
-        {/* If the player answered the question early determine something */}
+        {/* If the player answered the question early determine */}
         {timeAnswered > 0 ? (
           <div>
             <Typography>Speed demon</Typography>
