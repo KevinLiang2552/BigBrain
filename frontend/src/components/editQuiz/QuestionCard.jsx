@@ -13,6 +13,7 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import placeholderImage from '../../assets/placeholderImage.png';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Image from 'material-ui-image';
@@ -21,16 +22,19 @@ import ClearIcon from '@material-ui/icons/Clear';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 /**
- *
+ * @param {string} quizID id of the quiz that we are displaying the questions to.
  * @param {object} question question object with all value e.g. id, question
  * @param {function} deleteQuestion Delete question function
  */
 
-export const QuestionCard = ({ question, deleteQuestion }) => {
+export const QuestionCard = ({ quizID, question, deleteQuestion }) => {
   QuestionCard.propTypes = {
+    quizID: PropTypes.string,
     question: PropTypes.object,
     deleteQuestion: PropTypes.func,
   };
+
+  const history = useHistory();
 
   // Display the image if it exists, if not currently displays a placeholder
   let image;
@@ -56,6 +60,10 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
   } else {
     videoURL = <span>Video URL: No video added</span>;
   }
+
+  const handleQuestionEdit = () => {
+    history.push(`/dashboard/edit/${quizID}/${question.id}`);
+  };
 
   return (
     <>
@@ -109,7 +117,7 @@ export const QuestionCard = ({ question, deleteQuestion }) => {
             </Grid>
             <Grid item md={1} xs={12}>
               <IconButton>
-                <EditIcon />
+                <EditIcon onClick={handleQuestionEdit} />
               </IconButton>
               <IconButton onClick={deleteQuestion(question.id)}>
                 <DeleteIcon />

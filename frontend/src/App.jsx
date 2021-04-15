@@ -6,6 +6,7 @@ import { PlayPage } from './routes/user/Play.jsx';
 import { LobbyPage } from './routes/user/Lobby.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
+import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import { Header } from './components/Header';
 
@@ -65,8 +66,8 @@ function App() {
               <Redirect to="/dashboard"></Redirect>
             )}
           </Route>
-          <Route path="/dashboard/edit/:id/question">
-            <EditQuizPage />
+          <Route path="/dashboard/edit/:id/:questionID">
+            <EditQuestionPage />
           </Route>
           <Route path="/dashboard/edit/:id">
             <EditQuizPage />
