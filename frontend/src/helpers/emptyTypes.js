@@ -17,3 +17,16 @@ export const emptySessionStatus = {
   numQuestions: 0,
   players: [],
 };
+
+export const emptyQuestion = {
+  answers: [],
+  correctAnswers: [],
+  duration: '',
+  id: -1,
+  imgSrc: null,
+  isoTimeLastQuestionStarted: '',
+  points: '',
+  question: '',
+  type: '',
+  videoURL: null,
+};

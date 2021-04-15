@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+// import { useParams } from 'react-router';
 import API from '../../api/api.js';
 import styles from '../../styles/lobby.module.css';
 import { getPlayerToken } from '../../helpers/user.js';
+import { emptyQuestion } from '../../helpers/emptyTypes.js';
+import PlayQuestion from '../../components/play/PlayQuestion.jsx';
+
 import {
   Box,
   CircularProgress,
@@ -12,16 +15,21 @@ import {
 
 export const LobbyPage = () => {
   const api = new API('http://localhost:5005');
-  const { id } = useParams();
-  console.log(id);
+  // const { id } = useParams();
 
+  // Status of lobby = true or false
   const [started, setStarted] = useState(false);
+
+  // interval value of status inteval, so we can clear the interval
+  const [statusInterval, setStatusInterval] = useState(-100);
+
+  const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
 
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
     '"0" == []',
-    'A rabbit and a tortoise crossed the road, only the rabbit survived',
-    'This time will be different',
+    'You are legally allowed to leave after 15 minutes',
+    '"This time will be different"',
     'Maybe you will win this time and not disappoint your family',
     'If you lose at least you can do something else',
   ];
@@ -46,21 +54,28 @@ export const LobbyPage = () => {
     return () => clearInterval(funnyInterval);
   });
 
-  // get status of user
+  // When started value changes usually to true, get the first question
   useEffect(async () => {
-    const statusInterval = setInterval(function () {
-      if (started) {
-        clearInterval(statusInterval);
-      }
-      updateStatus();
-    }, 1000);
+    if (started) {
+      clearInterval(statusInterval);
+
+      getQuestion();
+    } else {
+      const interval = setInterval(function () {
+        updateStatus();
+      }, 1000);
+      setStatusInterval(interval);
+    }
+
+    // If the interval is not cleaned up (player left before lobby started) remove interval
     return () => {
       if (!started) {
         clearInterval(statusInterval);
       }
     };
-  }, []);
+  }, [started]);
 
+  // Get player lobby status
   const updateStatus = async () => {
     const res = await api.nonAuthorisedRequest(
       'GET',
@@ -71,11 +86,26 @@ export const LobbyPage = () => {
     }
   };
 
+  // Get current question of quiz
+  const getQuestion = async () => {
+    const res = await api.authorisedRequest(
+      'GET',
+      `play/${getPlayerToken()}/question`,
+    );
+    if (res.status === 200) {
+      setCurrentQuestion(res.data.question);
+    } else {
+      console.log(res.data.error);
+    }
+  };
+
   return (
     <Container>
+      {/* If quiz has started play question */}
       {started ? (
-        <Typography>STARTED</Typography>
+        <PlayQuestion questionData={currentQuestion} />
       ) : (
+        // Else stuck in a lobby
         <div className={styles.loadingProgress}>
           <CircularProgress size={100} />
           <Box mt={2}>
