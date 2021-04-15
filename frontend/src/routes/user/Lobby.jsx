@@ -99,45 +99,11 @@ export const LobbyPage = () => {
     }
   };
 
-  const getAnswer = async () => {
-    const res = await api.authorisedRequest(
-      'GET',
-      `play/${getPlayerToken()}/answer`,
-    );
-    if (res.status === 200) {
-      console.log(res.data);
-    } else {
-      console.log(res.data.error);
-    }
-  };
-
-  const endQuestion = () => {
-    console.log('Hello');
-    getAnswer();
-  };
-
-  const putAnswers = async (ids) => {
-    const res = await api.authorisedRequest(
-      'PUT',
-      `play/${getPlayerToken()}/answer`,
-      { answerIds: ids },
-    );
-    if (res.status === 200) {
-      console.log(res.data);
-    } else {
-      console.log(res.data.error);
-    }
-  };
-
   return (
     <Container>
       {/* If quiz has started play question */}
       {started ? (
-        <PlayQuestion
-          questionData={currentQuestion}
-          putAnswers={putAnswers}
-          endQuestion={endQuestion}
-        />
+        <PlayQuestion questionData={currentQuestion} />
       ) : (
         // Else stuck in a lobby
         <div className={styles.loadingProgress}>
