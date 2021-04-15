@@ -4,17 +4,26 @@ import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/play.module.css';
 
-export const PlayQuestionButton = ({ answer, handleQuestionClick, id }) => {
+/**
+ *
+ * @param {string} answer The answeer text
+ * @param {string} id     The id of the  answer
+ * @param {string} handleQuestionClick handle for clicking of this answer
+ * @returns
+ */
+export const PlayQuestionButton = ({ answer, id, handleQuestionClick }) => {
   PlayQuestionButton.propTypes = {
     answer: PropTypes.string,
-    handleQuestionClick: PropTypes.func,
     id: PropTypes.number,
+    handleQuestionClick: PropTypes.func,
   };
 
+  // Depending on the id change the colour of the button
+  // TO DO: randomising of answer may be implemented take this into account
   const getBackgroundColour = () => {
     let backgroundColour;
     switch (id) {
-      case 0: // Red
+      case 0: // Pinkish red
         backgroundColour = '#FF0075';
         break;
       case 1: // Blue
@@ -30,7 +39,7 @@ export const PlayQuestionButton = ({ answer, handleQuestionClick, id }) => {
         backgroundColour = '#7400b8';
         break;
       default:
-        // Orange??
+        // Dark red
         backgroundColour = '#b80043';
         break;
     }

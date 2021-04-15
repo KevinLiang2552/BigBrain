@@ -21,25 +21,42 @@ export const PlayQuestion = ({ questionData }) => {
 
   // Question use state
   const [question, setQuestion] = useState(questionData);
-  const [timeAnswered, setTimeAnswered] = useState(-1);
+
+  // Answers of the current quesiton
   const [questionAnswers, setQuestionAnswers] = useState([]);
+
+  // Players answers of the current question
   const [playerAnswers, setPlayerAnswer] = useState([]);
 
-  // Timer
+  // The amount of time left for the question
   const [timeLeft, setTimeLeft] = useState(questionData.duration);
+
+  // Timer interval (the interval that ticks every second)
   const [timer, setTimer] = useState(-1);
 
-  // Actively update question use state when question data changes
+  // The amount of time left when the player answered
+  const [timeAnswered, setTimeAnswered] = useState(-1);
+
+  // Funny Text
+  const [speedText, setSpeedText] = useState('');
+
+  // Set default value when question data changes
   useEffect(() => {
     setQuestion(questionData);
     setTimeAnswered(-1);
     setQuestionAnswers([]);
     setPlayerAnswer([]);
-
-    console.log(playerAnswers);
     getCurrentTimeLeft();
     startTimer();
   }, [questionData]);
+
+  // When timehas run out end the question
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      getAnswer();
+    }
+  }, [timeLeft]);
 
   // Set time left depending on when the question started
   // 1 second lag delay leway for loading issues
@@ -77,15 +94,6 @@ export const PlayQuestion = ({ questionData }) => {
     };
   };
 
-  // When timeLeft is 0 or less end the question
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      console.log({ timer });
-      clearInterval(timer);
-      getAnswer();
-    }
-  }, [timeLeft]);
-
   // Get the answer of the current question (only occurs when the timer runs out)
   const getAnswer = async () => {
     const res = await api.authorisedRequest(
@@ -102,6 +110,7 @@ export const PlayQuestion = ({ questionData }) => {
   // Given an array of ids of players answer, put answer for the current question
   // Set time the player answered the question at. This is used to determine time points.
   const putAnswers = async () => {
+    setFunnyText();
     setTimeAnswered(timeLeft);
 
     // TO DO: TIME POINTS
@@ -148,11 +157,38 @@ export const PlayQuestion = ({ questionData }) => {
     return correct;
   };
 
+  // Set text for when the player answers the question after a certain time period
+  const setFunnyText = () => {
+    const howFast = Math.ceil((timeLeft / question.duration) * 10);
+
+    let speedText =
+      'You are legit a timelord, how did you managed to get more time';
+    if (howFast === 1) {
+      speedText =
+        'Are you even looking at the question? Or are you a goddamn genius!';
+    } else if (howFast >= 2 && howFast <= 3) {
+      speedText = 'You are a speeed demon';
+    } else if (howFast >= 4 && howFast <= 5) {
+      speedText = 'Nice and quick';
+    } else if (howFast >= 5 && howFast <= 7) {
+      speedText = 'Giving it some thought can go a long way!';
+    } else if (howFast >= 8 && howFast <= 9) {
+      speedText = 'Cutting it close!';
+    } else if (howFast === 10) {
+      speedText = 'Jussttt in the nick of time';
+    }
+
+    setSpeedText(speedText);
+  };
+
   // Render the play question screen
   const renderPlayQuestion = () => {
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
     if (questionAnswers.length > 0 || timeLeft <= 0) {
+      // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
+      // Should display a buffer screen then the result
+
       if (playerAnswers.length === 0) {
         return <div>TOO LATE</div>;
       } else if (isPlayerCorrect()) {
@@ -180,7 +216,7 @@ export const PlayQuestion = ({ questionData }) => {
         {/* If the player answered the question early determine */}
         {timeAnswered > 0 ? (
           <div>
-            <Typography>Speed demon</Typography>
+            <Typography>{speedText}</Typography>
           </div>
         ) : (
           <Grid container spacing={1} className={styles.questionGrid}>
