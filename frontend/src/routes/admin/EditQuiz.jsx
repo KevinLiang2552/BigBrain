@@ -72,7 +72,6 @@ export const EditQuizPage = () => {
     if (quizDetailsRes.status === 200) {
       setQuiz(quizDetailsRes.data);
       setQuestionList(quizDetailsRes.data.questions);
-      console.log(quizDetailsRes.data.questions);
     } else {
       console.log(quizDetailsRes.data.error);
     }
