@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Container, Grid, Typography } from '@material-ui/core';
 import PlayQuestionButton from './PlayQuestionButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import { getPlayerToken } from '../../helpers/user.js';
 import API from '../../api/api.js';
+import PlayQuestionResult from './PlayQuestionResult.jsx';
 
 import styles from '../../styles/play.module.css';
 
@@ -13,20 +14,22 @@ import styles from '../../styles/play.module.css';
  * @param {object} questionData The question's data (name, answers, etc...)
  * @returns
  */
-export const PlayQuestion = ({ questionData }) => {
+export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   PlayQuestion.propTypes = {
     questionData: PropTypes.object,
+    pageForNewQuestion: PropTypes.func,
   };
+
   const api = new API('http://localhost:5005');
 
   // Question use state
   const [question, setQuestion] = useState(questionData);
 
   // Answers of the current quesiton
-  const [questionAnswers, setQuestionAnswers] = useState([]);
+  const [questionAnswerIds, setQuestionAnswerIds] = useState([]);
 
   // Players answers of the current question
-  const [playerAnswers, setPlayerAnswer] = useState([]);
+  const [playerAnswerIds, setPlayerAnswerIds] = useState([]);
 
   // The amount of time left for the question
   const [timeLeft, setTimeLeft] = useState(questionData.duration);
@@ -44,8 +47,8 @@ export const PlayQuestion = ({ questionData }) => {
   useEffect(() => {
     setQuestion(questionData);
     setTimeAnswered(-1);
-    setQuestionAnswers([]);
-    setPlayerAnswer([]);
+    setQuestionAnswerIds([]);
+    setPlayerAnswerIds([]);
     getCurrentTimeLeft();
     startTimer();
   }, [questionData]);
@@ -55,8 +58,18 @@ export const PlayQuestion = ({ questionData }) => {
     if (timeLeft <= 0) {
       clearInterval(timer);
       getAnswer();
+      pageForNewQuestion();
     }
   }, [timeLeft]);
+
+  // Clean up
+  useEffect(() => {
+    return () => {
+      if (timeLeft > 0) {
+        clearInterval(timer);
+      }
+    };
+  }, []);
 
   // Set time left depending on when the question started
   // 1 second lag delay leway for loading issues
@@ -87,11 +100,6 @@ export const PlayQuestion = ({ questionData }) => {
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
     }, 1000);
     setTimer(interval);
-    return () => {
-      if (timeLeft > 0) {
-        clearInterval(timer);
-      }
-    };
   };
 
   // Get the answer of the current question (only occurs when the timer runs out)
@@ -101,7 +109,7 @@ export const PlayQuestion = ({ questionData }) => {
       `play/${getPlayerToken()}/answer`,
     );
     if (res.status === 200) {
-      setQuestionAnswers(res.data.answerIds);
+      setQuestionAnswerIds(res.data.answerIds);
     } else {
       console.log(res.data.error);
     }
@@ -118,7 +126,7 @@ export const PlayQuestion = ({ questionData }) => {
     const res = await api.authorisedRequest(
       'PUT',
       `play/${getPlayerToken()}/answer`,
-      { answerIds: playerAnswers },
+      { answerIds: playerAnswerIds },
     );
     if (res.status !== 200) {
       console.log(res.data.error);
@@ -131,14 +139,9 @@ export const PlayQuestion = ({ questionData }) => {
    * @param {*} id id of answer
    */
   const handleQuestionClick = (id) => {
-    playerAnswers.push(id);
-    if (question.type === 'single') {
-      putAnswers(playerAnswers);
-    }
+    playerAnswerIds.push(id);
+    putAnswers(playerAnswerIds);
   };
-
-  // TO DO HANDLE SUBMIT BUTTON FOR MULTIPLE ANSWER
-  // const handleSubmitClick = () => {putAnswers(playerAnswers); }
 
   /**
    *
@@ -146,9 +149,8 @@ export const PlayQuestion = ({ questionData }) => {
    */
   const isPlayerCorrect = () => {
     let correct = true;
-    console.log({ questionAnswers, playerAnswers });
-    for (const questionAnswer of questionAnswers) {
-      if (!playerAnswers.includes(questionAnswer)) {
+    for (const questionAnswer of questionAnswerIds) {
+      if (!playerAnswerIds.includes(questionAnswer)) {
         correct = false;
         break;
       }
@@ -163,75 +165,95 @@ export const PlayQuestion = ({ questionData }) => {
 
     let speedText =
       'You are legit a timelord, how did you managed to get more time';
-    if (howFast === 1) {
+    if (howFast === 10) {
       speedText =
         'Are you even looking at the question? Or are you a goddamn genius!';
-    } else if (howFast >= 2 && howFast <= 3) {
+    } else if (howFast === 9 || howFast === 8) {
       speedText = 'You are a speeed demon';
-    } else if (howFast >= 4 && howFast <= 5) {
+    } else if (howFast === 7 || howFast === 6) {
       speedText = 'Nice and quick';
-    } else if (howFast >= 5 && howFast <= 7) {
+    } else if (howFast === 5 || howFast === 4) {
       speedText = 'Giving it some thought can go a long way!';
-    } else if (howFast >= 8 && howFast <= 9) {
+    } else if (howFast === 3 || howFast === 2) {
       speedText = 'Cutting it close!';
-    } else if (howFast === 10) {
+    } else if (howFast === 1) {
       speedText = 'Jussttt in the nick of time';
     }
-
     setSpeedText(speedText);
+  };
+
+  const getQuestionAnswersText = () => {
+    const answersText = [];
+    for (const questionAnswer of question.answers) {
+      if (questionAnswerIds.includes(questionAnswer.id)) {
+        answersText.push(questionAnswer.answer);
+      }
+    }
+    return answersText;
   };
 
   // Render the play question screen
   const renderPlayQuestion = () => {
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
-    if (questionAnswers.length > 0 || timeLeft <= 0) {
+    if (questionAnswerIds.length > 0 || timeLeft <= 0) {
       // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
       // Should display a buffer screen then the result
 
-      if (playerAnswers.length === 0) {
-        return <div>TOO LATE</div>;
+      if (playerAnswerIds.length === 0) {
+        return (
+          <PlayQuestionResult state="late" answers={getQuestionAnswersText()} />
+        );
       } else if (isPlayerCorrect()) {
-        return <div>CORRECT</div>;
+        return <PlayQuestionResult state="correct" />;
       } else {
-        return <div>INCORRECT</div>;
+        return (
+          <PlayQuestionResult
+            state="incorrect"
+            answers={getQuestionAnswersText()}
+          />
+        );
       }
     }
 
     // Else return the question and answers
     return (
       <>
-        <Grid xs={12} item>
-          <Box mt={3} mb={3} className={styles.questionDisplay}>
-            <Typography></Typography>
-            <Typography variant="h3">{question.question}</Typography>
-            <QuizTimer
-              // Error occurs here because of parseInt?? TODO
-              duration={parseInt(question.duration)}
-              timeLeft={parseInt(timeLeft)}
-            />
-          </Box>
-        </Grid>
+        <Container>
+          <Grid xs={12} item>
+            <Box mt={3} mb={3} className={styles.questionDisplay}>
+              <Typography></Typography>
+              <Typography variant="h3">{question.question}</Typography>
+              <QuizTimer
+                // Error occurs here because of parseInt?? TODO
+                duration={parseInt(question.duration)}
+                timeLeft={parseInt(timeLeft)}
+              />
+            </Box>
+          </Grid>
+        </Container>
 
         {/* If the player answered the question early determine */}
-        {timeAnswered > 0 ? (
-          <div>
-            <Typography>{speedText}</Typography>
-          </div>
-        ) : (
-          <Grid container spacing={1} className={styles.questionGrid}>
-            {question.answers.map((ans) => {
-              return (
-                <PlayQuestionButton
-                  key={ans.id}
-                  answer={ans.answer}
-                  id={ans.id}
-                  handleQuestionClick={handleQuestionClick}
-                />
-              );
-            })}
-          </Grid>
-        )}
+        <Container>
+          {timeAnswered > 0 ? (
+            <div className={styles.speedText}>
+              <Typography variant="h4">{speedText}</Typography>
+            </div>
+          ) : (
+            <Grid container spacing={1} className={styles.questionGrid}>
+              {question.answers.map((ans) => {
+                return (
+                  <PlayQuestionButton
+                    key={ans.id}
+                    answer={ans.answer}
+                    id={ans.id}
+                    handleQuestionClick={handleQuestionClick}
+                  />
+                );
+              })}
+            </Grid>
+          )}
+        </Container>
       </>
     );
   };

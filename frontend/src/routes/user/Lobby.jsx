@@ -6,12 +6,7 @@ import { getPlayerToken } from '../../helpers/user.js';
 import { emptyQuestion } from '../../helpers/emptyTypes.js';
 import PlayQuestion from '../../components/play/PlayQuestion.jsx';
 
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Typography,
-} from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@material-ui/core';
 
 export const LobbyPage = () => {
   const api = new API('http://localhost:5005');
@@ -22,6 +17,8 @@ export const LobbyPage = () => {
 
   // interval value of status inteval, so we can clear the interval
   const [statusInterval, setStatusInterval] = useState(-100);
+
+  const [newQuestionInterval, setNewQuestionInterval] = useState(-1);
 
   const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
 
@@ -52,7 +49,7 @@ export const LobbyPage = () => {
     }, 10000);
 
     return () => clearInterval(funnyInterval);
-  });
+  }, []);
 
   // When started value changes usually to true, get the first question
   useEffect(async () => {
@@ -93,17 +90,42 @@ export const LobbyPage = () => {
       `play/${getPlayerToken()}/question`,
     );
     if (res.status === 200) {
-      setCurrentQuestion(res.data.question);
+      const newQuestion = res.data.question;
+      if (currentQuestion.id !== newQuestion.id) {
+        setCurrentQuestion(newQuestion);
+      }
     } else {
       console.log(res.data.error);
     }
   };
 
+  useEffect(() => {
+    clearInterval(newQuestionInterval);
+    setNewQuestionInterval(-1);
+    return () => clearInterval(newQuestionInterval);
+  }, [currentQuestion]);
+
+  // Constantly call api for new question
+  const pageForNewQuestion = () => {
+    if (currentQuestion.isLast) {
+      console.log('IS LAST QUESTION');
+      // TO DO RESULT PAGE
+    } else {
+      const interval = setInterval(function () {
+        getQuestion();
+      }, 1000);
+      setNewQuestionInterval(interval);
+    }
+  };
+
   return (
-    <Container>
+    <>
       {/* If quiz has started play question */}
       {started ? (
-        <PlayQuestion questionData={currentQuestion} />
+        <PlayQuestion
+          questionData={currentQuestion}
+          pageForNewQuestion={pageForNewQuestion}
+        />
       ) : (
         // Else stuck in a lobby
         <div className={styles.loadingProgress}>
@@ -115,6 +137,6 @@ export const LobbyPage = () => {
           </Box>
         </div>
       )}
-    </Container>
+    </>
   );
 };
