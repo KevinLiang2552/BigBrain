@@ -12,9 +12,9 @@ export const EditExternalMedia = ({ questionDetails, handleImageUpload }) => {
   };
 
   return (
-    <Grid item md={8} xs={12}>
+    <Grid item md={12} xs={12}>
       <Typography variant="h4">External Media</Typography>
-      <Grid item md={4} xs={12}>
+      <Grid item md={3} xs={12}>
         <Typography variant="h5">Quiz Image</Typography>
         <Image
           src={
@@ -36,7 +36,7 @@ export const EditExternalMedia = ({ questionDetails, handleImageUpload }) => {
         </Button>
       </Grid>
 
-      <Grid item md={4} xs={12}>
+      <Grid item md={8} xs={12}>
         <Typography variant="h5">Linked Quiz Video</Typography>
         {/* If you have an ad blocker, this will produce a bunch of errors in the console due to the ads being blocked by the client */}
         <ReactPlayer
@@ -45,6 +45,7 @@ export const EditExternalMedia = ({ questionDetails, handleImageUpload }) => {
               ? 'https://www.youtube.com/watch?v=UBSx4qqeikY'
               : questionDetails.videoURL
           }
+          width="100%"
         />
       </Grid>
     </Grid>

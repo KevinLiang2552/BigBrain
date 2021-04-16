@@ -104,7 +104,7 @@ export const AddQuestionModal = ({
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
-      newChecked.push(value);
+      newChecked.push(parseInt(value));
     } else {
       newChecked.splice(currentIndex, 1);
     }

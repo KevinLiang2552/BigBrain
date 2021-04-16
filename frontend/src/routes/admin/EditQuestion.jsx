@@ -51,7 +51,7 @@ export const EditQuestionPage = () => {
     setErrors({ ...errors, question: '' });
     setQuestionDetails({
       ...questionDetails,
-      question: [parseInt(event.target.value)],
+      question: event.target.value,
     });
   };
 
@@ -66,13 +66,13 @@ export const EditQuestionPage = () => {
   };
 
   const contentChange = () => {
-    console.log(questionDetails);
     if (mainContent === 'mainDetails') {
       return (
         <EditQuestionDetails
           questionDetails={questionDetails}
           handleQuestionUpdate={handleQuestionUpdate}
           handleQuestionTypeChange={handleQuestionTypeChange}
+          setQuestionDetails={setQuestionDetails}
         />
       );
     } else if (mainContent === 'externalMedia') {
@@ -150,25 +150,31 @@ export const EditQuestionPage = () => {
   return (
     <>
       <form>
-        <Grid container className={styles.formWrapper}>
-          <MenuList>
-            <MenuItem onClick={handleContentChange('mainDetails')}>
-              Main Details
-            </MenuItem>
-            <MenuItem onClick={handleContentChange('externalMedia')}>
-              External Media
-            </MenuItem>
-          </MenuList>
-          <FormControl fullWidth component="fieldset">
+        <Grid container className={styles.mainWrapper}>
+          <Grid item md={3} xs={12}>
+            <MenuList>
+              <MenuItem onClick={handleContentChange('mainDetails')}>
+                Main Details
+              </MenuItem>
+              <MenuItem onClick={handleContentChange('externalMedia')}>
+                External Media
+              </MenuItem>
+            </MenuList>
+          </Grid>
+          <Grid item md={8} xs={12}>
             <Grid container>
-              {contentChange()}
+              <Grid item md={12} xs={12}>
+                <FormControl fullWidth component="fieldset">
+                  {contentChange()}
+                </FormControl>
+              </Grid>
               <Grid item md={3} xs={12}>
                 <Button onClick={handleEditQuestion} variant="contained">
                   Save Changes
                 </Button>
               </Grid>
             </Grid>
-          </FormControl>
+          </Grid>
         </Grid>
       </form>
     </>
