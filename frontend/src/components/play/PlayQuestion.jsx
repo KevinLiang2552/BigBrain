@@ -141,12 +141,7 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   const handleQuestionClick = (id) => {
     playerAnswerIds.push(id);
     putAnswers(playerAnswerIds);
-    // if (question.type === 'single') {
-    // }
   };
-
-  // TO DO HANDLE SUBMIT BUTTON FOR MULTIPLE ANSWER
-  // const handleSubmitClick = () => {putAnswers(playerAnswers); }
 
   /**
    *
@@ -187,6 +182,16 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     setSpeedText(speedText);
   };
 
+  const getQuestionAnswersText = () => {
+    const answersText = [];
+    for (const questionAnswer of question.answers) {
+      if (questionAnswerIds.includes(questionAnswer.id)) {
+        answersText.push(questionAnswer.answer);
+      }
+    }
+    return answersText;
+  };
+
   // Render the play question screen
   const renderPlayQuestion = () => {
     // If the answer has already been given (time out)
@@ -196,17 +201,18 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
       // Should display a buffer screen then the result
 
       if (playerAnswerIds.length === 0) {
-        return <PlayQuestionResult state="late" />;
+        return (
+          <PlayQuestionResult state="late" answers={getQuestionAnswersText()} />
+        );
       } else if (isPlayerCorrect()) {
         return <PlayQuestionResult state="correct" />;
       } else {
-        const answersText = [];
-        for (const questionAnswer of question.answers) {
-          if (questionAnswerIds.includes(questionAnswer.id)) {
-            answersText.push(questionAnswer.answer);
-          }
-        }
-        return <PlayQuestionResult state="incorrect" answer={answersText} />;
+        return (
+          <PlayQuestionResult
+            state="incorrect"
+            answers={getQuestionAnswersText()}
+          />
+        );
       }
     }
 
@@ -228,12 +234,12 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
         </Container>
 
         {/* If the player answered the question early determine */}
-        {timeAnswered > 0 ? (
-          <div>
-            <Typography>{speedText}</Typography>
-          </div>
-        ) : (
-          <Container>
+        <Container>
+          {timeAnswered > 0 ? (
+            <div className={styles.speedText}>
+              <Typography variant="h4">{speedText}</Typography>
+            </div>
+          ) : (
             <Grid container spacing={1} className={styles.questionGrid}>
               {question.answers.map((ans) => {
                 return (
@@ -246,8 +252,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
                 );
               })}
             </Grid>
-          </Container>
-        )}
+          )}
+        </Container>
       </>
     );
   };

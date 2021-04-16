@@ -36,6 +36,14 @@
   font-size: 1.3em;
 }
 
+.speedText {
+  width: 100%;
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .questionResultWrapper {
   width: 100%;
   height: 90vh;

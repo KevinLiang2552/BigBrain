@@ -4,10 +4,17 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/play.module.css';
 
-export const PlayQuestionResult = ({ state, answer = '', timeAnswered }) => {
+/**
+ *
+ * @param {string} state State of the player either correct, incorrect or late
+ * @param {array} answers Array of string of the correct answers. Does not display if the play was right
+ * @param {array} timeAnswered TODO: low priority, pass amount of time left when the player answered, really i just want to sneer at people getting it wrong lul
+ * @returns
+ */
+export const PlayQuestionResult = ({ state, answers = '', timeAnswered }) => {
   PlayQuestionResult.propTypes = {
     state: PropTypes.string,
-    answer: PropTypes.array,
+    answers: PropTypes.array,
     timeAnswered: PropTypes.number,
   };
 
@@ -24,8 +31,9 @@ export const PlayQuestionResult = ({ state, answer = '', timeAnswered }) => {
 
   useEffect(() => {
     makeAnswerText();
-  }, [answer]);
+  }, [answers]);
 
+  // Set correct text and background colour
   useEffect(() => {
     if (state === 'late') {
       setValues({ text: 'You were late to answer :C', bgColour: '#6930c3' });
@@ -36,19 +44,20 @@ export const PlayQuestionResult = ({ state, answer = '', timeAnswered }) => {
     }
   }, [state]);
 
+  // Set correct punctuation of text
   const makeAnswerText = () => {
     let text = '';
-    console.log(answer);
-    if (answer.length === 1) {
-      text += `${answer[0]}`;
+
+    if (answers.length === 1) {
+      text += `${answers[0]}`;
     } else {
-      for (let i = 0; i < answer.length; i++) {
-        if (i === answer.length - 1) {
-          text += `or ${answer[i]}`;
+      for (let i = 0; i < answers.length; i++) {
+        if (i === answers.length - 1) {
+          text += `or ${answers[i]}`;
         } else if (i === 0) {
-          text += ` ${answer[i]}`;
+          text += ` ${answers[i]}`;
         } else {
-          text += `, ${answer[i]} `;
+          text += `, ${answers[i]} `;
         }
       }
     }
@@ -60,7 +69,7 @@ export const PlayQuestionResult = ({ state, answer = '', timeAnswered }) => {
       className={styles.questionResultWrapper}
       style={{ backgroundColor: values.bgColour }}>
       <WhiteTypography variant="h4">{values.text}</WhiteTypography>
-      {answer !== '' && (
+      {answers !== '' && (
         <Box mt={2}>
           <WhiteTypography variant="h6">
             The correct answer was <b>{answerText}</b>

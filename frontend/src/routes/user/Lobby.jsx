@@ -109,6 +109,7 @@ export const LobbyPage = () => {
   const pageForNewQuestion = () => {
     if (currentQuestion.isLast) {
       console.log('IS LAST QUESTION');
+      // TO DO RESULT PAGE
     } else {
       const interval = setInterval(function () {
         getQuestion();
