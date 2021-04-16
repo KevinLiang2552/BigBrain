@@ -5,6 +5,7 @@ import PlayQuestionButton from './PlayQuestionButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import { getPlayerToken } from '../../helpers/user.js';
 import API from '../../api/api.js';
+import PlayQuestionResult from './PlayQuestionResult.jsx';
 
 import styles from '../../styles/play.module.css';
 
@@ -13,10 +14,13 @@ import styles from '../../styles/play.module.css';
  * @param {object} questionData The question's data (name, answers, etc...)
  * @returns
  */
-export const PlayQuestion = ({ questionData }) => {
+export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   PlayQuestion.propTypes = {
     questionData: PropTypes.object,
+    pageForNewQuestion: PropTypes.func,
   };
+
+  console.log(questionData);
   const api = new API('http://localhost:5005');
 
   // Question use state
@@ -52,8 +56,11 @@ export const PlayQuestion = ({ questionData }) => {
 
   // When timehas run out end the question
   useEffect(() => {
-    if (timeLeft <= 0) {
+    console.log(timeLeft);
+    if (timeLeft === 0) {
       clearInterval(timer);
+      console.log('ello ' + timeLeft);
+      pageForNewQuestion();
       getAnswer();
     }
   }, [timeLeft]);
@@ -146,7 +153,7 @@ export const PlayQuestion = ({ questionData }) => {
    */
   const isPlayerCorrect = () => {
     let correct = true;
-    console.log({ questionAnswers, playerAnswers });
+    // console.log({ questionAnswers, playerAnswers });
     for (const questionAnswer of questionAnswers) {
       if (!playerAnswers.includes(questionAnswer)) {
         correct = false;
@@ -190,11 +197,11 @@ export const PlayQuestion = ({ questionData }) => {
       // Should display a buffer screen then the result
 
       if (playerAnswers.length === 0) {
-        return <div>TOO LATE</div>;
+        return <PlayQuestionResult state="late" />;
       } else if (isPlayerCorrect()) {
-        return <div>CORRECT</div>;
+        return <PlayQuestionResult state="correct" />;
       } else {
-        return <div>INCORRECT</div>;
+        return <PlayQuestionResult state="incorrect" />;
       }
     }
 

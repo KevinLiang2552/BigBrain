@@ -23,6 +23,8 @@ export const LobbyPage = () => {
   // interval value of status inteval, so we can clear the interval
   const [statusInterval, setStatusInterval] = useState(-100);
 
+  const [newQuestionInterval, setNewQuestionInterval] = useState(-1);
+
   const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
 
   // Insert funny joke here, legit I have no funny jokes crap.
@@ -93,17 +95,42 @@ export const LobbyPage = () => {
       `play/${getPlayerToken()}/question`,
     );
     if (res.status === 200) {
-      setCurrentQuestion(res.data.question);
+      const newQuestion = res.data.question;
+      if (currentQuestion.id !== newQuestion.id) {
+        setCurrentQuestion(newQuestion);
+      }
     } else {
       console.log(res.data.error);
     }
+  };
+
+  useEffect(() => {
+    console.log('good delete of ' + newQuestionInterval);
+    clearInterval(newQuestionInterval);
+  }, [currentQuestion]);
+
+  // Constantly call api for new question
+  const pageForNewQuestion = () => {
+    if (newQuestionInterval > 0) {
+      console.log('bad delete');
+      clearInterval(newQuestionInterval);
+    }
+    const interval = setInterval(function () {
+      getQuestion();
+      console.log('HELLO');
+    }, 1000);
+    console.log({ interval });
+    setNewQuestionInterval(interval);
   };
 
   return (
     <Container>
       {/* If quiz has started play question */}
       {started ? (
-        <PlayQuestion questionData={currentQuestion} />
+        <PlayQuestion
+          questionData={currentQuestion}
+          pageForNewQuestion={pageForNewQuestion}
+        />
       ) : (
         // Else stuck in a lobby
         <div className={styles.loadingProgress}>
