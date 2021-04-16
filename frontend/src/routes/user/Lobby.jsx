@@ -107,6 +107,7 @@ export const LobbyPage = () => {
   useEffect(() => {
     clearInterval(newQuestionInterval);
     setNewQuestionInterval(-1);
+    return () => clearInterval(newQuestionInterval);
   }, [currentQuestion]);
 
   // Constantly call api for new question

@@ -57,9 +57,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   useEffect(() => {
     if (timeLeft <= 0) {
       clearInterval(timer);
-      console.log('Out of time ' + timeLeft);
-      pageForNewQuestion();
       getAnswer();
+      pageForNewQuestion();
     }
   }, [timeLeft]);
 
@@ -172,21 +171,20 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
 
     let speedText =
       'You are legit a timelord, how did you managed to get more time';
-    if (howFast === 1) {
+    if (howFast === 10) {
       speedText =
         'Are you even looking at the question? Or are you a goddamn genius!';
-    } else if (howFast >= 2 && howFast <= 3) {
+    } else if (howFast === 9 || howFast === 8) {
       speedText = 'You are a speeed demon';
-    } else if (howFast >= 4 && howFast <= 5) {
+    } else if (howFast === 7 || howFast === 6) {
       speedText = 'Nice and quick';
-    } else if (howFast >= 5 && howFast <= 7) {
+    } else if (howFast === 5 || howFast === 4) {
       speedText = 'Giving it some thought can go a long way!';
-    } else if (howFast >= 8 && howFast <= 9) {
+    } else if (howFast === 3 || howFast === 2) {
       speedText = 'Cutting it close!';
-    } else if (howFast === 10) {
+    } else if (howFast === 1) {
       speedText = 'Jussttt in the nick of time';
     }
-
     setSpeedText(speedText);
   };
 
