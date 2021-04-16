@@ -6,12 +6,7 @@ import { getPlayerToken } from '../../helpers/user.js';
 import { emptyQuestion } from '../../helpers/emptyTypes.js';
 import PlayQuestion from '../../components/play/PlayQuestion.jsx';
 
-import {
-  Box,
-  CircularProgress,
-  Container,
-  Typography,
-} from '@material-ui/core';
+import { Box, CircularProgress, Typography } from '@material-ui/core';
 
 export const LobbyPage = () => {
   const api = new API('http://localhost:5005');
@@ -123,7 +118,7 @@ export const LobbyPage = () => {
   };
 
   return (
-    <Container>
+    <>
       {/* If quiz has started play question */}
       {started ? (
         <PlayQuestion
@@ -141,6 +136,6 @@ export const LobbyPage = () => {
           </Box>
         </div>
       )}
-    </Container>
+    </>
   );
 };

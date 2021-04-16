@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Container, Grid, Typography } from '@material-ui/core';
 import PlayQuestionButton from './PlayQuestionButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import { getPlayerToken } from '../../helpers/user.js';
@@ -26,10 +26,10 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   const [question, setQuestion] = useState(questionData);
 
   // Answers of the current quesiton
-  const [questionAnswers, setQuestionAnswers] = useState([]);
+  const [questionAnswerIds, setQuestionAnswerIds] = useState([]);
 
   // Players answers of the current question
-  const [playerAnswers, setPlayerAnswer] = useState([]);
+  const [playerAnswerIds, setPlayerAnswerIds] = useState([]);
 
   // The amount of time left for the question
   const [timeLeft, setTimeLeft] = useState(questionData.duration);
@@ -47,8 +47,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   useEffect(() => {
     setQuestion(questionData);
     setTimeAnswered(-1);
-    setQuestionAnswers([]);
-    setPlayerAnswer([]);
+    setQuestionAnswerIds([]);
+    setPlayerAnswerIds([]);
     getCurrentTimeLeft();
     startTimer();
   }, [questionData]);
@@ -109,7 +109,7 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
       `play/${getPlayerToken()}/answer`,
     );
     if (res.status === 200) {
-      setQuestionAnswers(res.data.answerIds);
+      setQuestionAnswerIds(res.data.answerIds);
     } else {
       console.log(res.data.error);
     }
@@ -126,7 +126,7 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     const res = await api.authorisedRequest(
       'PUT',
       `play/${getPlayerToken()}/answer`,
-      { answerIds: playerAnswers },
+      { answerIds: playerAnswerIds },
     );
     if (res.status !== 200) {
       console.log(res.data.error);
@@ -139,10 +139,10 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
    * @param {*} id id of answer
    */
   const handleQuestionClick = (id) => {
-    playerAnswers.push(id);
-    if (question.type === 'single') {
-      putAnswers(playerAnswers);
-    }
+    playerAnswerIds.push(id);
+    putAnswers(playerAnswerIds);
+    // if (question.type === 'single') {
+    // }
   };
 
   // TO DO HANDLE SUBMIT BUTTON FOR MULTIPLE ANSWER
@@ -154,9 +154,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
    */
   const isPlayerCorrect = () => {
     let correct = true;
-    // console.log({ questionAnswers, playerAnswers });
-    for (const questionAnswer of questionAnswers) {
-      if (!playerAnswers.includes(questionAnswer)) {
+    for (const questionAnswer of questionAnswerIds) {
+      if (!playerAnswerIds.includes(questionAnswer)) {
         correct = false;
         break;
       }
@@ -192,33 +191,41 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   const renderPlayQuestion = () => {
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
-    if (questionAnswers.length > 0 || timeLeft <= 0) {
+    if (questionAnswerIds.length > 0 || timeLeft <= 0) {
       // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
       // Should display a buffer screen then the result
 
-      if (playerAnswers.length === 0) {
+      if (playerAnswerIds.length === 0) {
         return <PlayQuestionResult state="late" />;
       } else if (isPlayerCorrect()) {
         return <PlayQuestionResult state="correct" />;
       } else {
-        return <PlayQuestionResult state="incorrect" />;
+        const answersText = [];
+        for (const questionAnswer of question.answers) {
+          if (questionAnswerIds.includes(questionAnswer.id)) {
+            answersText.push(questionAnswer.answer);
+          }
+        }
+        return <PlayQuestionResult state="incorrect" answer={answersText} />;
       }
     }
 
     // Else return the question and answers
     return (
       <>
-        <Grid xs={12} item>
-          <Box mt={3} mb={3} className={styles.questionDisplay}>
-            <Typography></Typography>
-            <Typography variant="h3">{question.question}</Typography>
-            <QuizTimer
-              // Error occurs here because of parseInt?? TODO
-              duration={parseInt(question.duration)}
-              timeLeft={parseInt(timeLeft)}
-            />
-          </Box>
-        </Grid>
+        <Container>
+          <Grid xs={12} item>
+            <Box mt={3} mb={3} className={styles.questionDisplay}>
+              <Typography></Typography>
+              <Typography variant="h3">{question.question}</Typography>
+              <QuizTimer
+                // Error occurs here because of parseInt?? TODO
+                duration={parseInt(question.duration)}
+                timeLeft={parseInt(timeLeft)}
+              />
+            </Box>
+          </Grid>
+        </Container>
 
         {/* If the player answered the question early determine */}
         {timeAnswered > 0 ? (
@@ -226,18 +233,20 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
             <Typography>{speedText}</Typography>
           </div>
         ) : (
-          <Grid container spacing={1} className={styles.questionGrid}>
-            {question.answers.map((ans) => {
-              return (
-                <PlayQuestionButton
-                  key={ans.id}
-                  answer={ans.answer}
-                  id={ans.id}
-                  handleQuestionClick={handleQuestionClick}
-                />
-              );
-            })}
-          </Grid>
+          <Container>
+            <Grid container spacing={1} className={styles.questionGrid}>
+              {question.answers.map((ans) => {
+                return (
+                  <PlayQuestionButton
+                    key={ans.id}
+                    answer={ans.answer}
+                    id={ans.id}
+                    handleQuestionClick={handleQuestionClick}
+                  />
+                );
+              })}
+            </Grid>
+          </Container>
         )}
       </>
     );
