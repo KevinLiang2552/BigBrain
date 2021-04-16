@@ -130,6 +130,9 @@ export const EditQuizPage = () => {
       filteredQuestion[i].id = parseInt(i);
     }
 
+    if (questionList[questionID].isLast === true)
+      filteredQuestion[filteredQuestion.length - 1].isLast = true;
+
     const addQuestionRes = await api.authorisedRequest(
       'PUT',
       `admin/quiz/${id}`,
