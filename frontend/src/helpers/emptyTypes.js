@@ -25,6 +25,7 @@ export const emptyQuestion = {
   id: -1,
   imgSrc: null,
   isoTimeLastQuestionStarted: '',
+  isLast: true,
   points: '',
   question: '',
   type: '',
