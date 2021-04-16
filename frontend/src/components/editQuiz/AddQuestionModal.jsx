@@ -63,6 +63,7 @@ export const AddQuestionModal = ({
     answers: [],
     correctAnswers: [0],
     imgSrc: null,
+    isLast: true,
     videoURL: null,
   };
 
@@ -230,6 +231,8 @@ export const AddQuestionModal = ({
     if (!isObjectValueEmpty(errorList)) {
       setErrors(errorList);
     } else {
+      if (questionList.length > 0)
+        questionList[questionList.length - 1].isLast = false;
       const addQuestionRes = await api.authorisedRequest(
         'PUT',
         `admin/quiz/${quizID}`,
