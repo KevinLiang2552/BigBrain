@@ -21,7 +21,7 @@ export const emptySessionStatus = {
 export const emptyQuestion = {
   answers: [],
   correctAnswers: [],
-  duration: '',
+  duration: -1,
   id: -1,
   imgSrc: null,
   isoTimeLastQuestionStarted: '',

@@ -20,7 +20,6 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     pageForNewQuestion: PropTypes.func,
   };
 
-  console.log(questionData);
   const api = new API('http://localhost:5005');
 
   // Question use state
@@ -56,14 +55,22 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
 
   // When timehas run out end the question
   useEffect(() => {
-    console.log(timeLeft);
-    if (timeLeft === 0) {
+    if (timeLeft <= 0) {
       clearInterval(timer);
-      console.log('ello ' + timeLeft);
+      console.log('Out of time ' + timeLeft);
       pageForNewQuestion();
       getAnswer();
     }
   }, [timeLeft]);
+
+  // Clean up
+  useEffect(() => {
+    return () => {
+      if (timeLeft > 0) {
+        clearInterval(timer);
+      }
+    };
+  }, []);
 
   // Set time left depending on when the question started
   // 1 second lag delay leway for loading issues
@@ -94,11 +101,6 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
       setTimeLeft((prevTimeLeft) => prevTimeLeft - 1);
     }, 1000);
     setTimer(interval);
-    return () => {
-      if (timeLeft > 0) {
-        clearInterval(timer);
-      }
-    };
   };
 
   // Get the answer of the current question (only occurs when the timer runs out)

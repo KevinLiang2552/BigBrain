@@ -54,7 +54,7 @@ export const LobbyPage = () => {
     }, 10000);
 
     return () => clearInterval(funnyInterval);
-  });
+  }, []);
 
   // When started value changes usually to true, get the first question
   useEffect(async () => {
@@ -105,22 +105,20 @@ export const LobbyPage = () => {
   };
 
   useEffect(() => {
-    console.log('good delete of ' + newQuestionInterval);
     clearInterval(newQuestionInterval);
+    setNewQuestionInterval(-1);
   }, [currentQuestion]);
 
   // Constantly call api for new question
   const pageForNewQuestion = () => {
-    if (newQuestionInterval > 0) {
-      console.log('bad delete');
-      clearInterval(newQuestionInterval);
+    if (currentQuestion.isLast) {
+      console.log('IS LAST QUESTION');
+    } else {
+      const interval = setInterval(function () {
+        getQuestion();
+      }, 1000);
+      setNewQuestionInterval(interval);
     }
-    const interval = setInterval(function () {
-      getQuestion();
-      console.log('HELLO');
-    }, 1000);
-    console.log({ interval });
-    setNewQuestionInterval(interval);
   };
 
   return (
