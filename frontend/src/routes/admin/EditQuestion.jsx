@@ -1,16 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Grid } from '@material-ui/core';
+import {
+  Button,
+  FormControl,
+  Grid,
+  MenuItem,
+  MenuList,
+} from '@material-ui/core';
 import { useParams } from 'react-router';
-import { EditInput } from '../../components/FormInputs.jsx';
 import { emptyQuestion } from '../../helpers/emptyTypes.js';
+import { EditQuestionDetails } from '../../components/editQuestion/EditQuestionDetails.jsx';
+import { EditExternalMedia } from '../../components/editQuestion/EditExternalMedia.jsx';
+import styles from '../../styles/editQuestion.module.css';
 import API from '../../api/api.js';
+import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 
 export const EditQuestionPage = () => {
   const api = new API('http://localhost:5005');
   const { id, questionID } = useParams();
 
+  // Errors to be displayed.
+  const defaultErrors = {
+    question: '',
+    duration: '',
+    points: '',
+    answer: '',
+  };
+
   const [questionDetails, setQuestionDetails] = useState(emptyQuestion);
   const [questionList, setQuestionList] = useState([]);
+  const [errors, setErrors] = useState(defaultErrors);
 
   const setQuestions = async () => {
     const quizDetailsRes = await api.authorisedRequest(
@@ -29,23 +47,130 @@ export const EditQuestionPage = () => {
     setQuestions();
   }, []);
 
-  const handleQuestionUpdate = () => {
-    console.log(questionList);
+  const handleQuestionUpdate = () => (event) => {
+    setErrors({ ...errors, question: '' });
+    setQuestionDetails({
+      ...questionDetails,
+      question: [parseInt(event.target.value)],
+    });
+  };
+
+  const handleQuestionTypeChange = (event) => {
+    setQuestionDetails({ ...questionDetails, type: event.target.value });
+  };
+
+  const [mainContent, setMainContent] = useState('mainDetails');
+
+  const handleContentChange = (type) => () => {
+    setMainContent(type);
+  };
+
+  const contentChange = () => {
     console.log(questionDetails);
-    console.log('rawr');
+    if (mainContent === 'mainDetails') {
+      return (
+        <EditQuestionDetails
+          questionDetails={questionDetails}
+          handleQuestionUpdate={handleQuestionUpdate}
+          handleQuestionTypeChange={handleQuestionTypeChange}
+        />
+      );
+    } else if (mainContent === 'externalMedia') {
+      return (
+        <EditExternalMedia
+          questionDetails={questionDetails}
+          handleImageUpload={handleImageUpload}
+        />
+      );
+    }
+  };
+
+  // Functions for handling photo upload
+  const reader = new FileReader();
+
+  const handleImageUpload = () => {
+    const imageUpload = document.getElementById('questionImageUpload');
+    reader.readAsDataURL(imageUpload.files[0]);
+  };
+
+  reader.addEventListener('load', () => {
+    setQuestionDetails({ ...questionDetails, imgSrc: reader.result });
+  });
+
+  // Main Function for adding a question to the database
+  const handleEditQuestion = async () => {
+    setErrors(defaultErrors);
+
+    // Basic error checking
+    const errorList = defaultErrors;
+    if (questionDetails.question === '') {
+      errorList.question = 'Question must not be empty';
+    }
+
+    const duration = parseInt(questionDetails.duration);
+
+    if (questionDetails.duration === '') {
+      errorList.duration = 'Duration must not be empty';
+    } else if (isNaN(duration)) {
+      errorList.duration = 'Duration must be a number';
+    } else if (duration <= 0) {
+      errorList.duration = 'Duration has to be greater than 0';
+    }
+
+    const points = parseInt(questionDetails.points);
+
+    if (questionDetails.points === '') {
+      errorList.points = 'Points must not be empty';
+    } else if (isNaN(points)) {
+      errorList.points = 'Points must be a whole number';
+    } else if (points <= 0) {
+      errorList.points = 'Points has to be greater than 0';
+    }
+
+    if (
+      questionDetails.answers.length < 2 ||
+      questionDetails.answers.length > 6
+    ) {
+      errorList.answer = 'Have have between 2 and 6 answers';
+    }
+
+    if (questionDetails.correctAnswers.length === 0) {
+      errorList.answer = 'Must have at least one correct answer';
+    }
+
+    // Adding question
+    if (!isObjectValueEmpty(errorList)) {
+      setErrors(errorList);
+    } else {
+      console.log(questionList);
+      console.log(questionDetails);
+    }
   };
 
   return (
     <>
-      <Grid container>
-        <Grid item>
-          <EditInput
-            type="Question"
-            value={questionDetails.question}
-            handleUpdate={handleQuestionUpdate}
-          />
+      <form>
+        <Grid container className={styles.formWrapper}>
+          <MenuList>
+            <MenuItem onClick={handleContentChange('mainDetails')}>
+              Main Details
+            </MenuItem>
+            <MenuItem onClick={handleContentChange('externalMedia')}>
+              External Media
+            </MenuItem>
+          </MenuList>
+          <FormControl fullWidth component="fieldset">
+            <Grid container>
+              {contentChange()}
+              <Grid item md={3} xs={12}>
+                <Button onClick={handleEditQuestion} variant="contained">
+                  Save Changes
+                </Button>
+              </Grid>
+            </Grid>
+          </FormControl>
         </Grid>
-      </Grid>
+      </form>
     </>
   );
 };

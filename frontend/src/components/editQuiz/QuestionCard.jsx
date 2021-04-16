@@ -94,7 +94,7 @@ export const QuestionCard = ({ quizID, question, deleteQuestion }) => {
             <Grid item md={3} xs={12}>
               <Typography variant="h4">Answers:</Typography>
               <List>
-                {question.answers.map((answer) => {
+                {question.answers.map((answer, index) => {
                   let icon;
                   if (question.correctAnswers.includes(answer.id)) {
                     icon = <CheckIcon />;
@@ -102,22 +102,19 @@ export const QuestionCard = ({ quizID, question, deleteQuestion }) => {
                     icon = <ClearIcon />;
                   }
                   return (
-                    <>
-                      <ListItem key={answer.id}>
+                    <React.Fragment key={index}>
+                      <ListItem>
                         <ListItemIcon>{icon}</ListItemIcon>
-                        <ListItemText
-                          id={answer.id}
-                          primary={`${answer.answer}`}
-                        />
+                        <ListItemText primary={`${answer.answer}`} />
                       </ListItem>
-                    </>
+                    </React.Fragment>
                   );
                 })}
               </List>
             </Grid>
             <Grid item md={1} xs={12}>
-              <IconButton>
-                <EditIcon onClick={handleQuestionEdit} />
+              <IconButton onClick={handleQuestionEdit}>
+                <EditIcon />
               </IconButton>
               <IconButton onClick={deleteQuestion(question.id)}>
                 <DeleteIcon />
