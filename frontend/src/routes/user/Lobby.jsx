@@ -16,7 +16,9 @@ export const LobbyPage = () => {
   const [started, setStarted] = useState(false);
 
   // interval value of status inteval, so we can clear the interval
-  const [statusInterval, setStatusInterval] = useState(-100);
+  const [statusInterval, setStatusInterval] = useState(-1);
+
+  const [funnyTextInterval, setFunnyTextInterval] = useState(-1);
 
   const [newQuestionInterval, setNewQuestionInterval] = useState(-1);
 
@@ -47,30 +49,37 @@ export const LobbyPage = () => {
       setLoadingText(funnyText[newFunnyText]);
       previousFunnyText = newFunnyText;
     }, 10000);
-
+    setFunnyTextInterval(funnyInterval);
     return () => clearInterval(funnyInterval);
   }, []);
 
   // When started value changes usually to true, get the first question
   useEffect(async () => {
-    if (started) {
+    if (statusInterval >= 0) {
       clearInterval(statusInterval);
-
+      setStatusInterval(-1);
+      clearInterval(funnyTextInterval);
+      setFunnyTextInterval(-1);
       getQuestion();
     } else {
-      const interval = setInterval(function () {
-        updateStatus();
-      }, 1000);
-      setStatusInterval(interval);
+      startStatusInterval();
     }
 
     // If the interval is not cleaned up (player left before lobby started) remove interval
     return () => {
-      if (!started) {
+      if (statusInterval >= 0) {
         clearInterval(statusInterval);
+        setStatusInterval(-1);
       }
     };
   }, [started]);
+
+  const startStatusInterval = () => {
+    const interval = setInterval(function () {
+      updateStatus();
+    }, 1000);
+    setStatusInterval(interval);
+  };
 
   // Get player lobby status
   const updateStatus = async () => {
@@ -79,6 +88,7 @@ export const LobbyPage = () => {
       `play/${getPlayerToken()}/status`,
     );
     if (res.status === 200) {
+      console.log(res);
       setStarted(res.data.started);
     }
   };
@@ -109,6 +119,7 @@ export const LobbyPage = () => {
   const pageForNewQuestion = () => {
     if (currentQuestion.isLast) {
       console.log('IS LAST QUESTION');
+
       // TO DO RESULT PAGE
     } else {
       const interval = setInterval(function () {

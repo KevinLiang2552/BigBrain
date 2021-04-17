@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Container, Grid, Typography } from '@material-ui/core';
 import PlayQuestionButton from './PlayQuestionButton.jsx';
+import PlayerQuizResults from './PlayerQuizResults.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import { getPlayerToken } from '../../helpers/user.js';
 import API from '../../api/api.js';
@@ -42,6 +43,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
 
   // Funny Text
   const [speedText, setSpeedText] = useState('');
+
+  const [playerResults, setPlayerResults] = useState(null);
 
   // Set default value when question data changes
   useEffect(() => {
@@ -192,28 +195,48 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     return answersText;
   };
 
+  const getQuizResult = async () => {
+    const res = await api.authorisedRequest(
+      'GET',
+      `play/${getPlayerToken()}/results`,
+    );
+    if (res.status === 200) {
+      setPlayerResults(res.data);
+    }
+  };
+
   // Render the play question screen
   const renderPlayQuestion = () => {
+    if (playerResults !== null) {
+      return <PlayerQuizResults playerResults={playerResults} />;
+    }
+
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
     if (questionAnswerIds.length > 0 || timeLeft <= 0) {
       // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
       // Should display a buffer screen then the result
+      const isLast = question.isLast;
+      let questionResultState = '';
+      let questionResultAnswers = getQuestionAnswersText();
 
       if (playerAnswerIds.length === 0) {
-        return (
-          <PlayQuestionResult state="late" answers={getQuestionAnswersText()} />
-        );
+        questionResultState = 'late';
       } else if (isPlayerCorrect()) {
-        return <PlayQuestionResult state="correct" />;
+        questionResultState = 'correct';
+        questionResultAnswers = [];
       } else {
-        return (
-          <PlayQuestionResult
-            state="incorrect"
-            answers={getQuestionAnswersText()}
-          />
-        );
+        questionResultState = 'incorrect';
       }
+      return (
+        <PlayQuestionResult
+          state={questionResultState}
+          isLast={isLast}
+          answers={questionResultAnswers}
+          getQuizResult={getQuizResult}
+          playerResults={playerResults}
+        />
+      );
     }
 
     // Else return the question and answers

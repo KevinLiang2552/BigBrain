@@ -53,3 +53,17 @@
   justify-content: center;
   text-align: center;
 }
+
+.resultsCenterText {
+  display: flex;
+  justify-content: center;
+}
+
+.resultLine {
+  display: flex;
+  justify-content: center;
+}
+
+.resultLineTextWrapper {
+  min-width: 140px;
+}
