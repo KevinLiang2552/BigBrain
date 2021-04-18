@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import API from '../../api/api.js';
+import { getPlayerToken } from '../../helpers/user.js';
+import styles from '../../styles/play.module.css';
+
 import { Box, Container, Grid, Typography } from '@material-ui/core';
+// import Image from 'material-ui-image';
+
 import PlayQuestionButton from './PlayQuestionButton.jsx';
 import PlayerQuizResults from './PlayerQuizResults.jsx';
+import SubmitButton from './SubmitButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
-import { getPlayerToken } from '../../helpers/user.js';
-import API from '../../api/api.js';
 import PlayQuestionResult from './PlayQuestionResult.jsx';
-
-import styles from '../../styles/play.module.css';
 
 /**
  *
@@ -51,9 +54,11 @@ export const PlayQuestion = ({
   // Funny Text
   const [speedText, setSpeedText] = useState('');
 
-  const [playerResults, setPlayerResults] = useState(null);
-
+  // Current points the player can earn for the current question
   const [currentPoints, setCurrentPoints] = useState(0);
+
+  // The players results
+  const [playerResults, setPlayerResults] = useState(null);
 
   // Set default value when question data changes
   useEffect(() => {
@@ -160,7 +165,19 @@ export const PlayQuestion = ({
    * @param {*} id id of answer
    */
   const handleQuestionClick = (id) => {
-    playerAnswerIds.push(id);
+    // Remove answer from list if already in the list for a multiple type question
+    if (playerAnswerIds.includes(id) && question.type === 'multiple') {
+      const index = playerAnswerIds.indexOf(id);
+      playerAnswerIds.splice(index, 1);
+    } else {
+      playerAnswerIds.push(id);
+    }
+    if (question.type === 'single') {
+      putAnswers(playerAnswerIds);
+    }
+  };
+
+  const handleSubmitAnswers = () => {
     putAnswers(playerAnswerIds);
   };
 
@@ -169,10 +186,11 @@ export const PlayQuestion = ({
    * @returns {bool} return if the player has the correct answer/s for the current question
    */
   const isPlayerCorrect = () => {
-    let correct = false;
+    let correct = true;
+    console.log(playerAnswerIds);
     for (const questionAnswer of questionAnswerIds) {
-      if (playerAnswerIds.includes(questionAnswer)) {
-        correct = true;
+      if (!playerAnswerIds.includes(questionAnswer)) {
+        correct = false;
         break;
       }
     }
@@ -205,9 +223,6 @@ export const PlayQuestion = ({
 
   const calculateSpeedPoints = () => {
     const howFast = Math.ceil((timeLeft / question.duration) * 10);
-    console.log({ timeLeft, duration: question.duration });
-    console.log(howFast);
-    console.log(howFast * 0.1);
     return howFast * 0.1;
   };
 
@@ -279,7 +294,23 @@ export const PlayQuestion = ({
               />
             </Box>
           </Grid>
+          {question.type === 'multiple' && (
+            <Grid item xs={12} style={{ textAlign: 'center' }}>
+              <Box mb={2}>
+                <Typography variant="h5">
+                  Select multiple answers and submit!
+                </Typography>
+              </Box>
+            </Grid>
+          )}
         </Container>
+
+        {/* Image and Video */}
+
+        {/* <Grid item xs={12}>
+          <Image src={question.imgSrc}></Image>
+          <Image></Image>
+        </Grid> */}
 
         {/* If the player answered the question early determine */}
         <Container>
@@ -293,12 +324,16 @@ export const PlayQuestion = ({
                 return (
                   <PlayQuestionButton
                     key={ans.id}
+                    type={question.type}
                     answer={ans.answer}
                     id={ans.id}
                     handleQuestionClick={handleQuestionClick}
                   />
                 );
               })}
+              {question.type === 'multiple' && (
+                <SubmitButton handleSubmitAnswers={handleSubmitAnswers} />
+              )}
             </Grid>
           )}
         </Container>

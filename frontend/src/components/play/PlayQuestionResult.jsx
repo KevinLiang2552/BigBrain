@@ -64,7 +64,7 @@ export const PlayQuestionResult = ({
     } else {
       for (let i = 0; i < answers.length; i++) {
         if (i === answers.length - 1) {
-          text += `or ${answers[i]}`;
+          text += `and ${answers[i]}`;
         } else if (i === 0) {
           text += ` ${answers[i]}`;
         } else {
