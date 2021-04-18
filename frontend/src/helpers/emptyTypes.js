@@ -19,13 +19,15 @@ export const emptySessionStatus = {
 };
 
 export const emptyQuestion = {
-  id: 0,
-  type: '',
-  question: '',
-  duration: 0,
-  points: 0,
   answers: [],
   correctAnswers: [],
+  duration: -1,
+  id: -1,
   imgSrc: null,
+  isoTimeLastQuestionStarted: '',
+  isLast: true,
+  points: '',
+  question: '',
+  type: '',
   videoURL: null,
 };

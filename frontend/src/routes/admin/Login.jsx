@@ -34,7 +34,12 @@ export const LoginPage = ({ setAuthToken }) => {
 
   // Enter key event listner
   useEffect(() => {
-    window.addEventListener('keydown', handleEnterKey());
+    const currentWindow = window;
+    currentWindow.addEventListener('keydown', handleEnterKey);
+    return () => {
+      console.log('HEY');
+      currentWindow.removeEventListener('keydown', handleEnterKey);
+    };
   }, []);
 
   // Enter key submits form
