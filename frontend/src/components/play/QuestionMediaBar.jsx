@@ -4,7 +4,7 @@ import styles from '../../styles/play.module.css';
 
 import ReactPlayer from 'react-player';
 import Image from 'material-ui-image';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 
 /**
  *
@@ -25,33 +25,29 @@ export const QuestionMediaBar = ({ imgSrc, videoURL }) => {
   }
 
   return (
-    <>
-      {imgSrc !== null && (
-        <Grid
-          item
-          xs={12}
-          md={isBoth ? 6 : 12}
-          className={styles.quizMediaGrid}>
-          <div className={styles.quizImage}>
-            <Image src={imgSrc} />
-          </div>
-        </Grid>
-      )}
-      {videoURL !== null && (
-        <Grid
-          item
-          xs={12}
-          md={isBoth ? 6 : 12}
-          className={styles.quizMediaGrid}>
-          <ReactPlayer
-            url={videoURL}
-            width="560px"
-            height="315px"
-            className={styles.quizVideo}
-          />
-        </Grid>
-      )}
-    </>
+    <Container>
+      <Grid container className={styles.mediaGrid}>
+        {imgSrc !== null && (
+          <Grid item xs={12} md={isBoth ? 6 : 12} className={styles.mediaItem}>
+            <div className={styles.quizImage}>
+              <Image src={imgSrc} />
+            </div>
+          </Grid>
+        )}
+        {videoURL !== null && (
+          <Grid item xs={12} md={isBoth ? 6 : 12} className={styles.mediaItem}>
+            <div className={styles.quizVideo}>
+              <ReactPlayer
+                url={videoURL}
+                width="100%"
+                height="100%"
+                controls={true}
+              />
+            </div>
+          </Grid>
+        )}
+      </Grid>
+    </Container>
   );
 };
 

@@ -1,8 +1,9 @@
-import { Box, Button, Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import styles from '../../styles/play.module.css';
+
+import { Box, Button } from '@material-ui/core';
+import WhiteTypography from '../CustomTypography.jsx';
 
 /**
  *
@@ -27,12 +28,6 @@ export const PlayQuestionResult = ({
     playerResults: PropTypes.any,
     totalPoints: PropTypes.number,
   };
-
-  const WhiteTypography = withStyles({
-    root: {
-      color: '#FFFFFF',
-    },
-  })(Typography);
 
   const emptyValues = { text: '', bgColour: '#FFFFFF' };
 

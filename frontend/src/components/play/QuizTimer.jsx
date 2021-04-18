@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, CircularProgress, Typography } from '@material-ui/core';
 import styles from '../../styles/play.module.css';
+
+import { Box, CircularProgress } from '@material-ui/core';
+import WhiteTypography from '../CustomTypography.jsx';
+import { withStyles } from '@material-ui/core/styles';
 
 /**
  *
@@ -15,6 +18,12 @@ export const QuizTimer = ({ duration, timeLeft }) => {
     timeLeft: PropTypes.number,
   };
 
+  const QuizProgress = withStyles({
+    root: {
+      color: '#52D4C5',
+    },
+  })(CircularProgress);
+
   // Circular progress is determined by a 100 to 1 scale. This adjusts the progress to move the whole circle even if it is above or below 100
   const getRelativeTimerValue = () => {
     const interval = 100 / duration;
@@ -23,13 +32,16 @@ export const QuizTimer = ({ duration, timeLeft }) => {
 
   return (
     <Box className={styles.quizTimerWrapper}>
-      <CircularProgress
+      <QuizProgress
         size={60}
+        thickness={4}
         variant="determinate"
         value={getRelativeTimerValue()}
       />
       <Box className={styles.quizTimerTextWrapper}>
-        <Typography className={styles.quizTimerText}>{timeLeft}</Typography>
+        <WhiteTypography className={styles.quizTimerText}>
+          {timeLeft}
+        </WhiteTypography>
       </Box>
     </Box>
   );

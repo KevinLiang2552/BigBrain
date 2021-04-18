@@ -122,6 +122,7 @@ export const LobbyPage = () => {
     if (currentQuestion.isLast) {
       return;
     }
+
     const interval = setInterval(function () {
       getQuestion();
     }, 1000);

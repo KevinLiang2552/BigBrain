@@ -12,6 +12,7 @@ import QuestionMediaBar from './QuestionMediaBar.jsx';
 import SubmitButton from './SubmitButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import PlayQuestionResult from './PlayQuestionResult.jsx';
+import WhiteTypography from '../CustomTypography.jsx';
 
 /**
  *
@@ -248,12 +249,12 @@ export const PlayQuestion = ({
 
   // Render the play question screen
   const renderPlayQuestion = () => {
+    // If results is not null, show quiz Results
     if (playerResults !== null) {
       return <PlayerQuizResults playerResults={playerResults} />;
     }
 
-    // If the answer has already been given (time out)
-    // Display if the user was right or wrong or too late to answer
+    // When the timer runs out show a screen wide prompt on if the user was correct, incorrect all late to answer
     if (questionAnswerIds.length > 0 || timeLeft <= 0) {
       const isLast = question.isLast;
       let questionResultState = '';
@@ -279,31 +280,32 @@ export const PlayQuestion = ({
       );
     }
 
-    // Else return the question and answers
+    const isThereMedia = question.imgSrc !== null || question.videoURL !== null;
+    // Else return the deafult Question display
     return (
       <>
-        <Container>
-          <Grid xs={12} item>
-            <Box mt={3} mb={3} className={styles.questionDisplay}>
-              <Typography></Typography>
-              <Typography variant="h3">{question.question}</Typography>
-              <QuizTimer
-                // Error occurs here because of parseInt?? TODO
-                duration={parseInt(question.duration)}
-                timeLeft={parseInt(timeLeft)}
-              />
+        <Grid xs={12} item>
+          <Box pt={2} pb={2} mb={1} className={styles.questionHeader}>
+            <div className={styles.questionNumber}>
+              <WhiteTypography variant="h4">{question.id + 1}.</WhiteTypography>
+            </div>
+            <WhiteTypography variant="h3">{question.question}</WhiteTypography>
+            <QuizTimer
+              // Error occurs here because of parseInt?? TODO
+              duration={parseInt(question.duration)}
+              timeLeft={parseInt(timeLeft)}
+            />
+          </Box>
+        </Grid>
+        {question.type === 'multiple' && (
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Box mb={2}>
+              <Typography variant="h5">
+                Select multiple answers and submit!
+              </Typography>
             </Box>
           </Grid>
-          {question.type === 'multiple' && (
-            <Grid item xs={12} style={{ textAlign: 'center' }}>
-              <Box mb={2}>
-                <Typography variant="h5">
-                  Select multiple answers and submit!
-                </Typography>
-              </Box>
-            </Grid>
-          )}
-        </Container>
+        )}
 
         <QuestionMediaBar
           imgSrc={question.imgSrc}
@@ -318,7 +320,12 @@ export const PlayQuestion = ({
               <Typography variant="h4">{speedText}</Typography>
             </div>
           ) : (
-            <Grid container spacing={1} className={styles.questionGrid}>
+            <Grid
+              container
+              spacing={1}
+              className={
+                isThereMedia ? styles.questionGridMedia : styles.questionGrid
+              }>
               {question.answers.map((ans) => {
                 return (
                   <PlayQuestionButton
@@ -341,11 +348,9 @@ export const PlayQuestion = ({
   };
 
   return (
-    <>
-      <Grid spacing={1} container>
-        {renderPlayQuestion()}
-      </Grid>
-    </>
+    <Grid container className={styles.mainPlayGrid}>
+      {renderPlayQuestion()}
+    </Grid>
   );
 };
 
