@@ -6,7 +6,7 @@ import {
   MenuItem,
   MenuList,
 } from '@material-ui/core';
-import { useParams } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import { emptyQuestion } from '../../helpers/emptyTypes.js';
 import { EditQuestionDetails } from '../../components/editQuestion/EditQuestionDetails.jsx';
 import { EditExternalMedia } from '../../components/editQuestion/EditExternalMedia.jsx';
@@ -17,6 +17,7 @@ import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 export const EditQuestionPage = () => {
   const api = new API('http://localhost:5005');
   const { id, questionID } = useParams();
+  const history = useHistory();
 
   // Errors to be displayed.
   const defaultErrors = {
@@ -50,10 +51,17 @@ export const EditQuestionPage = () => {
 
   const handleUpdateDetail = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
-    setQuestionDetails({
-      ...questionDetails,
-      [type]: event.target.value,
-    });
+    if (isNaN(parseInt(event.target.value))) {
+      setQuestionDetails({
+        ...questionDetails,
+        [type]: event.target.value,
+      });
+    } else {
+      setQuestionDetails({
+        ...questionDetails,
+        [type]: parseInt(event.target.value),
+      });
+    }
   };
 
   const [mainContent, setMainContent] = useState('mainDetails');
@@ -101,20 +109,6 @@ export const EditQuestionPage = () => {
   reader.addEventListener('load', () => {
     setQuestionDetails({ ...questionDetails, imgSrc: reader.result });
   });
-
-  const changeQuestion = () => {
-    if (enabledInput)
-      return (
-        <Grid item md={4} xs={12}>
-          <Button onClick={handleCancelChanges} variant="contained">
-            Cancel Changes
-          </Button>
-          <Button onClick={handleEditQuestion} variant="contained">
-            Save Changes
-          </Button>
-        </Grid>
-      );
-  };
 
   const handleCancelChanges = () => {
     setQuestion();
@@ -166,9 +160,33 @@ export const EditQuestionPage = () => {
     if (!isObjectValueEmpty(errorList)) {
       setErrors(errorList);
     } else {
-      console.log(questionList);
-      console.log(questionDetails);
+      questionList[questionID] = questionDetails;
+
+      const addQuestionRes = await api.authorisedRequest(
+        'PUT',
+        `admin/quiz/${id}`,
+        { questions: questionList },
+      );
+      if (addQuestionRes.status === 200) {
+        history.push(`/dashboard/edit/${id}`);
+      } else {
+        console.log(addQuestionRes.data.error);
+      }
     }
+  };
+
+  const changeQuestion = () => {
+    if (enabledInput)
+      return (
+        <Grid item md={4} xs={12}>
+          <Button onClick={handleCancelChanges} variant="contained">
+            Cancel Changes
+          </Button>
+          <Button onClick={handleEditQuestion} variant="contained">
+            Save Changes
+          </Button>
+        </Grid>
+      );
   };
 
   return (

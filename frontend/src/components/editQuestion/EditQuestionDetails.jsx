@@ -227,11 +227,51 @@ export const EditQuestionDetails = ({
               defaultValue={questionDetails.question}
               variant="filled"
               onChange={handleUpdateDetail('question')}
+              error={errors.question !== ''}
+              helperText={errors.question}
             />
           ) : (
             <>
               <FormLabel variant="h5">Question</FormLabel>
               <Typography> {questionDetails.question}</Typography>
+            </>
+          )}
+          <br />
+          {enabledInput === true ? (
+            <TextField
+              required
+              id="points"
+              label="Points"
+              defaultValue={questionDetails.points}
+              variant="filled"
+              type="number"
+              onChange={handleUpdateDetail('points')}
+              error={errors.points !== ''}
+              helperText={errors.points}
+            />
+          ) : (
+            <>
+              <FormLabel variant="h5">Points</FormLabel>
+              <Typography> {questionDetails.points}</Typography>
+            </>
+          )}
+          <br />
+          {enabledInput === true ? (
+            <TextField
+              required
+              id="duration"
+              label="Duration"
+              defaultValue={questionDetails.duration}
+              variant="filled"
+              type="number"
+              onChange={handleUpdateDetail('duration')}
+              error={errors.duration !== ''}
+              helperText={errors.duration}
+            />
+          ) : (
+            <>
+              <FormLabel variant="h5">Duration</FormLabel>
+              <Typography> {questionDetails.duration}</Typography>
             </>
           )}
           <br />
