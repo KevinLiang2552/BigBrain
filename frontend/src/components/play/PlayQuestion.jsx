@@ -5,10 +5,10 @@ import { getPlayerToken } from '../../helpers/user.js';
 import styles from '../../styles/play.module.css';
 
 import { Box, Container, Grid, Typography } from '@material-ui/core';
-// import Image from 'material-ui-image';
 
 import PlayQuestionButton from './PlayQuestionButton.jsx';
 import PlayerQuizResults from './PlayerQuizResults.jsx';
+import QuestionMediaBar from './QuestionMediaBar.jsx';
 import SubmitButton from './SubmitButton.jsx';
 import QuizTimer from './QuizTimer.jsx';
 import PlayQuestionResult from './PlayQuestionResult.jsx';
@@ -305,14 +305,13 @@ export const PlayQuestion = ({
           )}
         </Container>
 
-        {/* Image and Video */}
-
-        {/* <Grid item xs={12}>
-          <Image src={question.imgSrc}></Image>
-          <Image></Image>
-        </Grid> */}
+        <QuestionMediaBar
+          imgSrc={question.imgSrc}
+          videoURL={question.videoURL}
+        />
 
         {/* If the player answered the question early determine */}
+
         <Container>
           {timeAnswered > 0 ? (
             <div className={styles.speedText}>
@@ -343,7 +342,9 @@ export const PlayQuestion = ({
 
   return (
     <>
-      <Grid container>{renderPlayQuestion()}</Grid>
+      <Grid spacing={1} container>
+        {renderPlayQuestion()}
+      </Grid>
     </>
   );
 };
