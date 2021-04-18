@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../styles/auth.module.css';
 import { Link, useHistory } from 'react-router-dom';
@@ -32,23 +32,6 @@ export const LoginPage = ({ setAuthToken }) => {
   const [errors, setErrors] = useState(defaultErrors);
   const [loginError, setLoginError] = useState('');
 
-  // Enter key event listner
-  useEffect(() => {
-    const currentWindow = window;
-    currentWindow.addEventListener('keydown', handleEnterKey);
-    return () => {
-      console.log('HEY');
-      currentWindow.removeEventListener('keydown', handleEnterKey);
-    };
-  }, []);
-
-  // Enter key submits form
-  const handleEnterKey = () => (event) => {
-    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
-      document.getElementById('loginButton').click();
-    }
-  };
-
   // After form inpuut change remove all errors on that input and update the details
   const handleFormChange = (type) => (event) => {
     setErrors({ ...errors, [type]: '' });
@@ -62,6 +45,7 @@ export const LoginPage = ({ setAuthToken }) => {
 
   // Handle the login and update relevant errors
   const handleLogin = () => async (event) => {
+    event.preventDefault();
     setLoginError('');
     setErrors(defaultErrors);
 
@@ -100,7 +84,7 @@ export const LoginPage = ({ setAuthToken }) => {
   return (
     <>
       <Container className={styles.mainBackground}>
-        <form className={styles.authForm}>
+        <form onSubmit={handleLogin()} className={styles.authForm}>
           <h1>Login</h1>
           <Box mt={2}>
             <DefaultInput
@@ -124,8 +108,9 @@ export const LoginPage = ({ setAuthToken }) => {
             <Button
               id="loginButton"
               variant="contained"
-              color="primary"
-              onClick={handleLogin()}>
+              type="submit"
+              color="primary">
+              {/* // onClick={handleLogin}>  */}
               Log In
             </Button>
           </Box>
