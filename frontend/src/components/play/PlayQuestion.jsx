@@ -351,7 +351,10 @@ export const PlayQuestion = ({
 
         <Container>
           {timeAnswered > 0 ? (
-            <div className={styles.speedText}>
+            <div
+              className={
+                isThereMedia ? styles.speedTextMedia : styles.speedText
+              }>
               <Typography variant="h4">{speedText}</Typography>
             </div>
           ) : (
