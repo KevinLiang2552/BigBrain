@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/play.module.css';
-import CheckIcon from '@material-ui/icons/Check';
-
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 /**
  *
  * @param {string} answer The answeer text
@@ -65,10 +65,6 @@ export const PlayQuestionButton = ({
     },
   })(Button);
 
-  const QuestionCheckIcon = withStyles({
-    root: { color: '#ffffff' },
-  })(CheckIcon);
-
   const handleClick = () => {
     if (type === 'multiple') {
       setToggle(!toggle);
@@ -78,16 +74,15 @@ export const PlayQuestionButton = ({
 
   return (
     <Grid xs={12} md={6} item>
-      <QuestionButton
-        variant="contained"
-        className={styles.questionButton}
-        onClick={handleClick}>
+      <QuestionButton variant="contained" onClick={handleClick}>
         {type === 'multiple' && (
-          <QuestionCheckIcon
-            fontSize="large"
-            style={{
-              visibility: toggle ? 'visible' : 'hidden',
-            }}></QuestionCheckIcon>
+          <div className={styles.buttonToggle}>
+            {toggle ? (
+              <CheckBoxIcon fontSize="large" />
+            ) : (
+              <CheckBoxOutlineBlankIcon fontSize="large" />
+            )}
+          </div>
         )}
         {answer}
       </QuestionButton>
