@@ -92,7 +92,10 @@ export const EditQuestionPage = () => {
       return (
         <EditExternalMedia
           questionDetails={questionDetails}
+          handleUpdateDetail={handleUpdateDetail}
           handleImageUpload={handleImageUpload}
+          toggleEnableEdit={toggleEnableEdit}
+          enabledInput={enabledInput}
         />
       );
     }

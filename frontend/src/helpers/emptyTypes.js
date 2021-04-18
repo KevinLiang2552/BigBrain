@@ -27,5 +27,5 @@ export const emptyQuestion = {
   answers: [],
   correctAnswers: [],
   imgSrc: null,
-  vidSrc: null,
+  videoURL: null,
 };
