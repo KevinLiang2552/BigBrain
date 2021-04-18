@@ -22,6 +22,15 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 
+/**
+ * @param {object} errors An object with errors that are to be displayed to the user
+ * @param {object} questionDetails An object that holds all the errors a question has
+ * @param {boolean} enabledInput The state in which editing is enabled
+ * @param {function} toggleEnabledEdit A function that should toggle the enabled input state
+ * @param {function} handleUpdateDetails A function that should set errors and set questionDetails
+ * @param {function} setErrors A function that should set the errors the user may have created
+ */
+
 export const EditQuestionDetails = ({
   errors,
   questionDetails,
@@ -116,10 +125,14 @@ export const EditQuestionDetails = ({
     });
   };
 
+  // Function for setting the answer field depending on if it is
+  // to be edited or not, as well as the answer type.
   const setAnswersField = (answer, index) => {
+    // Check if the user is allowed to edit
     if (enabledInput) {
       let selectCorrectAnswer;
 
+      // Check the question type and set the fields accordingly
       if (questionDetails.type === 'single') {
         selectCorrectAnswer = (
           <Radio
@@ -168,6 +181,7 @@ export const EditQuestionDetails = ({
         </>
       );
     } else {
+      // If not editing, display a non-editable list
       let icon;
       if (questionDetails.correctAnswers.includes(answer.id)) {
         icon = <CheckIcon />;
@@ -185,29 +199,12 @@ export const EditQuestionDetails = ({
     }
   };
 
-  const addAnswers = () => {
-    if (enabledInput)
-      return (
-        <ListItem>
-          <TextField
-            type="answer"
-            onChange={handleAnswersFormChange}
-            error={errors.answer !== ''}
-            helperText={errors.answer}
-            value={newAnswer}
-          />
-          <ListItemSecondaryAction>
-            <IconButton edge="end" aria-label="add" onClick={handleAddAnswer}>
-              <AddIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-      );
-  };
-
   return (
     <>
       <Grid container>
+        {/* Header for the edit screen
+        Checks if editing or not to remove the edit icon */}
+
         <Typography variant="h4">Main Details</Typography>
         {enabledInput === true ? (
           <></>
@@ -219,6 +216,9 @@ export const EditQuestionDetails = ({
       </Grid>
       <Grid container>
         <Grid item md={4} xs={12}>
+          {/* Editing a question, point and duration
+          Checks if editing or not to change into a input field 
+          If not just display the value */}
           {enabledInput === true ? (
             <TextField
               required
@@ -275,6 +275,8 @@ export const EditQuestionDetails = ({
             </>
           )}
           <br />
+          {/* Editing a the type of question
+          Checks if editing or not to allow the user to change the type */}
           <FormLabel variant="h5">Type</FormLabel>
           <RadioGroup
             aria-label="Question Type"
@@ -296,10 +298,33 @@ export const EditQuestionDetails = ({
           </RadioGroup>
         </Grid>
         <Grid item md={4} xs={12}>
+          {/* Editing a the answers to a question
+          Checks if editing or not to allow the user to delete or add answers
+          Also allows the user to select new correct answers */}
           <Typography variant="h5">Answers:</Typography>
           <List>
             {questionDetails.answers.map(setAnswersField)}
-            {addAnswers()}
+            {enabledInput === true ? (
+              <ListItem>
+                <TextField
+                  type="answer"
+                  onChange={handleAnswersFormChange}
+                  error={errors.answer !== ''}
+                  helperText={errors.answer}
+                  value={newAnswer}
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="add"
+                    onClick={handleAddAnswer}>
+                    <AddIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ) : (
+              <></>
+            )}
           </List>
         </Grid>
       </Grid>

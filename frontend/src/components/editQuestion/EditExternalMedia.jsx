@@ -30,6 +30,8 @@ export const EditExternalMedia = ({
   return (
     <Grid container>
       <Typography variant="h4">External Media</Typography>
+      {/* Header for the edit screen 
+       Checks if editing or not to remove the edit icon */}
       {enabledInput === true ? (
         <></>
       ) : (
@@ -39,6 +41,8 @@ export const EditExternalMedia = ({
       )}
       <Grid container spacing={4}>
         <Grid item md={3} xs={12}>
+          {/* Display the image of the quiz 
+          Checks if editing or not to add the upload button */}
           <Typography variant="h5">Quiz Image</Typography>
           <Image
             src={
@@ -65,9 +69,10 @@ export const EditExternalMedia = ({
         </Grid>
 
         <Grid item md={8} xs={12}>
+          {/* Display the video of the quiz 
+          Checks if editing or not to add the upload button */}
           <Typography variant="h5">Linked Quiz Video</Typography>
           {/* If you have an ad blocker, this will produce a bunch of errors in the console due to the ads being blocked by the client */}
-
           {enabledInput === true ? (
             <TextField
               id="videoURL"
