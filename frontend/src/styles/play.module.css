@@ -4,14 +4,57 @@
   align-items: center;
 }
 
-.questionGrid {
-  height: 70vh;
+/*  Lobby  */
+.loadingProgress {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-.questionDisplay {
+/*  play question */
+
+.mainPlayGrid {
+  height: 100vh;
+  width: 100%;
+}
+
+.questionHeader {
   text-align: center;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: space-around;
+  background: linear-gradient(
+    to bottom right,
+    var(--spectrum-color-2),
+    #8452d4
+  );
+  background-color: var(--spectrum-color-2);
+  border-bottom: black solid 2px;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+}
+
+.questionNumber {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  background-color: #3041c3;
+}
+
+.questionGridMedia {
+  height: 40vh;
+}
+
+.questionGrid {
+  height: 80vh;
 }
 
 .quizTimerWrapper {
@@ -36,20 +79,76 @@
   font-size: 1.3em;
 }
 
-.speedText {
+.speedTextMedia {
   width: 100%;
-  height: 70vh;
+  height: 40vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.speedText {
+  width: 100%;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonToggle {
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+}
+
+/* Results  */
+
 .questionResultWrapper {
   width: 100%;
-  height: 90vh;
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
+
+.resultsCenterText {
+  display: flex;
+  justify-content: center;
+}
+
+.resultLine {
+  display: flex;
+  justify-content: center;
+}
+
+.resultLineTextWrapper {
+  min-width: 140px;
+}
+
+/* Question Media Bar */
+
+.mediaItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quizImage {
+  width: 30vh;
+  height: 30vh;
+}
+
+.quizVideo {
+  width: 560px;
+  height: 315px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .quizVideo {
+    width: 320px;
+    height: 180px;
+  }
 }

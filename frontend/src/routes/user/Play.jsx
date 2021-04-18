@@ -51,19 +51,8 @@ export const PlayPage = ({ setPlayerToken }) => {
     setGameDetails({ ...gameDetails, [type]: event.target.value });
   };
 
-  // Enter key event listner
-  useEffect(() => {
-    window.addEventListener('keydown', handleEnterKey());
-  }, []);
-
-  // Enter key submits form
-  const handleEnterKey = () => (event) => {
-    if (event.key === 'Enter' && event.target instanceof HTMLInputElement) {
-      document.getElementById('loginButton').click();
-    }
-  };
-
-  const handleJoinGame = () => async () => {
+  const handleJoinGame = () => async (event) => {
+    event.preventDefault();
     setErrors(defaultErrors);
 
     const errorList = defaultErrors;
@@ -129,6 +118,7 @@ export const PlayPage = ({ setPlayerToken }) => {
             </Box>
             <Button
               variant="contained"
+              type="submit"
               color="primary"
               onClick={handleJoinGame()}>
               Search for game

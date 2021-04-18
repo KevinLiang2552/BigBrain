@@ -1,23 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Container, Grid, Typography } from '@material-ui/core';
-import PlayQuestionButton from './PlayQuestionButton.jsx';
-import QuizTimer from './QuizTimer.jsx';
-import { getPlayerToken } from '../../helpers/user.js';
 import API from '../../api/api.js';
-import PlayQuestionResult from './PlayQuestionResult.jsx';
-
+import { getPlayerToken } from '../../helpers/user.js';
 import styles from '../../styles/play.module.css';
+
+import { Box, Container, Grid, Typography } from '@material-ui/core';
+
+import PlayQuestionButton from './PlayQuestionButton.jsx';
+import PlayerQuizResults from './PlayerQuizResults.jsx';
+import QuestionMediaBar from './QuestionMediaBar.jsx';
+import SubmitButton from './SubmitButton.jsx';
+import QuizTimer from './QuizTimer.jsx';
+import PlayQuestionResult from './PlayQuestionResult.jsx';
+import WhiteTypography from '../CustomTypography.jsx';
 
 /**
  *
  * @param {object} questionData The question's data (name, answers, etc...)
  * @returns
  */
-export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
+export const PlayQuestion = ({
+  questionData,
+  pageForNewQuestion,
+  addPoints,
+  totalPoints,
+}) => {
   PlayQuestion.propTypes = {
     questionData: PropTypes.object,
     pageForNewQuestion: PropTypes.func,
+    addPoints: PropTypes.func,
+    totalPoints: PropTypes.number,
   };
 
   const api = new API('http://localhost:5005');
@@ -31,6 +43,9 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   // Players answers of the current question
   const [playerAnswerIds, setPlayerAnswerIds] = useState([]);
 
+  // Player has submitted their answer
+  const [playerSubmit, setPlayerSubmit] = useState(false);
+
   // The amount of time left for the question
   const [timeLeft, setTimeLeft] = useState(questionData.duration);
 
@@ -43,17 +58,26 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   // Funny Text
   const [speedText, setSpeedText] = useState('');
 
+  // Current points the player can earn for the current question
+  const [currentPoints, setCurrentPoints] = useState(0);
+
+  // The players results
+  const [playerResults, setPlayerResults] = useState(null);
+
   // Set default value when question data changes
   useEffect(() => {
     setQuestion(questionData);
     setTimeAnswered(-1);
     setQuestionAnswerIds([]);
     setPlayerAnswerIds([]);
+    setPlayerSubmit(false);
     getCurrentTimeLeft();
     startTimer();
   }, [questionData]);
 
-  // When timehas run out end the question
+  // ⏲️ Timer Logic  ⏲️
+
+  // When time has run out end the question
   useEffect(() => {
     if (timeLeft <= 0) {
       clearInterval(timer);
@@ -102,7 +126,10 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     setTimer(interval);
   };
 
-  // Get the answer of the current question (only occurs when the timer runs out)
+  // 🙋 Handling answers and educated guesses  🙋
+
+  // Get the answer for the current question. [Called in timeLeft useEffect]
+  // Store value in questionAnswersIds
   const getAnswer = async () => {
     const res = await api.authorisedRequest(
       'GET',
@@ -115,14 +142,46 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     }
   };
 
-  // Given an array of ids of players answer, put answer for the current question
-  // Set time the player answered the question at. This is used to determine time points.
+  // isPlayerCorrect is based off questionAnswerids, so we have to wait for it to be set
+  // As points are calculated off the time left we store the value first, then add it after (only if the player is correct)
+  useEffect(() => {
+    if (questionAnswerIds.length > 0 && isPlayerCorrect()) {
+      addPoints(currentPoints);
+    }
+  }, [questionAnswerIds]);
+
+  /**
+   * When a user presses a answer button, the answer is id is passed down to this function
+   * If the playerAnswerIds list does not contain the id it will add it to the list
+   * If the playerAnswerIds list does contain the id it will delete it from the list
+   *
+   * For a question.type: single, the first time this function is called it will immeaditely called putAnswers
+   * For a question.type: multiple, it only adds the id to the list
+   * @param {*} id id of answer
+   */
+  const handleQuestionClick = (id) => {
+    // Remove answer from list if already in the list for a multiple type question
+    if (playerAnswerIds.includes(id) && question.type === 'multiple') {
+      const index = playerAnswerIds.indexOf(id);
+      playerAnswerIds.splice(index, 1);
+    } else {
+      playerAnswerIds.push(id);
+    }
+    if (question.type === 'single') {
+      putAnswers(playerAnswerIds);
+    }
+  };
+
+  // For question.type: multiple a submit button is given which submits the answers
+  const handleSubmitAnswers = () => {
+    putAnswers(playerAnswerIds);
+  };
+
+  // First sends playerAnswersIds to API with player answers
+  // Activates "funny" text telling the user how faast they were
+  // Calculate the amount of potential points the player can win
+  // Note it is multiplied by 100 to make it seem like points matter, but they really don't 😔
   const putAnswers = async () => {
-    setFunnyText();
-    setTimeAnswered(timeLeft);
-
-    // TO DO: TIME POINTS
-
     const res = await api.authorisedRequest(
       'PUT',
       `play/${getPlayerToken()}/answer`,
@@ -130,33 +189,17 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     );
     if (res.status !== 200) {
       console.log(res.data.error);
+    } else {
+      setPlayerSubmit(true);
+
+      setFunnyText();
+      setTimeAnswered(timeLeft);
+
+      const questionPoints =
+        parseInt(question.points) * 100 + calculateSpeedPoints();
+
+      setCurrentPoints(questionPoints);
     }
-  };
-
-  /**
-   * Given an id of answer. If single add this to answers and put these answer to api.
-   * If multiple just add to array of answers.
-   * @param {*} id id of answer
-   */
-  const handleQuestionClick = (id) => {
-    playerAnswerIds.push(id);
-    putAnswers(playerAnswerIds);
-  };
-
-  /**
-   *
-   * @returns {bool} return if the player has the correct answer/s for the current question
-   */
-  const isPlayerCorrect = () => {
-    let correct = true;
-    for (const questionAnswer of questionAnswerIds) {
-      if (!playerAnswerIds.includes(questionAnswer)) {
-        correct = false;
-        break;
-      }
-    }
-
-    return correct;
   };
 
   // Set text for when the player answers the question after a certain time period
@@ -182,6 +225,36 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     setSpeedText(speedText);
   };
 
+  // Calculate the amount of points a player get for their answering speed
+  // The player can only get points of interval of 0.05 and the max being 0.5
+  // Same with the points before it is multiplied by 100
+  const calculateSpeedPoints = () => {
+    const howFast = Math.ceil((timeLeft / question.duration) * 10);
+    return howFast * 0.05 * 100;
+  };
+
+  /**
+   *
+   * @returns {bool} return if the player has the correct answer/s for the current question
+   */
+  const isPlayerCorrect = () => {
+    if (!playerSubmit) {
+      return false;
+    }
+    let correct = true;
+    console.log({ playerAnswerIds, questionAnswerIds });
+    for (const questionAnswer of questionAnswerIds) {
+      if (!playerAnswerIds.includes(questionAnswer)) {
+        correct = false;
+        break;
+      }
+    }
+
+    return correct;
+  };
+
+  // Get the answer text of the current question to display on the result question
+  // To show what the correct answer is.
   const getQuestionAnswersText = () => {
     const answersText = [];
     for (const questionAnswer of question.answers) {
@@ -192,65 +265,119 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     return answersText;
   };
 
+  // Get the quiz results
+  const getQuizResult = async () => {
+    const res = await api.authorisedRequest(
+      'GET',
+      `play/${getPlayerToken()}/results`,
+    );
+    if (res.status === 200) {
+      setPlayerResults(res.data);
+    }
+  };
+
   // Render the play question screen
   const renderPlayQuestion = () => {
-    // If the answer has already been given (time out)
-    // Display if the user was right or wrong or too late to answer
+    // If results is not null, show quiz Results
+    if (playerResults !== null) {
+      return (
+        <PlayerQuizResults
+          playerResults={playerResults}
+          totalScore={totalPoints}
+        />
+      );
+    }
+    // When the timer runs out show a screen wide prompt on if the user was correct, incorrect all late to answer
     if (questionAnswerIds.length > 0 || timeLeft <= 0) {
-      // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
-      // Should display a buffer screen then the result
+      const isLast = question.isLast;
+      let questionResultState = '';
+      let questionResultAnswers = getQuestionAnswersText();
 
       if (playerAnswerIds.length === 0) {
-        return (
-          <PlayQuestionResult state="late" answers={getQuestionAnswersText()} />
-        );
+        questionResultState = 'late';
       } else if (isPlayerCorrect()) {
-        return <PlayQuestionResult state="correct" />;
+        questionResultState = 'correct';
+        questionResultAnswers = [];
       } else {
-        return (
-          <PlayQuestionResult
-            state="incorrect"
-            answers={getQuestionAnswersText()}
-          />
-        );
+        questionResultState = 'incorrect';
       }
+      return (
+        <PlayQuestionResult
+          state={questionResultState}
+          isLast={isLast}
+          answers={questionResultAnswers}
+          getQuizResult={getQuizResult}
+          playerResults={playerResults}
+          totalPoints={totalPoints}
+        />
+      );
     }
 
-    // Else return the question and answers
+    // responsive media query boolean
+    const isThereMedia = question.imgSrc !== null || question.videoURL !== null;
+
+    // Else return the deafult Question display
     return (
       <>
-        <Container>
-          <Grid xs={12} item>
-            <Box mt={3} mb={3} className={styles.questionDisplay}>
-              <Typography></Typography>
-              <Typography variant="h3">{question.question}</Typography>
-              <QuizTimer
-                // Error occurs here because of parseInt?? TODO
-                duration={parseInt(question.duration)}
-                timeLeft={parseInt(timeLeft)}
-              />
+        <Grid xs={12} item>
+          <Box pt={2} pb={2} mb={1} className={styles.questionHeader}>
+            <div className={styles.questionNumber}>
+              <WhiteTypography variant="h4">{question.id + 1}.</WhiteTypography>
+            </div>
+            <WhiteTypography variant="h3">{question.question}</WhiteTypography>
+            <QuizTimer
+              // Error occurs here because of parseInt?? TODO
+              duration={parseInt(question.duration)}
+              timeLeft={parseInt(timeLeft)}
+            />
+          </Box>
+        </Grid>
+        {question.type === 'multiple' && (
+          <Grid item xs={12} style={{ textAlign: 'center' }}>
+            <Box mb={2}>
+              <Typography variant="h5">
+                Select multiple answers and submit!
+              </Typography>
             </Box>
           </Grid>
-        </Container>
+        )}
+
+        <QuestionMediaBar
+          imgSrc={question.imgSrc}
+          videoURL={question.videoURL}
+        />
 
         {/* If the player answered the question early determine */}
+
         <Container>
           {timeAnswered > 0 ? (
-            <div className={styles.speedText}>
+            <div
+              className={
+                isThereMedia ? styles.speedTextMedia : styles.speedText
+              }>
               <Typography variant="h4">{speedText}</Typography>
             </div>
           ) : (
-            <Grid container spacing={1} className={styles.questionGrid}>
+            <Grid
+              container
+              spacing={1}
+              className={
+                isThereMedia ? styles.questionGridMedia : styles.questionGrid
+              }>
               {question.answers.map((ans) => {
                 return (
                   <PlayQuestionButton
                     key={ans.id}
+                    type={question.type}
                     answer={ans.answer}
                     id={ans.id}
                     handleQuestionClick={handleQuestionClick}
                   />
                 );
               })}
+              {question.type === 'multiple' && (
+                <SubmitButton handleSubmitAnswers={handleSubmitAnswers} />
+              )}
             </Grid>
           )}
         </Container>
@@ -259,9 +386,9 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
   };
 
   return (
-    <>
-      <Grid container>{renderPlayQuestion()}</Grid>
-    </>
+    <Grid container className={styles.mainPlayGrid}>
+      {renderPlayQuestion()}
+    </Grid>
   );
 };
 

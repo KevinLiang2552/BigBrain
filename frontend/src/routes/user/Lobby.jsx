@@ -16,11 +16,15 @@ export const LobbyPage = () => {
   const [started, setStarted] = useState(false);
 
   // interval value of status inteval, so we can clear the interval
-  const [statusInterval, setStatusInterval] = useState(-100);
+  const [statusInterval, setStatusInterval] = useState(-1);
 
   const [newQuestionInterval, setNewQuestionInterval] = useState(-1);
 
   const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
+
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  const [funnyTextInterval, setFunnyTextInterval] = useState(-1);
 
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
@@ -47,30 +51,37 @@ export const LobbyPage = () => {
       setLoadingText(funnyText[newFunnyText]);
       previousFunnyText = newFunnyText;
     }, 10000);
-
+    setFunnyTextInterval(funnyInterval);
     return () => clearInterval(funnyInterval);
   }, []);
 
   // When started value changes usually to true, get the first question
   useEffect(async () => {
-    if (started) {
+    if (statusInterval >= 0) {
       clearInterval(statusInterval);
-
+      setStatusInterval(-1);
+      clearInterval(funnyTextInterval);
+      setFunnyTextInterval(-1);
       getQuestion();
     } else {
-      const interval = setInterval(function () {
-        updateStatus();
-      }, 1000);
-      setStatusInterval(interval);
+      startStatusInterval();
     }
 
     // If the interval is not cleaned up (player left before lobby started) remove interval
     return () => {
-      if (!started) {
+      if (statusInterval >= 0) {
         clearInterval(statusInterval);
+        setStatusInterval(-1);
       }
     };
   }, [started]);
+
+  const startStatusInterval = () => {
+    const interval = setInterval(function () {
+      updateStatus();
+    }, 1000);
+    setStatusInterval(interval);
+  };
 
   // Get player lobby status
   const updateStatus = async () => {
@@ -79,6 +90,7 @@ export const LobbyPage = () => {
       `play/${getPlayerToken()}/status`,
     );
     if (res.status === 200) {
+      console.log(res);
       setStarted(res.data.started);
     }
   };
@@ -108,14 +120,17 @@ export const LobbyPage = () => {
   // Constantly call api for new question
   const pageForNewQuestion = () => {
     if (currentQuestion.isLast) {
-      console.log('IS LAST QUESTION');
-      // TO DO RESULT PAGE
-    } else {
-      const interval = setInterval(function () {
-        getQuestion();
-      }, 1000);
-      setNewQuestionInterval(interval);
+      return;
     }
+
+    const interval = setInterval(function () {
+      getQuestion();
+    }, 1000);
+    setNewQuestionInterval(interval);
+  };
+
+  const addPoints = (number) => {
+    setTotalPoints(totalPoints + number);
   };
 
   return (
@@ -125,6 +140,8 @@ export const LobbyPage = () => {
         <PlayQuestion
           questionData={currentQuestion}
           pageForNewQuestion={pageForNewQuestion}
+          addPoints={addPoints}
+          totalPoints={totalPoints}
         />
       ) : (
         // Else stuck in a lobby

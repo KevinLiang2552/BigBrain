@@ -50,6 +50,7 @@ export const RegisterPage = ({ setAuthToken }) => {
 
   // Handle the register and update relevant errors
   const handleRegister = () => async (event) => {
+    event.preventDefault();
     setErrors(defaultErrors);
     setRegisterError('');
 
@@ -150,6 +151,7 @@ export const RegisterPage = ({ setAuthToken }) => {
           </Box>
           <p className={styles.errorText}>{registerError}</p>
           <Button
+            type="submit"
             variant="contained"
             color="primary"
             onClick={handleRegister()}>

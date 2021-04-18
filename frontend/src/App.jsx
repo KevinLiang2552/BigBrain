@@ -7,7 +7,8 @@ import { LobbyPage } from './routes/user/Lobby.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
 import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
+
 import { Header } from './components/Header';
 
 import {
@@ -38,57 +39,76 @@ function App() {
     setPlayToken(token);
   };
 
+  // Determine to show or hide header
+  const [showHeader, setShowHeader] = useState(true);
+
+  // Track what route is being navigated to
+  const location = useLocation();
+
+  // If the route is a play route hide the header
+  useEffect(() => {
+    const playRegex = /\/play.*/;
+    const isPlayRoute = playRegex.exec(location.pathname);
+
+    if (isPlayRoute) {
+      setShowHeader(false);
+    } else {
+      setShowHeader(true);
+    }
+  }, [location]);
+
   return (
     <>
       {/* This is the main browser router. 
       Whenever you want to add a new page/route add it hear with a unique path */}
-      <BrowserRouter>
+
+      {showHeader && (
         <Header authToken={authenToken} setAuthToken={childSetAuthToken} />
-        <Switch>
-          <Route exact path="/">
-            {authenToken === '' ? (
-              <SplashPage></SplashPage>
-            ) : (
-              <Redirect to="/dashboard"></Redirect>
-            )}
-          </Route>
-          <Route path="/login">
-            {authenToken === '' ? (
-              <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
-            ) : (
-              <Redirect to="/dashboard"></Redirect>
-            )}
-          </Route>
-          <Route path="/register">
-            {authenToken === '' ? (
-              <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
-            ) : (
-              <Redirect to="/dashboard"></Redirect>
-            )}
-          </Route>
-          <Route path="/dashboard/edit/:id/:questionID">
-            <EditQuestionPage />
-          </Route>
-          <Route path="/dashboard/edit/:id">
-            <EditQuizPage />
-          </Route>
-          <Route path="/dashboard">
-            <DashboardPage></DashboardPage>
-          </Route>
-          <Route path="/play/:id/lobby">
-            <LobbyPage />
-          </Route>
-          <Route path="/play/:id">
-            <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
-          </Route>
-          <Route path="/play">
-            <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
-          </Route>
-          <Route>
+      )}
+      <Switch>
+        <Route exact path="/">
+          {authenToken === '' ? (
             <SplashPage></SplashPage>
-          </Route>
-        </Switch>
-      </BrowserRouter>
+          ) : (
+            <Redirect to="/dashboard"></Redirect>
+          )}
+        </Route>
+        <Route path="/login">
+          {authenToken === '' ? (
+            <LoginPage setAuthToken={childSetAuthToken}></LoginPage>
+          ) : (
+            <Redirect to="/dashboard"></Redirect>
+          )}
+        </Route>
+        <Route path="/register">
+          {authenToken === '' ? (
+            <RegisterPage setAuthToken={childSetAuthToken}></RegisterPage>
+          ) : (
+            <Redirect to="/dashboard"></Redirect>
+          )}
+        </Route>
+        <Route path="/dashboard/edit/:id/:questionID">
+          <EditQuestionPage />
+        </Route>
+        <Route path="/dashboard/edit/:id">
+          <EditQuizPage />
+        </Route>
+        <Route path="/dashboard">
+          <DashboardPage></DashboardPage>
+        </Route>
+        <Route path="/play/:id/lobby">
+          <LobbyPage />
+        </Route>
+        <Route path="/play/:id">
+          <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
+        </Route>
+        <Route path="/play">
+          <PlayPage setPlayerToken={childSetPlayerToken}></PlayPage>
+        </Route>
+        <Route>
+          <SplashPage></SplashPage>
+        </Route>
+      </Switch>
     </>
   );
 }

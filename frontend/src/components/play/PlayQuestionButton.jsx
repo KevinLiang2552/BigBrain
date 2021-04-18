@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Grid, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import styles from '../../styles/play.module.css';
-
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@material-ui/icons/CheckBox';
 /**
  *
  * @param {string} answer The answeer text
@@ -11,8 +12,14 @@ import styles from '../../styles/play.module.css';
  * @param {string} handleQuestionClick handle for clicking of this answer
  * @returns
  */
-export const PlayQuestionButton = ({ answer, id, handleQuestionClick }) => {
+export const PlayQuestionButton = ({
+  type,
+  answer,
+  id,
+  handleQuestionClick,
+}) => {
   PlayQuestionButton.propTypes = {
+    type: PropTypes.string,
     answer: PropTypes.string,
     id: PropTypes.number,
     handleQuestionClick: PropTypes.func,
@@ -46,6 +53,8 @@ export const PlayQuestionButton = ({ answer, id, handleQuestionClick }) => {
     return backgroundColour;
   };
 
+  const [toggle, setToggle] = useState(false);
+
   const QuestionButton = withStyles({
     root: {
       background: `linear-gradient(to right, ${getBackgroundColour()} 70%, ${getBackgroundColour()} )`,
@@ -56,14 +65,25 @@ export const PlayQuestionButton = ({ answer, id, handleQuestionClick }) => {
     },
   })(Button);
 
+  const handleClick = () => {
+    if (type === 'multiple') {
+      setToggle(!toggle);
+    }
+    handleQuestionClick(id);
+  };
+
   return (
     <Grid xs={12} md={6} item>
-      <QuestionButton
-        variant="contained"
-        className={styles.questionButton}
-        onClick={function () {
-          handleQuestionClick(id);
-        }}>
+      <QuestionButton variant="contained" onClick={handleClick}>
+        {type === 'multiple' && (
+          <div className={styles.buttonToggle}>
+            {toggle ? (
+              <CheckBoxIcon fontSize="large" />
+            ) : (
+              <CheckBoxOutlineBlankIcon fontSize="large" />
+            )}
+          </div>
+        )}
         {answer}
       </QuestionButton>
     </Grid>
