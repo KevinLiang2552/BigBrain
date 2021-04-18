@@ -304,7 +304,7 @@ export const EditQuestionDetails = ({
           <Typography variant="h5">Answers:</Typography>
           <List>
             {questionDetails.answers.map(setAnswersField)}
-            {enabledInput === true ? (
+            {enabledInput && (
               <ListItem>
                 <TextField
                   type="answer"
@@ -322,8 +322,6 @@ export const EditQuestionDetails = ({
                   </IconButton>
                 </ListItemSecondaryAction>
               </ListItem>
-            ) : (
-              <></>
             )}
           </List>
         </Grid>

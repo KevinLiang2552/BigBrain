@@ -52,7 +52,7 @@ export const EditExternalMedia = ({
             }
             alt={'question image'}
           />
-          {enabledInput === true ? (
+          {enabledInput === true && (
             <Button variant="contained" component="label">
               Upload picture
               <input
@@ -63,8 +63,6 @@ export const EditExternalMedia = ({
                 hidden
               />
             </Button>
-          ) : (
-            <></>
           )}
         </Grid>
 
