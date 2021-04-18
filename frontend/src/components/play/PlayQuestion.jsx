@@ -15,10 +15,17 @@ import styles from '../../styles/play.module.css';
  * @param {object} questionData The question's data (name, answers, etc...)
  * @returns
  */
-export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
+export const PlayQuestion = ({
+  questionData,
+  pageForNewQuestion,
+  addPoints,
+  totalPoints,
+}) => {
   PlayQuestion.propTypes = {
     questionData: PropTypes.object,
     pageForNewQuestion: PropTypes.func,
+    addPoints: PropTypes.func,
+    totalPoints: PropTypes.number,
   };
 
   const api = new API('http://localhost:5005');
@@ -46,6 +53,8 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
 
   const [playerResults, setPlayerResults] = useState(null);
 
+  const [currentPoints, setCurrentPoints] = useState(0);
+
   // Set default value when question data changes
   useEffect(() => {
     setQuestion(questionData);
@@ -64,6 +73,12 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
       pageForNewQuestion();
     }
   }, [timeLeft]);
+
+  useEffect(() => {
+    if (questionAnswerIds.length > 0 && isPlayerCorrect()) {
+      addPoints(currentPoints);
+    }
+  }, [questionAnswerIds]);
 
   // Clean up
   useEffect(() => {
@@ -124,7 +139,10 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     setFunnyText();
     setTimeAnswered(timeLeft);
 
-    // TO DO: TIME POINTS
+    // set potential points for current question
+
+    const questionPoints = parseInt(question.points) + calculateSpeedPoints();
+    setCurrentPoints(questionPoints);
 
     const res = await api.authorisedRequest(
       'PUT',
@@ -151,10 +169,10 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
    * @returns {bool} return if the player has the correct answer/s for the current question
    */
   const isPlayerCorrect = () => {
-    let correct = true;
+    let correct = false;
     for (const questionAnswer of questionAnswerIds) {
-      if (!playerAnswerIds.includes(questionAnswer)) {
-        correct = false;
+      if (playerAnswerIds.includes(questionAnswer)) {
+        correct = true;
         break;
       }
     }
@@ -183,6 +201,14 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
       speedText = 'Jussttt in the nick of time';
     }
     setSpeedText(speedText);
+  };
+
+  const calculateSpeedPoints = () => {
+    const howFast = Math.ceil((timeLeft / question.duration) * 10);
+    console.log({ timeLeft, duration: question.duration });
+    console.log(howFast);
+    console.log(howFast * 0.1);
+    return howFast * 0.1;
   };
 
   const getQuestionAnswersText = () => {
@@ -214,8 +240,6 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
     // If the answer has already been given (time out)
     // Display if the user was right or wrong or too late to answer
     if (questionAnswerIds.length > 0 || timeLeft <= 0) {
-      // TO DO: ADD A NEW COMPONENT THAT SHOW IF THE PLAYER IS CORRECT OR NOT
-      // Should display a buffer screen then the result
       const isLast = question.isLast;
       let questionResultState = '';
       let questionResultAnswers = getQuestionAnswersText();
@@ -235,6 +259,7 @@ export const PlayQuestion = ({ questionData, pageForNewQuestion }) => {
           answers={questionResultAnswers}
           getQuizResult={getQuizResult}
           playerResults={playerResults}
+          totalPoints={totalPoints}
         />
       );
     }

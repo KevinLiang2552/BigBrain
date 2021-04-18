@@ -18,11 +18,13 @@ export const LobbyPage = () => {
   // interval value of status inteval, so we can clear the interval
   const [statusInterval, setStatusInterval] = useState(-1);
 
-  const [funnyTextInterval, setFunnyTextInterval] = useState(-1);
-
   const [newQuestionInterval, setNewQuestionInterval] = useState(-1);
 
   const [currentQuestion, setCurrentQuestion] = useState(emptyQuestion);
+
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  const [funnyTextInterval, setFunnyTextInterval] = useState(-1);
 
   // Insert funny joke here, legit I have no funny jokes crap.
   const funnyText = [
@@ -118,15 +120,16 @@ export const LobbyPage = () => {
   // Constantly call api for new question
   const pageForNewQuestion = () => {
     if (currentQuestion.isLast) {
-      console.log('IS LAST QUESTION');
-
-      // TO DO RESULT PAGE
-    } else {
-      const interval = setInterval(function () {
-        getQuestion();
-      }, 1000);
-      setNewQuestionInterval(interval);
+      return;
     }
+    const interval = setInterval(function () {
+      getQuestion();
+    }, 1000);
+    setNewQuestionInterval(interval);
+  };
+
+  const addPoints = (number) => {
+    setTotalPoints(totalPoints + number);
   };
 
   return (
@@ -136,6 +139,8 @@ export const LobbyPage = () => {
         <PlayQuestion
           questionData={currentQuestion}
           pageForNewQuestion={pageForNewQuestion}
+          addPoints={addPoints}
+          totalPoints={totalPoints}
         />
       ) : (
         // Else stuck in a lobby

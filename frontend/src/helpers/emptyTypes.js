@@ -26,7 +26,7 @@ export const emptyQuestion = {
   imgSrc: null,
   isoTimeLastQuestionStarted: '',
   isLast: false,
-  points: '',
+  points: 0,
   question: '',
   type: '',
   videoURL: null,

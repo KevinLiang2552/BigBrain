@@ -17,6 +17,7 @@ export const PlayQuestionResult = ({
   isLast,
   getQuizResult,
   playerResults,
+  totalPoints,
 }) => {
   PlayQuestionResult.propTypes = {
     state: PropTypes.string,
@@ -24,6 +25,7 @@ export const PlayQuestionResult = ({
     isLast: PropTypes.bool,
     getQuizResult: PropTypes.func,
     playerResults: PropTypes.any,
+    totalPoints: PropTypes.number,
   };
 
   const WhiteTypography = withStyles({
@@ -82,7 +84,12 @@ export const PlayQuestionResult = ({
     <div
       className={styles.questionResultWrapper}
       style={{ backgroundColor: values.bgColour }}>
-      <WhiteTypography variant="h4">{values.text}</WhiteTypography>
+      <WhiteTypography variant="h5">
+        Score: <b>{totalPoints}</b>
+      </WhiteTypography>
+      <Box mt={2}>
+        <WhiteTypography variant="h4">{values.text}</WhiteTypography>
+      </Box>
       {answers.length > 0 && (
         <Box mt={2}>
           <WhiteTypography variant="h6">
