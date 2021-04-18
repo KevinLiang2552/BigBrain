@@ -17,7 +17,7 @@ import API from '../../api/api.js';
 import { EditInput } from '../../components/FormInputs.jsx';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { withStyles } from '@material-ui/core/styles';
-import QuestionCard from '../../components/editQuiz/QuestionCard';
+import { QuestionCard } from '../../components/editQuiz/QuestionCard';
 import { AddQuestionModal } from '../../components/editQuiz/AddQuestionModal';
 
 export const EditQuizPage = () => {
@@ -203,6 +203,7 @@ export const EditQuizPage = () => {
               return (
                 <Grid key={index} item md={12} xs={12}>
                   <QuestionCard
+                    quizID={id}
                     question={question}
                     deleteQuestion={handleDeleteQuestion}
                   />
