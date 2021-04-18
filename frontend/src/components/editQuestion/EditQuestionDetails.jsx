@@ -20,20 +20,24 @@ import CheckIcon from '@material-ui/icons/Check';
 import ClearIcon from '@material-ui/icons/Clear';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
 
 export const EditQuestionDetails = ({
+  errors,
   questionDetails,
-  handleQuestionUpdate,
-  handleQuestionTypeChange,
+  handleUpdateDetail,
   setQuestionDetails,
+  setErrors,
 }) => {
   EditQuestionDetails.propTypes = {
+    errors: PropTypes.object,
     questionDetails: PropTypes.object,
-    handleQuestionUpdate: PropTypes.func,
-    handleQuestionTypeChange: PropTypes.func,
+    handleUpdateDetail: PropTypes.func,
     setQuestionDetails: PropTypes.func,
+    setErrors: PropTypes.func,
   };
 
+  const [newAnswer, setNewAnswer] = useState('');
   const [correctAnswerRadio, setCorrectAnswerRadio] = useState(
     questionDetails.correctAnswers[0],
   );
@@ -43,7 +47,7 @@ export const EditQuestionDetails = ({
   useEffect(() => {
     setCorrectAnswerRadio(questionDetails.correctAnswers[0]);
     setChecked(questionDetails.correctAnswers);
-  }, [questionDetails]);
+  }, [questionDetails.correctAnswers]);
 
   // Function for selecting multiple correct answers
   const handleToggleCorrectAnswers = (value) => () => {
@@ -60,6 +64,12 @@ export const EditQuestionDetails = ({
     setQuestionDetails({ ...questionDetails, correctAnswers: newChecked });
   };
 
+  // Function for handling the new answers field.
+  const handleAnswersFormChange = (event) => {
+    setErrors({ ...errors, answer: '' });
+    setNewAnswer(event.target.value);
+  };
+
   // Function for selecting a singular correct answer
   const handleSelectCorrectAnswer = (event) => {
     setCorrectAnswerRadio(parseInt(event.target.value));
@@ -71,6 +81,24 @@ export const EditQuestionDetails = ({
 
   const handleEnableEdit = () => {
     setEnabledInputs(true);
+  };
+
+  // Function for adding new answers to the question.
+  const handleAddAnswer = () => {
+    if (newAnswer === '') {
+      setErrors({ ...errors, answer: 'Cannot add an empty answer' });
+    } else if (questionDetails.answers.length >= 6) {
+      setErrors({ ...errors, answer: 'Cannot add more than 6 answers' });
+    } else {
+      setQuestionDetails({
+        ...questionDetails,
+        answers: [
+          ...questionDetails.answers,
+          { id: questionDetails.answers.length, answer: newAnswer },
+        ],
+      });
+      setNewAnswer('');
+    }
   };
 
   // Function for deleting answers from the question.
@@ -120,23 +148,25 @@ export const EditQuestionDetails = ({
         );
       }
       return (
-        <ListItem
-          key={answer.id}
-          onClick={handleToggleCorrectAnswers(answer.id)}>
-          <ListItemIcon>{selectCorrectAnswer}</ListItemIcon>
-          <ListItemText
-            id={answer.id}
-            primary={`Answer ${answer.id + 1}: ${answer.answer}`}
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={handleDeleteAnswer(answer.id)}>
-              <DeleteIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
+        <>
+          <ListItem
+            key={answer.id}
+            onClick={handleToggleCorrectAnswers(answer.id)}>
+            <ListItemIcon>{selectCorrectAnswer}</ListItemIcon>
+            <ListItemText
+              id={answer.id}
+              primary={`Answer ${answer.id + 1}: ${answer.answer}`}
+            />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                onClick={handleDeleteAnswer(answer.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        </>
       );
     } else {
       let icon;
@@ -156,6 +186,26 @@ export const EditQuestionDetails = ({
     }
   };
 
+  const addAnswers = () => {
+    if (enabledInput)
+      return (
+        <ListItem>
+          <TextField
+            type="answer"
+            onChange={handleAnswersFormChange}
+            error={errors.answer !== ''}
+            helperText={errors.answer}
+            value={newAnswer}
+          />
+          <ListItemSecondaryAction>
+            <IconButton edge="end" aria-label="add" onClick={handleAddAnswer}>
+              <AddIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
+  };
+
   return (
     <>
       <Grid container>
@@ -173,7 +223,7 @@ export const EditQuestionDetails = ({
               label="Question"
               defaultValue={questionDetails.question}
               variant="filled"
-              onChange={handleQuestionUpdate}
+              onChange={handleUpdateDetail('question')}
             />
           ) : (
             <>
@@ -187,7 +237,7 @@ export const EditQuestionDetails = ({
             aria-label="Question Type"
             name="questionType"
             value={questionDetails.type}
-            onChange={handleQuestionTypeChange}>
+            onChange={handleUpdateDetail('type')}>
             <FormControlLabel
               value="single"
               control={<Radio />}
@@ -204,7 +254,10 @@ export const EditQuestionDetails = ({
         </Grid>
         <Grid item md={4} xs={12}>
           <Typography variant="h5">Answers:</Typography>
-          <List>{questionDetails.answers.map(setAnswersField)}</List>
+          <List>
+            {questionDetails.answers.map(setAnswersField)}
+            {addAnswers()}
+          </List>
         </Grid>
       </Grid>
     </>

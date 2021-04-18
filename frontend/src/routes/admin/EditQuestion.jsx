@@ -30,7 +30,7 @@ export const EditQuestionPage = () => {
   const [questionList, setQuestionList] = useState([]);
   const [errors, setErrors] = useState(defaultErrors);
 
-  const setQuestions = async () => {
+  const setQuestion = async () => {
     const quizDetailsRes = await api.authorisedRequest(
       'GET',
       `admin/quiz/${id}`,
@@ -44,19 +44,15 @@ export const EditQuestionPage = () => {
   };
 
   useEffect(() => {
-    setQuestions();
+    setQuestion();
   }, []);
 
-  const handleQuestionUpdate = () => (event) => {
-    setErrors({ ...errors, question: '' });
+  const handleUpdateDetail = (type) => (event) => {
+    setErrors({ ...errors, [type]: '' });
     setQuestionDetails({
       ...questionDetails,
-      question: event.target.value,
+      [type]: event.target.value,
     });
-  };
-
-  const handleQuestionTypeChange = (event) => {
-    setQuestionDetails({ ...questionDetails, type: event.target.value });
   };
 
   const [mainContent, setMainContent] = useState('mainDetails');
@@ -70,9 +66,10 @@ export const EditQuestionPage = () => {
       return (
         <EditQuestionDetails
           questionDetails={questionDetails}
-          handleQuestionUpdate={handleQuestionUpdate}
-          handleQuestionTypeChange={handleQuestionTypeChange}
+          handleUpdateDetail={handleUpdateDetail}
           setQuestionDetails={setQuestionDetails}
+          errors={errors}
+          setErrors={setErrors}
         />
       );
     } else if (mainContent === 'externalMedia') {
