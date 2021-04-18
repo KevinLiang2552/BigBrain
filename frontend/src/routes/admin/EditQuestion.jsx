@@ -29,6 +29,7 @@ export const EditQuestionPage = () => {
   const [questionDetails, setQuestionDetails] = useState(emptyQuestion);
   const [questionList, setQuestionList] = useState([]);
   const [errors, setErrors] = useState(defaultErrors);
+  const [enabledInput, setEnabledInput] = useState(false);
 
   const setQuestion = async () => {
     const quizDetailsRes = await api.authorisedRequest(
@@ -59,6 +60,11 @@ export const EditQuestionPage = () => {
 
   const handleContentChange = (type) => () => {
     setMainContent(type);
+    if (enabledInput) toggleEnableEdit();
+  };
+
+  const toggleEnableEdit = () => {
+    setEnabledInput(!enabledInput);
   };
 
   const contentChange = () => {
@@ -68,6 +74,8 @@ export const EditQuestionPage = () => {
           questionDetails={questionDetails}
           handleUpdateDetail={handleUpdateDetail}
           setQuestionDetails={setQuestionDetails}
+          toggleEnableEdit={toggleEnableEdit}
+          enabledInput={enabledInput}
           errors={errors}
           setErrors={setErrors}
         />
@@ -93,6 +101,25 @@ export const EditQuestionPage = () => {
   reader.addEventListener('load', () => {
     setQuestionDetails({ ...questionDetails, imgSrc: reader.result });
   });
+
+  const changeQuestion = () => {
+    if (enabledInput)
+      return (
+        <Grid item md={4} xs={12}>
+          <Button onClick={handleCancelChanges} variant="contained">
+            Cancel Changes
+          </Button>
+          <Button onClick={handleEditQuestion} variant="contained">
+            Save Changes
+          </Button>
+        </Grid>
+      );
+  };
+
+  const handleCancelChanges = () => {
+    setQuestion();
+    toggleEnableEdit();
+  };
 
   // Main Function for adding a question to the database
   const handleEditQuestion = async () => {
@@ -165,11 +192,7 @@ export const EditQuestionPage = () => {
                   {contentChange()}
                 </FormControl>
               </Grid>
-              <Grid item md={3} xs={12}>
-                <Button onClick={handleEditQuestion} variant="contained">
-                  Save Changes
-                </Button>
-              </Grid>
+              {changeQuestion()}
             </Grid>
           </Grid>
         </Grid>

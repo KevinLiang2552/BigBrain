@@ -25,6 +25,8 @@ import AddIcon from '@material-ui/icons/Add';
 export const EditQuestionDetails = ({
   errors,
   questionDetails,
+  enabledInput,
+  toggleEnableEdit,
   handleUpdateDetail,
   setQuestionDetails,
   setErrors,
@@ -32,6 +34,8 @@ export const EditQuestionDetails = ({
   EditQuestionDetails.propTypes = {
     errors: PropTypes.object,
     questionDetails: PropTypes.object,
+    enabledInput: PropTypes.bool,
+    toggleEnableEdit: PropTypes.func,
     handleUpdateDetail: PropTypes.func,
     setQuestionDetails: PropTypes.func,
     setErrors: PropTypes.func,
@@ -42,7 +46,6 @@ export const EditQuestionDetails = ({
     questionDetails.correctAnswers[0],
   );
   const [checked, setChecked] = useState(questionDetails.correctAnswers);
-  const [enabledInput, setEnabledInputs] = useState(false);
 
   useEffect(() => {
     setCorrectAnswerRadio(questionDetails.correctAnswers[0]);
@@ -77,10 +80,6 @@ export const EditQuestionDetails = ({
       ...questionDetails,
       correctAnswers: [parseInt(event.target.value)],
     });
-  };
-
-  const handleEnableEdit = () => {
-    setEnabledInputs(true);
   };
 
   // Function for adding new answers to the question.
@@ -210,9 +209,13 @@ export const EditQuestionDetails = ({
     <>
       <Grid container>
         <Typography variant="h4">Main Details</Typography>
-        <IconButton onClick={handleEnableEdit}>
-          <EditIcon />
-        </IconButton>
+        {enabledInput === true ? (
+          <></>
+        ) : (
+          <IconButton onClick={toggleEnableEdit}>
+            <EditIcon />
+          </IconButton>
+        )}
       </Grid>
       <Grid container>
         <Grid item md={4} xs={12}>
