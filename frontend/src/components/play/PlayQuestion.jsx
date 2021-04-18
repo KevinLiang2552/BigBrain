@@ -43,6 +43,9 @@ export const PlayQuestion = ({
   // Players answers of the current question
   const [playerAnswerIds, setPlayerAnswerIds] = useState([]);
 
+  // Player has submitted their answer
+  const [playerSubmit, setPlayerSubmit] = useState(false);
+
   // The amount of time left for the question
   const [timeLeft, setTimeLeft] = useState(questionData.duration);
 
@@ -67,11 +70,14 @@ export const PlayQuestion = ({
     setTimeAnswered(-1);
     setQuestionAnswerIds([]);
     setPlayerAnswerIds([]);
+    setPlayerSubmit(false);
     getCurrentTimeLeft();
     startTimer();
   }, [questionData]);
 
-  // When timehas run out end the question
+  // ⏲️ Timer Logic  ⏲️
+
+  // When time has run out end the question
   useEffect(() => {
     if (timeLeft <= 0) {
       clearInterval(timer);
@@ -79,12 +85,6 @@ export const PlayQuestion = ({
       pageForNewQuestion();
     }
   }, [timeLeft]);
-
-  useEffect(() => {
-    if (questionAnswerIds.length > 0 && isPlayerCorrect()) {
-      addPoints(currentPoints);
-    }
-  }, [questionAnswerIds]);
 
   // Clean up
   useEffect(() => {
@@ -126,7 +126,10 @@ export const PlayQuestion = ({
     setTimer(interval);
   };
 
-  // Get the answer of the current question (only occurs when the timer runs out)
+  // 🙋 Handling answers and educated guesses  🙋
+
+  // Get the answer for the current question. [Called in timeLeft useEffect]
+  // Store value in questionAnswersIds
   const getAnswer = async () => {
     const res = await api.authorisedRequest(
       'GET',
@@ -139,30 +142,21 @@ export const PlayQuestion = ({
     }
   };
 
-  // Given an array of ids of players answer, put answer for the current question
-  // Set time the player answered the question at. This is used to determine time points.
-  const putAnswers = async () => {
-    setFunnyText();
-    setTimeAnswered(timeLeft);
-
-    // set potential points for current question
-
-    const questionPoints = parseInt(question.points) + calculateSpeedPoints();
-    setCurrentPoints(questionPoints);
-
-    const res = await api.authorisedRequest(
-      'PUT',
-      `play/${getPlayerToken()}/answer`,
-      { answerIds: playerAnswerIds },
-    );
-    if (res.status !== 200) {
-      console.log(res.data.error);
+  // isPlayerCorrect is based off questionAnswerids, so we have to wait for it to be set
+  // As points are calculated off the time left we store the value first, then add it after (only if the player is correct)
+  useEffect(() => {
+    if (questionAnswerIds.length > 0 && isPlayerCorrect()) {
+      addPoints(currentPoints);
     }
-  };
+  }, [questionAnswerIds]);
 
   /**
-   * Given an id of answer. If single add this to answers and put these answer to api.
-   * If multiple just add to array of answers.
+   * When a user presses a answer button, the answer is id is passed down to this function
+   * If the playerAnswerIds list does not contain the id it will add it to the list
+   * If the playerAnswerIds list does contain the id it will delete it from the list
+   *
+   * For a question.type: single, the first time this function is called it will immeaditely called putAnswers
+   * For a question.type: multiple, it only adds the id to the list
    * @param {*} id id of answer
    */
   const handleQuestionClick = (id) => {
@@ -178,25 +172,34 @@ export const PlayQuestion = ({
     }
   };
 
+  // For question.type: multiple a submit button is given which submits the answers
   const handleSubmitAnswers = () => {
     putAnswers(playerAnswerIds);
   };
 
-  /**
-   *
-   * @returns {bool} return if the player has the correct answer/s for the current question
-   */
-  const isPlayerCorrect = () => {
-    let correct = true;
-    console.log(playerAnswerIds);
-    for (const questionAnswer of questionAnswerIds) {
-      if (!playerAnswerIds.includes(questionAnswer)) {
-        correct = false;
-        break;
-      }
-    }
+  // First sends playerAnswersIds to API with player answers
+  // Activates "funny" text telling the user how faast they were
+  // Calculate the amount of potential points the player can win
+  // Note it is multiplied by 100 to make it seem like points matter, but they really don't 😔
+  const putAnswers = async () => {
+    const res = await api.authorisedRequest(
+      'PUT',
+      `play/${getPlayerToken()}/answer`,
+      { answerIds: playerAnswerIds },
+    );
+    if (res.status !== 200) {
+      console.log(res.data.error);
+    } else {
+      setPlayerSubmit(true);
 
-    return correct;
+      setFunnyText();
+      setTimeAnswered(timeLeft);
+
+      const questionPoints =
+        parseInt(question.points) * 100 + calculateSpeedPoints();
+
+      setCurrentPoints(questionPoints);
+    }
   };
 
   // Set text for when the player answers the question after a certain time period
@@ -222,11 +225,36 @@ export const PlayQuestion = ({
     setSpeedText(speedText);
   };
 
+  // Calculate the amount of points a player get for their answering speed
+  // The player can only get points of interval of 0.05 and the max being 0.5
+  // Same with the points before it is multiplied by 100
   const calculateSpeedPoints = () => {
     const howFast = Math.ceil((timeLeft / question.duration) * 10);
-    return howFast * 0.1;
+    return howFast * 0.05 * 100;
   };
 
+  /**
+   *
+   * @returns {bool} return if the player has the correct answer/s for the current question
+   */
+  const isPlayerCorrect = () => {
+    if (!playerSubmit) {
+      return false;
+    }
+    let correct = true;
+    console.log({ playerAnswerIds, questionAnswerIds });
+    for (const questionAnswer of questionAnswerIds) {
+      if (!playerAnswerIds.includes(questionAnswer)) {
+        correct = false;
+        break;
+      }
+    }
+
+    return correct;
+  };
+
+  // Get the answer text of the current question to display on the result question
+  // To show what the correct answer is.
   const getQuestionAnswersText = () => {
     const answersText = [];
     for (const questionAnswer of question.answers) {
@@ -237,6 +265,7 @@ export const PlayQuestion = ({
     return answersText;
   };
 
+  // Get the quiz results
   const getQuizResult = async () => {
     const res = await api.authorisedRequest(
       'GET',
@@ -251,9 +280,13 @@ export const PlayQuestion = ({
   const renderPlayQuestion = () => {
     // If results is not null, show quiz Results
     if (playerResults !== null) {
-      return <PlayerQuizResults playerResults={playerResults} />;
+      return (
+        <PlayerQuizResults
+          playerResults={playerResults}
+          totalScore={totalPoints}
+        />
+      );
     }
-
     // When the timer runs out show a screen wide prompt on if the user was correct, incorrect all late to answer
     if (questionAnswerIds.length > 0 || timeLeft <= 0) {
       const isLast = question.isLast;
@@ -280,7 +313,9 @@ export const PlayQuestion = ({
       );
     }
 
+    // responsive media query boolean
     const isThereMedia = question.imgSrc !== null || question.videoURL !== null;
+
     // Else return the deafult Question display
     return (
       <>

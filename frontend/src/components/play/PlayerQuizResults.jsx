@@ -5,9 +5,10 @@ import ResultLine from './ResultLine.jsx';
 
 import styles from '../../styles/play.module.css';
 
-export const PlayerQuizResults = ({ playerResults }) => {
+export const PlayerQuizResults = ({ playerResults, totalScore }) => {
   PlayerQuizResults.propTypes = {
     playerResults: PropTypes.object,
+    totalScore: PropTypes.number,
   };
 
   const getFinalScoreText = () => {
@@ -18,7 +19,7 @@ export const PlayerQuizResults = ({ playerResults }) => {
       }
     }
 
-    return `${amountRight} / ${playerResults.length} correct! Total score: {insert score here}`;
+    return `${amountRight} / ${playerResults.length} correct! Total score: ${totalScore}`;
   };
 
   return (
