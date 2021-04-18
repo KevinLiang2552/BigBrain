@@ -53,16 +53,18 @@ export const EditExternalMedia = ({
             alt={'question image'}
           />
           {enabledInput === true && (
-            <Button variant="contained" component="label">
-              Upload picture
-              <input
-                type="file"
-                onChange={handleImageUpload}
-                accept="image/*"
-                id="questionImageUpload"
-                hidden
-              />
-            </Button>
+            <>
+              <Button variant="contained" component="label">
+                Upload picture
+                <input
+                  type="file"
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  id="questionImageUpload"
+                  hidden
+                />
+              </Button>
+            </>
           )}
         </Grid>
 

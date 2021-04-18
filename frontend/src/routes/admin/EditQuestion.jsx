@@ -181,13 +181,17 @@ export const EditQuestionPage = () => {
   const changeQuestion = () => {
     if (enabledInput)
       return (
-        <Grid item md={4} xs={12}>
-          <Button onClick={handleCancelChanges} variant="contained">
-            Cancel Changes
-          </Button>
-          <Button onClick={handleEditQuestion} variant="contained">
-            Save Changes
-          </Button>
+        <Grid container spacing={3} className={styles.buttonGroup}>
+          <Grid item>
+            <Button onClick={handleCancelChanges} variant="contained">
+              Cancel Changes
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button onClick={handleEditQuestion} variant="contained">
+              Save Changes
+            </Button>
+          </Grid>
         </Grid>
       );
   };
