@@ -31,3 +31,8 @@ export const emptyQuestion = {
   type: '',
   videoURL: null,
 };
+
+export const defaultErrorModalState = {
+  showModal: false,
+  errorMessage: '',
+};

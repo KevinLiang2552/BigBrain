@@ -1,0 +1,42 @@
+{
+  "questions": [
+    {
+      "answers": [
+        { "id": 0, "answer": "Rem" },
+        { "id": 1, "answer": "Emilia" },
+        { "id": 2, "answer": "Echidna" },
+        { "id": 3, "answer": "Felix" }
+      ],
+      "correctAnswers": [0],
+      "duration": 100,
+      "points": 10,
+      "question": "Who is best girl?",
+      "type": "single"
+    },
+    {
+      "answers": [
+        { "id": 0, "answer": "Rin" },
+        { "id": 1, "answer": "Saber" },
+        { "id": 2, "answer": "Sakura" },
+        { "id": 3, "answer": "Archer" },
+        { "id": 4, "answer": "Kirei" },
+        { "id": 5, "answer": "Shirou" }
+      ],
+      "correctAnswers": [3, 4, 5],
+      "duration": 100,
+      "points": 100,
+      "question": "Who is best girl?",
+      "type": "multiple"
+    },
+    {
+      "answers": [{ "id": 0, "answer": "Mio" }],
+      "correctAnswers": [0],
+      "duration": 100,
+      "points": 1000,
+      "question": "Who is best girl?",
+      "type": "single"
+    }
+  ],
+  "name": "Anime Best Gril Test",
+  "owner": "daAnimeConMan"
+}
