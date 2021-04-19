@@ -60,6 +60,8 @@ export const ActiveQuizControls = ({
     if (status.position === status.questions.length) {
       selectQuiz(-1);
       updateDashboardQuizzes();
+      setModalQuiz(quiz, true);
+      changeModalState();
     }
   }, [status]);
 
@@ -105,6 +107,8 @@ export const ActiveQuizControls = ({
     if (stopQuizRes.status === 200) {
       selectQuiz(-1);
       updateDashboardQuizzes();
+      setModalQuiz(quiz, true);
+      changeModalState();
     } else {
       console.log(stopQuizRes.data.error);
     }
