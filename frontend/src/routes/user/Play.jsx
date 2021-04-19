@@ -6,6 +6,7 @@ import { useHistory, useParams } from 'react-router';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { ErrorModal } from '../../components/ErrorModal.jsx';
 import { Box, Button, Container } from '@material-ui/core';
+import { defaultErrorModalState } from '../../helpers/emptyTypes.js';
 import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 
 export const PlayPage = ({ setPlayerToken }) => {
@@ -32,10 +33,6 @@ export const PlayPage = ({ setPlayerToken }) => {
   const [errors, setErrors] = useState(defaultErrors);
 
   // Any API errors to be displayed
-  const defaultErrorModalState = {
-    showModal: false,
-    errorMessage: '',
-  };
 
   const [modalState, setModalState] = useState(defaultErrorModalState);
 
