@@ -10,7 +10,7 @@ import {
   emptySessionStatus,
 } from '../../../helpers/emptyTypes.js';
 
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, List, Typography } from '@material-ui/core';
 // import { QuizModal } from '../QuizModal';
 
 export const ActiveQuizExplorer = ({
@@ -112,42 +112,31 @@ export const ActiveQuizExplorer = ({
   return (
     <Grid container className={styles.explorerWrapper}>
       <Grid item xs={12} md={6}>
-        <Grid
-          container
-          spacing={0}
-          direction="row"
-          className={styles.explorerActiveItems}
-          alignItems="flex-start">
-          <Grid item xs={12}>
-            <div className={styles.explorerItemHeading}>
-              <Typography
-                variant="h5"
-                className={styles.explorerItemHeadingText}>
-                Quiz Name
-              </Typography>
-              <Typography
-                variant="h5"
-                className={styles.explorerItemHeadingText}>
-                Quiz Status
-              </Typography>
-            </div>
-          </Grid>
+        <div>
+          <div className={styles.explorerItemHeading}>
+            <Typography variant="h5" className={styles.explorerItemHeadingText}>
+              Quiz Name
+            </Typography>
+            <Typography variant="h5" className={styles.explorerItemHeadingText}>
+              Quiz Status
+            </Typography>
+          </div>
 
-          {quizzes.length > 0 &&
-            quizzes.map((quiz, index) => {
-              const isEven = index % 2 === 0;
-              return (
-                <ActiveQuizItem
-                  key={quiz.id}
-                  quiz={quiz}
-                  status={getSessionStatus(quiz.id)}
-                  selectQuiz={selectQuiz}
-                  selectedQuizId={selectedQuizId}
-                  isEven={isEven}
-                />
-              );
-            })}
-        </Grid>
+          <List className={styles.explorerList}>
+            {quizzes.length > 0 &&
+              quizzes.map((quiz) => {
+                return (
+                  <ActiveQuizItem
+                    key={quiz.id}
+                    quiz={quiz}
+                    status={getSessionStatus(quiz.id)}
+                    selectQuiz={selectQuiz}
+                    selectedQuizId={selectedQuizId}
+                  />
+                );
+              })}
+          </List>
+        </div>
       </Grid>
       <Grid item xs={12} md={6}>
         <ActiveQuizControls

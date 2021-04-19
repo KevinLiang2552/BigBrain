@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../../styles/components/activeQuiz.module.css';
 
-import { Grid, Typography } from '@material-ui/core';
+import { ListItem, Typography } from '@material-ui/core';
 
 export const ActiveQuizItem = ({
   quiz,
   status,
   selectQuiz,
   selectedQuizId,
-  isEven,
 }) => {
   ActiveQuizItem.propTypes = {
     quiz: PropTypes.object,
@@ -18,17 +17,6 @@ export const ActiveQuizItem = ({
     selectedQuizId: PropTypes.number,
     isEven: PropTypes.bool,
   };
-
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    console.log(selectedQuizId, quiz.id);
-    if (selectedQuizId === quiz.id) {
-      setActive(true);
-    } else {
-      setActive(false);
-    }
-  }, [selectedQuizId]);
 
   // Get status label based on the position the quiz is currently in
   const getStatusLabel = () => {
@@ -55,21 +43,15 @@ export const ActiveQuizItem = ({
   };
 
   return (
-    <Grid item xs={12} onClick={selectItem}>
-      <div
-        className={`${styles.quizItem} ${
-          active
-            ? styles.quizItemActive
-            : isEven
-            ? styles.quizItemEven
-            : styles.quizItemOdd
-        } `}>
-        <Typography className={styles.quizItemName}>{quiz.name}</Typography>
-        <Typography className={styles.quizItemStatus}>
-          {getStatusLabel()}
-        </Typography>
-      </div>
-    </Grid>
+    <ListItem
+      className={styles.quizItem}
+      onClick={selectItem}
+      selected={selectedQuizId === quiz.id}>
+      <Typography className={styles.quizItemName}>{quiz.name}</Typography>
+      <Typography className={styles.quizItemStatus}>
+        {getStatusLabel()}
+      </Typography>
+    </ListItem>
   );
 };
 

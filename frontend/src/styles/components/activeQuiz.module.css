@@ -1,10 +1,5 @@
-/* .explorerWrapper {
-  height: 50px;
-} */
-
-.explorerActiveItems {
-  max-height: 400px;
-  overflow-y: scroll;
+.explorerList {
+  width: 100%;
 }
 
 /*  Quiz Items */
@@ -19,26 +14,7 @@
 }
 
 .quizItem {
-  display: flex;
-  flex-direction: row;
   cursor: pointer;
-  height: 40px;
-  align-items: center;
-  padding-left: 20px;
-  /* text-align: center; */
-}
-
-.quizItemActive {
-  background-color: var(--secondary-color);
-  border: solid 1px black;
-}
-
-.quizItemEven {
-  background-color: #aaaaaa;
-}
-
-.quizItemOdd {
-  background-color: #cccccc;
 }
 
 .quizItemName {
