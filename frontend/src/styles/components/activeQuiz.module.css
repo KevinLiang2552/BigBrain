@@ -1,0 +1,60 @@
+/* .explorerWrapper {
+  height: 50px;
+} */
+
+.explorerActiveItems {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+/*  Quiz Items */
+
+.explorerItemHeading {
+  display: flex;
+  flex-direction: row;
+}
+
+.explorerItemHeadingText {
+  flex: 1;
+}
+
+.quizItem {
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  height: 40px;
+  align-items: center;
+  padding-left: 20px;
+  /* text-align: center; */
+}
+
+.quizItemActive {
+  background-color: var(--secondary-color);
+  border: solid 1px black;
+}
+
+.quizItemEven {
+  background-color: #aaaaaa;
+}
+
+.quizItemOdd {
+  background-color: #cccccc;
+}
+
+.quizItemName {
+  flex: 1;
+}
+
+.quizItemStatus {
+  flex: 1;
+}
+
+/* Quiz Controls */
+.controlsImage {
+  width: 100%;
+  height: 200px;
+}
+
+.controlsName {
+  text-align: left;
+}

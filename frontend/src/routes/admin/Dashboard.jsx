@@ -418,7 +418,10 @@ export const DashboardPage = () => {
               <Typography variant="h5">Active Quizzes</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <ActiveQuizExplorer quizzes={activeQuizzes} />
+              <ActiveQuizExplorer
+                quizzes={activeQuizzes}
+                updateDashboardQuizzes={updateDashboardQuizzes}
+              />
               {/* 
               <Grid container>
                 {quizzes.map((quiz, index) => {

@@ -10,14 +10,15 @@ import {
   emptySessionStatus,
 } from '../../../helpers/emptyTypes.js';
 
-import { Grid } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 // import { QuizModal } from '../QuizModal';
 
-export const ActiveQuizExplorer = ({ quizzes }) => {
+export const ActiveQuizExplorer = ({ quizzes, updateDashboardQuizzes }) => {
   const api = new API('http://localhost:5005');
 
   ActiveQuizExplorer.propTypes = {
     quizzes: PropTypes.array,
+    updateDashboardQuizzes: PropTypes.func,
   };
 
   // Store the current quiz ids in the explorer
@@ -25,6 +26,10 @@ export const ActiveQuizExplorer = ({ quizzes }) => {
 
   // Session status HashMap of each active quiz. Where the key is the id of the map
   const [sessionStatus] = useState(new Map());
+
+  // As sessionStatus is just a map reference, changing it will not rerender the page
+  // So any time the session status change just flip the state (def not hacky)
+  const [updateSessionStatus, setUpdateSessionStatus] = useState(false);
 
   // The current selected quiz for the details to show
   const [selectedQuizId, setSelectedQuizId] = useState(-1);
@@ -55,7 +60,6 @@ export const ActiveQuizExplorer = ({ quizzes }) => {
       fetchSessionStatus(getQuizDetails(quizId));
     }
     console.log({ newQuizIds });
-
     // Then set active quiz ids
     setActiveQuizIds(presentlyActiveQuizIds);
   }, [quizzes]);
@@ -66,11 +70,9 @@ export const ActiveQuizExplorer = ({ quizzes }) => {
       'GET',
       `admin/session/${quiz.active}/status`,
     );
-    console.log({ quiz, result });
     if (result.status === 200) {
       sessionStatus.set(quiz.id, result.data.results);
-      console.log('HELLO');
-      console.log({ sessionStatus });
+      setUpdateSessionStatus(!updateSessionStatus);
     } else {
       console.log(result.data.error);
     }
@@ -102,25 +104,51 @@ export const ActiveQuizExplorer = ({ quizzes }) => {
 
   return (
     <Grid container className={styles.explorerWrapper}>
-      <Grid item xs={5}>
-        <Grid container>
+      <Grid item xs={12} md={5}>
+        <Grid
+          container
+          spacing={0}
+          direction="row"
+          className={styles.explorerActiveItems}
+          alignItems="flex-start">
+          <Grid item xs={12}>
+            <div className={styles.explorerItemHeading}>
+              <Typography
+                variant="h5"
+                className={styles.explorerItemHeadingText}>
+                Quiz Name
+              </Typography>
+              <Typography
+                variant="h5"
+                className={styles.explorerItemHeadingText}>
+                Quiz Status
+              </Typography>
+            </div>
+          </Grid>
+
           {quizzes.length > 0 &&
-            quizzes.map((quiz) => {
+            quizzes.map((quiz, index) => {
+              const isEven = index % 2 === 0;
               return (
                 <ActiveQuizItem
                   key={quiz.id}
                   quiz={quiz}
                   status={getSessionStatus(quiz.id)}
                   selectQuiz={selectQuiz}
+                  selectedQuizId={selectedQuizId}
+                  isEven={isEven}
                 />
               );
             })}
         </Grid>
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={12} md={7}>
         <ActiveQuizControls
           quiz={getQuizDetails(selectedQuizId)}
           status={getSessionStatus(selectedQuizId)}
+          fetchSessionStatus={fetchSessionStatus}
+          updateDashboardQuizzes={updateDashboardQuizzes}
+          selectQuiz={selectQuiz}
         />
       </Grid>
     </Grid>
