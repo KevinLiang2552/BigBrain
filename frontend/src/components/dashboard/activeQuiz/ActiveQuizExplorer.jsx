@@ -17,8 +17,18 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-// import { QuizModal } from '../QuizModal';
 
+/**
+ * Active Quiz Explorer is the display for actives quizzes
+ * It has two main parts the explorer and the controls
+ * The explorer allows the user to choose from a list of active quizzes
+ * The selected quiz changes which quiz the controller is interacting with
+ * @param {array} quizzes                     The current active quizzes
+ * @param {func} updateDashboardQuizzes       Update the dashboard main quiz useState
+ * @param {func} setModalQuiz                 Show quiz link
+ * @param {func} changeModalState             Show quiz link
+ * @returns
+ */
 export const ActiveQuizExplorer = ({
   quizzes,
   updateDashboardQuizzes,
@@ -97,6 +107,8 @@ export const ActiveQuizExplorer = ({
     return quizzes.find((q) => q.id === id);
   };
 
+  // Wrapper for getting session status
+  // Require empty session status for first/second load
   const getSessionStatus = (id) => {
     if (id === -1) {
       return emptySessionStatus;
@@ -109,6 +121,7 @@ export const ActiveQuizExplorer = ({
     }
   };
 
+  // Child select quizfor ActiveQuizItem.jsx
   const selectQuiz = (id) => {
     setSelectedQuizId(id);
   };
@@ -140,6 +153,7 @@ export const ActiveQuizExplorer = ({
                 );
               })
             ) : (
+              //  If no items show some helper text
               <ListItem>
                 <ListItemText>
                   {

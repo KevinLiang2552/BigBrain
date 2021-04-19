@@ -23,6 +23,18 @@ import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import PersonIcon from '@material-ui/icons/Person';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+/**
+ * The brain of the explorer
+ * Allows the admin to stop, advance and view players currently playing in the quiz
+ * @param {object} quiz                             Quiz Data
+ * @param {object} status                           Session data for current quiz
+ * @param {function} fetchSessionStatus             Updates session status data
+ * @param {function} updateDashboardQuizzes         Updates dashboard quizzes useState
+ * @param {function} selectQuiz                     Select the current quiz we are selecting (used when stopping/ending a quiz)
+ * @param {function} setModalQuiz                   Quiz link handling
+ * @param {function} changeModalState               Quiz link handling
+ * @returns
+ */
 export const ActiveQuizControls = ({
   quiz,
   status,
@@ -169,6 +181,7 @@ export const ActiveQuizControls = ({
           </div>
           <IconButton
             disabled={noSelected}
+            aria-label="refresh player list"
             onClick={function () {
               fetchSessionStatus(quiz);
             }}>

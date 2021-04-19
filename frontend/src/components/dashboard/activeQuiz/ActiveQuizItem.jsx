@@ -4,6 +4,14 @@ import styles from '../../../styles/components/activeQuiz.module.css';
 
 import { ListItem, Typography } from '@material-ui/core';
 
+/**
+ * A list item in the active quiz explorer
+ * @param {object} quiz              Quiz data
+ * @param {object} status            Status of current session of quiz
+ * @param {function} selectQuiz      Select quiz function to change current selected quiz
+ * @param {number} selectedQuizId    The current id of the selected quiz
+ * @returns
+ */
 export const ActiveQuizItem = ({
   quiz,
   status,
@@ -15,7 +23,6 @@ export const ActiveQuizItem = ({
     status: PropTypes.object,
     selectQuiz: PropTypes.func,
     selectedQuizId: PropTypes.number,
-    isEven: PropTypes.bool,
   };
 
   // Get status label based on the position the quiz is currently in
@@ -38,7 +45,6 @@ export const ActiveQuizItem = ({
   };
 
   const selectItem = () => {
-    // change grid look
     selectQuiz(quiz.id);
   };
 
