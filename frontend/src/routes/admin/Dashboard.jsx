@@ -8,7 +8,6 @@ import {
   defaultErrorModalState,
 } from '../../helpers/emptyTypes.js';
 import QuizCard from '../../components/dashboard/QuizCard.jsx';
-// import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
 import ActiveQuizExplorer from '../../components/dashboard/activeQuiz/ActiveQuizExplorer.jsx';
 import ErrorModal from '../../components/ErrorModal.jsx';
 
@@ -328,7 +327,6 @@ export const DashboardPage = () => {
         activeQuizzes.push(quiz);
       }
     }
-    console.log({ activeQuizzes });
     setActiveQuizzes(activeQuizzes);
   };
 
@@ -423,23 +421,6 @@ export const DashboardPage = () => {
                 setModalQuiz={setModalQuiz}
                 changeModalState={changeModalState}
               />
-              {/* 
-              <Grid container>
-                {quizzes.map((quiz, index) => {
-                  if (quiz.active !== null) {
-                    return (
-                      <ActiveQuizCard
-                        key={quiz.id}
-                        quizData={quiz}
-                        updateDashboardQuizzes={updateDashboardQuizzes}
-                        setModalQuiz={childSetModalQuiz}
-                        changeModalState={changeModalState}></ActiveQuizCard>
-                    );
-                  } else {
-                    return <></>;
-                  }
-                })}
-              </Grid> */}
             </AccordionDetails>
           </Accordion>
         </Grid>

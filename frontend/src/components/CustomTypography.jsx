@@ -7,4 +7,12 @@ export const WhiteTypography = withStyles({
   },
 })(Typography);
 
+export const WhiteShadowTypography = withStyles({
+  root: {
+    color: '#FFFFFF',
+    textShadow:
+      '1px 1px 3px  #000000, 1px 1px 3px  #000000, 1px 1px 3px  #000000, 1px 1px 3px  #000000',
+  },
+})(Typography);
+
 export default WhiteTypography;

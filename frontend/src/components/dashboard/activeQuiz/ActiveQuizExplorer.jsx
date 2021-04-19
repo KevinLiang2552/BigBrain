@@ -10,7 +10,13 @@ import {
   emptySessionStatus,
 } from '../../../helpers/emptyTypes.js';
 
-import { Grid, List, Typography } from '@material-ui/core';
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
 // import { QuizModal } from '../QuizModal';
 
 export const ActiveQuizExplorer = ({
@@ -44,13 +50,12 @@ export const ActiveQuizExplorer = ({
   // Update activeQuizzes when quizzes changes
   useEffect(() => {
     setSelectedQuizId(-1);
-    console.log({ quizzes });
     // Make an array of the presntly active quiz ids
     const presentlyActiveQuizIds = [];
     for (const quiz of quizzes) {
       presentlyActiveQuizIds.push(quiz.id);
     }
-    console.log({ presentlyActiveQuizIds, activeQuizIds });
+
     // Delete quiz ids session statuses that are not active anymore
     const stoppedQuizIds = activeQuizIds.filter(
       (id) => presentlyActiveQuizIds.indexOf(id) === -1,
@@ -58,7 +63,6 @@ export const ActiveQuizExplorer = ({
     for (const quizId of stoppedQuizIds) {
       sessionStatus.delete(quizId);
     }
-    console.log({ stoppedQuizIds });
     // Set quiz ids session statuses that have just become active
     const newQuizIds = presentlyActiveQuizIds.filter(
       (id) => activeQuizIds.indexOf(id) === -1,
@@ -66,7 +70,7 @@ export const ActiveQuizExplorer = ({
     for (const quizId of newQuizIds) {
       fetchSessionStatus(getQuizDetails(quizId));
     }
-    console.log({ newQuizIds });
+
     // Then set active quiz ids
     setActiveQuizIds(presentlyActiveQuizIds);
   }, [quizzes]);
@@ -123,7 +127,7 @@ export const ActiveQuizExplorer = ({
           </div>
 
           <List className={styles.explorerList}>
-            {quizzes.length > 0 &&
+            {quizzes.length > 0 ? (
               quizzes.map((quiz) => {
                 return (
                   <ActiveQuizItem
@@ -134,7 +138,16 @@ export const ActiveQuizExplorer = ({
                     selectedQuizId={selectedQuizId}
                   />
                 );
-              })}
+              })
+            ) : (
+              <ListItem>
+                <ListItemText>
+                  {
+                    "No active quizzes. Start a quiz in 'My Quizzes' to activate a quiz."
+                  }
+                </ListItemText>
+              </ListItem>
+            )}
           </List>
         </div>
       </Grid>

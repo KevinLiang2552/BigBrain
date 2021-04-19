@@ -9,6 +9,7 @@ export const emptyQuizDetails = {
 };
 
 export const emptyQuizIdDetails = {
+  id: -1,
   questions: [{}],
   createdAt: '',
   name: '',

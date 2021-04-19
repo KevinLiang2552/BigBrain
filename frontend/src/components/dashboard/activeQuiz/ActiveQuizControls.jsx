@@ -4,6 +4,7 @@ import styles from '../../../styles/components/activeQuiz.module.css';
 import API from '../../../api/api.js';
 
 import placeholderImage from '../../../assets/placeholderImage.png';
+import { WhiteShadowTypography } from '../../CustomTypography.jsx';
 
 import {
   Button,
@@ -45,11 +46,8 @@ export const ActiveQuizControls = ({
   useEffect(() => {
     // When the admin ends the quiz update the quiz state and display if the admin wants to see the results
     if (status.position === status.questions.length) {
-      // handleQuizResults();
-      // updateQuiz();
       selectQuiz(-1);
       updateDashboardQuizzes();
-      console.log('quizEnded');
     }
   }, [status]);
 
@@ -124,20 +122,29 @@ export const ActiveQuizControls = ({
   const quizCardImage =
     quiz.thumbnail === null ? placeholderImage : quiz.thumbnail;
 
+  const noSelected = quiz.id === -1;
+
   return (
     <Card>
       <CardMedia image={quizCardImage} className={styles.controlsImage}>
         <CardContent className={styles.controlsName}>
-          <Typography variant="h4">{quiz.name}</Typography>
+          <WhiteShadowTypography variant="h4">
+            {quiz.name}
+          </WhiteShadowTypography>
         </CardContent>
       </CardMedia>
       <CardContent>
-        <Typography variant="h5">Status: {getStatusLabel()}</Typography>
+        <Typography variant="h5">
+          {noSelected
+            ? 'Select one of the quizzes to use quiz controls'
+            : `Status: ${getStatusLabel()}`}
+        </Typography>
         <div className={styles.buttonWrapper}>
           <Button
             className={styles.buttons}
             size="large"
             variant="contained"
+            disabled={noSelected}
             startIcon={<DoubleArrowIcon />}
             color="primary"
             onClick={handleAdvance}>
@@ -147,6 +154,7 @@ export const ActiveQuizControls = ({
             className={styles.buttons}
             size="large"
             variant="contained"
+            disabled={noSelected}
             startIcon={<StopIcon />}
             color="secondary"
             onClick={handleStopQuiz}>
@@ -160,6 +168,7 @@ export const ActiveQuizControls = ({
             <PersonIcon />
           </div>
           <IconButton
+            disabled={noSelected}
             onClick={function () {
               fetchSessionStatus(quiz);
             }}>
@@ -177,7 +186,10 @@ export const ActiveQuizControls = ({
             })}
           </List>
           <div className={styles.quizLink}>
-            <Button startIcon={<LinkIcon />} onClick={handleLink}>
+            <Button
+              startIcon={<LinkIcon />}
+              onClick={handleLink}
+              disabled={noSelected}>
               Quiz Link
             </Button>
           </div>
