@@ -1,4 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import API from '../../api/api.js';
+import styles from '../../styles/dashboard.module.css';
+
+import { QuizModal } from '../../components/dashboard/QuizModal';
+import { emptyQuizDetails,defaultErrorModalState } from '../../helpers/emptyTypes.js';
+import QuizCard from '../../components/dashboard/QuizCard.jsx';
+// import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
+import ActiveQuizExplorer from '../../components/dashboard/activeQuiz/ActiveQuizExplorer.jsx';
+import ErrorModal from '../../components/ErrorModal.jsx';
+
+
 import {
   Accordion,
   AccordionDetails,
@@ -11,18 +22,8 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import QuizCard from '../../components/dashboard/QuizCard.jsx';
-import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
-import ErrorModal from '../../components/ErrorModal.jsx';
-import {
-  emptyQuizDetails,
-  defaultErrorModalState,
-} from '../../helpers/emptyTypes.js';
-import API from '../../api/api.js';
-import { QuizModal } from '../../components/dashboard/QuizModal';
 import PublishIcon from '@material-ui/icons/Publish';
 
 export const DashboardPage = () => {
@@ -139,6 +140,7 @@ export const DashboardPage = () => {
     }
   };
 
+<<<<<<< HEAD
   //  +++++++++++++++++++++++++++++++++++++++++++  UPLOAD GAME HANDLING
 
   // Tracks for displaying errors related to the upload
@@ -312,6 +314,24 @@ export const DashboardPage = () => {
       }
     }
   });
+=======
+  const [activeQuizzes, setActiveQuizzes] = useState([]);
+
+  useEffect(() => {
+    updateActiveQuizzes();
+  }, [quizzes]);
+
+  const updateActiveQuizzes = () => {
+    const activeQuizzes = [];
+    for (const quiz of quizzes) {
+      if (quiz.active !== null) {
+        activeQuizzes.push(quiz);
+      }
+    }
+    console.log({ activeQuizzes });
+    setActiveQuizzes(activeQuizzes);
+  };
+>>>>>>> 45806bd (add activeQuizExplorer skeleton)
 
   return (
     <Container>
@@ -398,6 +418,8 @@ export const DashboardPage = () => {
               <Typography variant="h5">Active Quizzes</Typography>
             </AccordionSummary>
             <AccordionDetails>
+              <ActiveQuizExplorer quizzes={activeQuizzes} />
+              {/* 
               <Grid container>
                 {quizzes.map((quiz, index) => {
                   if (quiz.active !== null) {
@@ -413,7 +435,7 @@ export const DashboardPage = () => {
                     return <></>;
                   }
                 })}
-              </Grid>
+              </Grid> */}
             </AccordionDetails>
           </Accordion>
         </Grid>

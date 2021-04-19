@@ -8,11 +8,21 @@ export const emptyQuizDetails = {
   oldSessions: [],
 };
 
+export const emptyQuizIdDetails = {
+  questions: [{}],
+  createdAt: '',
+  name: '',
+  thumbnail: null,
+  owner: '',
+  active: null,
+  oldSessions: [],
+};
+
 export const emptySessionStatus = {
   active: false,
   answerAvailable: false,
   isoTimeLastQuestionStarted: '',
-  position: 0,
+  position: -1,
   questions: [{}],
   numQuestions: 0,
   players: [],

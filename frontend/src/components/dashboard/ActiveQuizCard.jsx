@@ -52,7 +52,9 @@ export const ActiveQuizCard = ({
   useEffect(() => {
     console.log(sessionStatus);
 
+    // When the admin ends the quiz update the quiz state and display if the admin wants to see the results
     if (sessionStatus.position === sessionStatus.questions.length) {
+      handleQuizResults();
       updateQuiz();
     }
   }, [sessionStatus]);
@@ -81,6 +83,15 @@ export const ActiveQuizCard = ({
     }
   };
 
+  const handleQuizResults = async () => {
+    const res = await api.authorisedRequest(
+      'GET',
+      `admin/session/${quiz.active}/results`,
+    );
+
+    console.log(res);
+  };
+
   // Get quiz data and updaate dashboard and quizcard quiz useState
   // Active property changes if active has an id otherwise it is null
   const updateQuiz = async () => {
@@ -99,7 +110,6 @@ export const ActiveQuizCard = ({
       'POST',
       `admin/quiz/${quiz.id}/end`,
     );
-
     if (stopQuizRes.status === 200) {
       updateQuiz();
     } else {
