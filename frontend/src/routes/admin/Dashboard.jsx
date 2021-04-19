@@ -141,10 +141,12 @@ export const DashboardPage = () => {
 
   //  +++++++++++++++++++++++++++++++++++++++++++  UPLOAD GAME HANDLING
 
+  // Tracks for displaying errors related to the upload
   const [errorModalState, setErrorModalState] = useState(
     defaultErrorModalState,
   );
 
+  // File Reader for the file upload
   const reader = new FileReader();
 
   const handleUploadGame = () => {
@@ -160,24 +162,33 @@ export const DashboardPage = () => {
     });
   };
 
+  // Main error checking logic for a file upload.
   reader.addEventListener('load', async () => {
+    // Parse the data as a JSON file
     const gameData = JSON.parse(reader.result);
     let error = false;
 
+    // Check if the game has a name
     if (gameData.name === undefined) {
       uploadError('Games must have a name.');
       error = true;
     }
 
+    // Checks that the data of each question is valid
+
+    // Users may upload an empty game with no questions
     if (gameData.questions.length > 0) {
       let questionCounter = 0;
+
       for (const question of gameData.questions) {
+        // Check that a question object has a question
         if (question.question === undefined || question.question === '') {
           uploadError(`Question ${questionCounter + 1} is missing a name.`);
           error = true;
           break;
         }
 
+        // Checks if the question has a proper type
         if (question.type === undefined || question.type === '') {
           uploadError(`Question ${questionCounter + 1} is missing a type.`);
           error = true;
@@ -188,6 +199,7 @@ export const DashboardPage = () => {
           break;
         }
 
+        // Checks if the question has a duration
         if (question.duration === undefined) {
           uploadError(`Question ${questionCounter + 1} is missing a duration.`);
           error = true;
@@ -202,6 +214,7 @@ export const DashboardPage = () => {
           break;
         }
 
+        // Checks if the question has points
         if (question.points === undefined) {
           uploadError(
             `Question ${questionCounter + 1} is missing a points score.`,
@@ -218,6 +231,7 @@ export const DashboardPage = () => {
           break;
         }
 
+        // Checks if the question has answers
         if (question.answers === undefined || question.answers.length === 0) {
           uploadError(`Question ${questionCounter + 1} is missing answers.`);
           error = true;
@@ -230,6 +244,7 @@ export const DashboardPage = () => {
           break;
         }
 
+        // Checks if the question has correct answers
         if (
           question.correctAnswers === undefined ||
           question.correctAnswers.length === 0
@@ -258,11 +273,13 @@ export const DashboardPage = () => {
           if (error) break;
         }
 
+        // Set the id for the question
         question.id = questionCounter;
         question.id === gameData.questions.length - 1
           ? (question.isLast = true)
           : (question.isLast = false);
 
+        // Checks if an image or video url was given
         if (question.imgSrc === undefined) question.imgSrc = null;
         if (question.videoURL === undefined) question.videoURL = null;
         questionCounter++;
@@ -270,8 +287,7 @@ export const DashboardPage = () => {
     }
 
     if (!error) {
-      console.log(gameData);
-
+      // Create the game
       const createQuizRes = await api.authorisedRequest(
         'POST',
         'admin/quiz/new',
@@ -279,6 +295,8 @@ export const DashboardPage = () => {
       );
       if (createQuizRes.status === 200) {
         const quizID = createQuizRes.data.quizId;
+
+        // Add the questions
         const addQuestionRes = await api.authorisedRequest(
           'PUT',
           `admin/quiz/${quizID}`,
