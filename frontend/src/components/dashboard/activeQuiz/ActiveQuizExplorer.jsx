@@ -13,12 +13,19 @@ import {
 import { Grid, Typography } from '@material-ui/core';
 // import { QuizModal } from '../QuizModal';
 
-export const ActiveQuizExplorer = ({ quizzes, updateDashboardQuizzes }) => {
+export const ActiveQuizExplorer = ({
+  quizzes,
+  updateDashboardQuizzes,
+  setModalQuiz,
+  changeModalState,
+}) => {
   const api = new API('http://localhost:5005');
 
   ActiveQuizExplorer.propTypes = {
     quizzes: PropTypes.array,
     updateDashboardQuizzes: PropTypes.func,
+    setModalQuiz: PropTypes.func,
+    changeModalState: PropTypes.func,
   };
 
   // Store the current quiz ids in the explorer
@@ -104,7 +111,7 @@ export const ActiveQuizExplorer = ({ quizzes, updateDashboardQuizzes }) => {
 
   return (
     <Grid container className={styles.explorerWrapper}>
-      <Grid item xs={12} md={5}>
+      <Grid item xs={12} md={6}>
         <Grid
           container
           spacing={0}
@@ -142,13 +149,15 @@ export const ActiveQuizExplorer = ({ quizzes, updateDashboardQuizzes }) => {
             })}
         </Grid>
       </Grid>
-      <Grid item xs={12} md={7}>
+      <Grid item xs={12} md={6}>
         <ActiveQuizControls
           quiz={getQuizDetails(selectedQuizId)}
           status={getSessionStatus(selectedQuizId)}
           fetchSessionStatus={fetchSessionStatus}
           updateDashboardQuizzes={updateDashboardQuizzes}
           selectQuiz={selectQuiz}
+          setModalQuiz={setModalQuiz}
+          changeModalState={changeModalState}
         />
       </Grid>
     </Grid>
