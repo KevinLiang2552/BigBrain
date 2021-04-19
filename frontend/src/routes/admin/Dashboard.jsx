@@ -1,4 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import API from '../../api/api.js';
+import styles from '../../styles/dashboard.module.css';
+
+import { QuizModal } from '../../components/dashboard/QuizModal';
+import {
+  emptyQuizDetails,
+  defaultErrorModalState,
+} from '../../helpers/emptyTypes.js';
+import QuizCard from '../../components/dashboard/QuizCard.jsx';
+import ActiveQuizExplorer from '../../components/dashboard/activeQuiz/ActiveQuizExplorer.jsx';
+import ErrorModal from '../../components/ErrorModal.jsx';
+
 import {
   Accordion,
   AccordionDetails,
@@ -11,18 +23,8 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import styles from '../../styles/dashboard.module.css';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import QuizCard from '../../components/dashboard/QuizCard.jsx';
-import ActiveQuizCard from '../../components/dashboard/ActiveQuizCard.jsx';
-import ErrorModal from '../../components/ErrorModal.jsx';
-import {
-  emptyQuizDetails,
-  defaultErrorModalState,
-} from '../../helpers/emptyTypes.js';
-import API from '../../api/api.js';
-import { QuizModal } from '../../components/dashboard/QuizModal';
 import PublishIcon from '@material-ui/icons/Publish';
 
 export const DashboardPage = () => {
@@ -118,12 +120,15 @@ export const DashboardPage = () => {
 
   const [modalState, setModalState] = useState(false);
   const [modalQuiz, setModalQuiz] = useState(emptyQuizDetails);
+  const [modalResults, setModalResults] = useState(false);
 
   const changeModalState = () => {
     setModalState(!modalState);
   };
 
-  const childSetModalQuiz = (quiz) => {
+  // Set is results to true, if results popup
+  const childSetModalQuiz = (quiz, isResult = false) => {
+    setModalResults(isResult);
     setModalQuiz(quiz);
   };
 
@@ -312,12 +317,28 @@ export const DashboardPage = () => {
       }
     }
   });
+  const [activeQuizzes, setActiveQuizzes] = useState([]);
+
+  useEffect(() => {
+    updateActiveQuizzes();
+  }, [quizzes]);
+
+  const updateActiveQuizzes = () => {
+    const activeQuizzes = [];
+    for (const quiz of quizzes) {
+      if (quiz.active !== null) {
+        activeQuizzes.push(quiz);
+      }
+    }
+    setActiveQuizzes(activeQuizzes);
+  };
 
   return (
     <Container>
       <QuizModal
         modalState={modalState}
         quiz={modalQuiz}
+        results={modalResults}
         changeModalState={changeModalState}
       />
       <Grid container className={styles.dashboardWrapper}>
@@ -398,22 +419,12 @@ export const DashboardPage = () => {
               <Typography variant="h5">Active Quizzes</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid container>
-                {quizzes.map((quiz, index) => {
-                  if (quiz.active !== null) {
-                    return (
-                      <ActiveQuizCard
-                        key={quiz.id}
-                        quizData={quiz}
-                        updateDashboardQuizzes={updateDashboardQuizzes}
-                        setModalQuiz={childSetModalQuiz}
-                        changeModalState={changeModalState}></ActiveQuizCard>
-                    );
-                  } else {
-                    return <></>;
-                  }
-                })}
-              </Grid>
+              <ActiveQuizExplorer
+                quizzes={activeQuizzes}
+                updateDashboardQuizzes={updateDashboardQuizzes}
+                setModalQuiz={childSetModalQuiz}
+                changeModalState={changeModalState}
+              />
             </AccordionDetails>
           </Accordion>
         </Grid>

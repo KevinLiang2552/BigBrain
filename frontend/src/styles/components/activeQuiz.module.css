@@ -1,0 +1,76 @@
+.explorerList {
+  width: 100%;
+  height: 565px;
+  overflow-y: scroll;
+}
+
+/*  Quiz Items */
+
+.explorerItemHeading {
+  display: flex;
+  flex-direction: row;
+}
+
+.explorerItemHeadingText {
+  flex: 1;
+}
+
+.quizItem {
+  cursor: pointer;
+}
+
+.quizItemName {
+  flex: 1;
+}
+
+.quizItemStatus {
+  flex: 1;
+}
+
+/* Quiz Controls */
+.controlsImage {
+  width: 100%;
+  height: 200px;
+}
+
+.controlsName {
+  text-align: left;
+}
+
+.playerListWrapper {
+  position: relative;
+}
+
+.playerHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 16px;
+}
+
+.playerCount {
+  display: flex;
+  align-items: center;
+}
+
+.playerList {
+  height: 200px;
+  overflow-y: scroll;
+  box-shadow: inset 0 0 2px;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: space-around;
+  margin: 16px 0px;
+}
+
+.buttons {
+  width: 220px;
+}
+
+.quizLink {
+  position: absolute;
+  bottom: 2px;
+  right: 25px;
+}

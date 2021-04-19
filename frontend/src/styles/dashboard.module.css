@@ -7,6 +7,16 @@
   margin-bottom: 20px;
 }
 
+.modalResultWrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.modalResultButton {
+  width: 100px;
+}
+
 .linkBox {
   border-top: solid 2px #cccccc;
   border-left: solid 2px #cccccc;
