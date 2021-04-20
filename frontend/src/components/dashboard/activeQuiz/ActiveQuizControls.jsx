@@ -44,6 +44,7 @@ export const ActiveQuizControls = ({
   changeResultState,
   setLinkModalQuiz,
   changeLinkModalState,
+  setResultIds,
 }) => {
   ActiveQuizControls.propTypes = {
     quiz: PropTypes.object,
@@ -54,12 +55,14 @@ export const ActiveQuizControls = ({
     changeResultState: PropTypes.func,
     setLinkModalQuiz: PropTypes.func,
     changeLinkModalState: PropTypes.func,
+    setResultIds: PropTypes.func,
   };
   const api = new API('http://localhost:5005');
 
   useEffect(() => {
     // When the admin ends the quiz update the quiz state and display if the admin wants to see the results
     if (status.position === status.questions.length) {
+      setResultIds(quiz.id, quiz.active);
       selectQuiz(-1);
       updateDashboardQuizzes();
       changeResultState();
@@ -106,6 +109,7 @@ export const ActiveQuizControls = ({
       `admin/quiz/${quiz.id}/end`,
     );
     if (stopQuizRes.status === 200) {
+      setResultIds(quiz.id, quiz.active);
       selectQuiz(-1);
       updateDashboardQuizzes();
       changeResultState();

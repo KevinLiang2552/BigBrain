@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styles from '../../../styles/components/activeQuiz.module.css';
+import { useHistory } from 'react-router-dom';
 
 import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
 
@@ -11,16 +12,26 @@ import { Button, Dialog, DialogContent, DialogTitle } from '@material-ui/core';
  * @param {changeModalState} changeModalState  Flip the modalState
  * @returns
  */
-export const ResultsModal = ({ modalState, changeModalState, quiz }) => {
+export const ResultsModal = ({
+  modalState,
+  changeModalState,
+  quiz,
+  resultsIDs,
+}) => {
   ResultsModal.propTypes = {
     modalState: PropTypes.bool,
     changeModalState: PropTypes.func,
     quiz: PropTypes.object,
+    resultsIDs: PropTypes.object,
   };
+
+  const history = useHistory();
 
   // Go to results page
   const gotoResultsPage = () => {
-    console.log('TODO GO TO RESULTS PAGE');
+    history.push(
+      `dashboard/pastResults/${resultsIDs.quizID}/${resultsIDs.sessionID}`,
+    );
   };
 
   return (

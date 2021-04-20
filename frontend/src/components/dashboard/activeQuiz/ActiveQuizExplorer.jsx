@@ -52,6 +52,11 @@ export const ActiveQuizExplorer = ({
   // Store the current quiz ids in the explorer
   const [activeQuizIds, setActiveQuizIds] = useState([]);
 
+  const [resultsIDs, setResultsIDs] = useState({
+    quizID: -1,
+    sessionID: -1,
+  });
+
   // Session status HashMap of each active quiz. Where the key is the id of the map
   const [sessionStatus] = useState(new Map());
 
@@ -136,12 +141,17 @@ export const ActiveQuizExplorer = ({
     setResultModalState(!resultModalState);
   };
 
+  const childSetResultIds = (quizID, sessionID) => {
+    setResultsIDs({ quizID: quizID, sessionID: sessionID });
+  };
+
   return (
     <>
       <ResultsModal
         modalState={resultModalState}
         changeModalState={childSetResultModalState}
         quiz={resultModalQuiz}
+        resultsIDs={resultsIDs}
       />
       <Grid container className={styles.explorerWrapper}>
         <Grid item xs={12} md={6}>
@@ -195,6 +205,7 @@ export const ActiveQuizExplorer = ({
             changeResultState={childSetResultModalState}
             setLinkModalQuiz={setLinkModalQuiz}
             changeLinkModalState={changeLinkModalState}
+            setResultIds={childSetResultIds}
           />
         </Grid>
       </Grid>
