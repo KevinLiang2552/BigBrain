@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import API from '../../api/api.js';
 import { getPlayerToken } from '../../helpers/user.js';
+import { getQuestionPoints } from '../../helpers/generalHelpers.js';
 import styles from '../../styles/play.module.css';
 
 import { Box, Container, Grid, Typography } from '@material-ui/core';
@@ -195,8 +196,11 @@ export const PlayQuestion = ({
       setFunnyText();
       setTimeAnswered(timeLeft);
 
-      const questionPoints =
-        parseInt(question.points) * 100 + calculateSpeedPoints();
+      const questionPoints = getQuestionPoints(
+        question.points,
+        timeLeft,
+        question.duration,
+      );
 
       setCurrentPoints(questionPoints);
     }
@@ -223,14 +227,6 @@ export const PlayQuestion = ({
       speedText = 'Jussttt in the nick of time';
     }
     setSpeedText(speedText);
-  };
-
-  // Calculate the amount of points a player get for their answering speed
-  // The player can only get points of interval of 0.05 and the max being 0.5
-  // Same with the points before it is multiplied by 100
-  const calculateSpeedPoints = () => {
-    const howFast = Math.ceil((timeLeft / question.duration) * 10);
-    return howFast * 0.05 * 100;
   };
 
   /**

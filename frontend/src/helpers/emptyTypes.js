@@ -47,3 +47,9 @@ export const defaultErrorModalState = {
   showModal: false,
   errorMessage: '',
 };
+
+export const emptyQuizResults = {
+  id: 0,
+  name: '',
+  answer: [],
+};
