@@ -12,9 +12,14 @@ import {
 } from '@material-ui/core';
 import { getQuestionPoints } from '../../helpers/generalHelpers.js';
 
+/**
+ * @param {array} results The results of a given quiz session
+ * @param {array} questionDetails The questions of a quiz and their details;
+ */
+
 export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
   ResultsTopPlayerTable.propTypes = {
-    results: PropTypes.object,
+    results: PropTypes.array,
     questionDetails: PropTypes.array,
   };
 
@@ -24,10 +29,13 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
     findTopPlayers();
   }, [results]);
 
+  // Calculates and finds the top 5 players of the session
   const findTopPlayers = () => {
     const playerScores = [];
-    if (results.results !== undefined)
-      for (const playerResult of results.results) {
+
+    // Need to check if there were any results for that quiz or not.
+    if (results !== undefined)
+      for (const playerResult of results) {
         let questionCounter = 0;
         let playerScore = 0;
 

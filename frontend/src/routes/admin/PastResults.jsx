@@ -4,6 +4,7 @@ import { emptyQuizResults } from '../../helpers/emptyTypes.js';
 import { useParams } from 'react-router';
 import { Box, Button, Grid } from '@material-ui/core';
 import { ResultsTopPlayerTable } from '../../components/pastResults/resultsTopPlayerTable.jsx';
+import { ResultsPercentCorrectGraph } from '../../components/pastResults/resultsPercentCorrectGraph.jsx';
 import styles from '../../styles/pastResults.module.css';
 
 export const PastResultsPage = () => {
@@ -79,18 +80,22 @@ export const PastResultsPage = () => {
       <Grid container className={styles.resultsContainer}>
         <Grid item md={12} xs={12}>
           <ResultsTopPlayerTable
-            results={currSessionResults}
+            results={currSessionResults.results}
             questionDetails={quizQuestions}
           />
         </Grid>
+        <Grid item></Grid>
       </Grid>
-
+      <ResultsPercentCorrectGraph
+        results={currSessionResults.results}
+        questionDetails={quizQuestions}
+      />
       <Grid
         container
         direction="row"
         justify="space-between"
-        alignItems="center">
-        <Grid item md={4} xs={4}>
+        alignItems="flex-end">
+        <Grid item md={2} xs={4}>
           {currSessionResults.id !== 0 ? (
             <Button onClick={prevSession}>Go back</Button>
           ) : (
@@ -100,7 +105,7 @@ export const PastResultsPage = () => {
         <Grid item md={4} xs={4}>
           <Button onClick={handleShowMeSomeResults}>show me da deets</Button>
         </Grid>
-        <Grid item md={4} xs={4}>
+        <Grid item md={2} xs={4}>
           {currSessionResults.id !== oldSessionResults.length - 1 ? (
             <Button onClick={nextSession}>Go forward</Button>
           ) : (
