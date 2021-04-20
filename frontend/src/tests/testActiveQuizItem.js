@@ -91,6 +91,20 @@ export const testActiveQuizItem = () => {
       expect(activeQuizItem.text()).toBe('Results');
     });
 
+    it('trigger onclick event handler when clicked', () => {
+      const session = getSessionStatusAtPostion(0);
+      const onClick = jest.fn();
+      shallow(
+        <ActiveQuizItem
+          quiz={emptyQuizIdDetails}
+          status={session}
+          selectQuiz={onClick}
+          selectedQuizId={0}
+        />,
+      ).simulate('click');
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
     it('Active quiz item renders correctly', () => {
       const activeQuizItem = shallow(
         <ActiveQuizItem
