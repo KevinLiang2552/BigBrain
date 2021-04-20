@@ -10,3 +10,12 @@ export const isObjectValueEmpty = (object) => {
   }
   return true;
 };
+
+// Total amount of points a question gets.
+// Also adds and calculates the amount of points a player get for their answering speed
+// The player can only get points of interval of 0.05 and the max being 0.5
+// Same with the points before it is multiplied by 100
+export const getQuestionPoints = (points, timeLeft, duration) => {
+  const howFast = Math.ceil((timeLeft / duration) * 10);
+  return parseInt(points) * 100 + howFast * 0.05 * 100;
+};

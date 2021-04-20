@@ -94,7 +94,7 @@ function App() {
         <Route path="/dashboard/edit/:id">
           <EditQuizPage />
         </Route>
-        <Route path="/dashboard/pastResults/:id">
+        <Route path="/dashboard/pastResults/:id/:sessionID?">
           <PastResultsPage />
         </Route>
         <Route path="/dashboard">
