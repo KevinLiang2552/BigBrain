@@ -11,7 +11,9 @@
 import testErrorModal from './tests/testErrorModal.js';
 import testPasswordInput from './tests/testPasswordInput';
 import testActiveQuizItem from './tests/testActiveQuizItem';
+import testQuizTime from './tests/testQuizTimer';
 
 testErrorModal();
 testPasswordInput();
 testActiveQuizItem();
+testQuizTime();
