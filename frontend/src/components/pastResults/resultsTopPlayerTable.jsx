@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@material-ui/core';
 import { getQuestionPoints } from '../../helpers/generalHelpers.js';
 
@@ -62,6 +63,9 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
       const topFivePlayers = playerScores.splice(0, 5);
       setTopPlayers(topFivePlayers);
     } else {
+      for (let i = 0; playerScores.length < 5; i++) {
+        playerScores.push({ name: '-', score: '-' });
+      }
       setTopPlayers(playerScores);
     }
   };
@@ -70,8 +74,9 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
     <>
       <Grid container>
         <Grid item>
+          <Typography variant="h5">Top 5 Players</Typography>
           <TableContainer component={Paper}>
-            <Table aria-label="simple table">
+            <Table size="small" aria-label="top 5 table">
               <TableHead>
                 <TableRow>
                   <TableCell>Player</TableCell>

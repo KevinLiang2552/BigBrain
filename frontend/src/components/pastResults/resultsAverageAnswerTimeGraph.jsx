@@ -4,13 +4,13 @@ import {
   ArgumentAxis,
   ValueAxis,
   Chart,
-  LineSeries,
+  BarSeries,
   Title,
 } from '@devexpress/dx-react-chart-material-ui';
 import { Paper } from '@material-ui/core';
 
-export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
-  ResultsPercentCorrectGraph.propTypes = {
+export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
+  ResultsAverageAnswerTimeGraph.propTypes = {
     results: PropTypes.array,
     questionDetails: PropTypes.array,
   };
@@ -22,18 +22,18 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
   }, [results]);
 
   const defineGraphData = () => {
-    let questionCorrect;
+    let questionAverageTime;
 
     if (questionDetails.length > 0) {
-      questionCorrect = [];
+      questionAverageTime = [];
     } else {
       return;
     }
 
     for (const i in questionDetails) {
-      questionCorrect.push({
+      questionAverageTime.push({
         id: i,
-        playersCorrect: 0,
+        totalAnswerTime: 0,
       });
     }
 
@@ -41,24 +41,25 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
       for (const playerResult of results) {
         let questionCounter = 0;
         for (const question of playerResult.answers) {
-          if (question.correct) {
-            questionCorrect[questionCounter].playersCorrect++;
+          if (question.answeredAt !== undefined) {
+            const startTime = new Date(question.questionStartedAt);
+            const finishedTime = new Date(question.answeredAt);
+            const timeLeft = (finishedTime - startTime) / 1000;
+            questionAverageTime[questionCounter].totalAnswerTime += timeLeft;
           }
           questionCounter++;
         }
       }
 
       const newGraphData = [];
-      for (const question of questionCorrect) {
-        const percentCorrect =
-          (question.playersCorrect / questionDetails.length) * 100;
+      for (const question of questionAverageTime) {
+        const averageTime = question.totalAnswerTime / results.length;
 
         newGraphData.push({
           argument: question.id,
-          lineValue: percentCorrect,
+          lineValue: averageTime,
         });
       }
-
       setGraphData(newGraphData);
     }
   };
@@ -68,8 +69,8 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
       <Chart data={graphData}>
         <ArgumentAxis />
         <ValueAxis />
-        <LineSeries valueField="lineValue" argumentField="argument" />
-        <Title text="Percent of users answering question correctly" />
+        <BarSeries valueField="lineValue" argumentField="argument" />
+        <Title text="Average time for users to answer a question" />
       </Chart>
     </Paper>
   );

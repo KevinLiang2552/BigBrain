@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Box, Button, Grid } from '@material-ui/core';
 import { ResultsTopPlayerTable } from '../../components/pastResults/resultsTopPlayerTable.jsx';
 import { ResultsPercentCorrectGraph } from '../../components/pastResults/resultsPercentCorrectGraph.jsx';
-import styles from '../../styles/pastResults.module.css';
+import { ResultsAverageAnswerTimeGraph } from '../../components/pastResults/resultsAverageAnswerTimeGraph.jsx';
 
 export const PastResultsPage = () => {
   const api = new API('http://localhost:5005');
@@ -55,12 +55,6 @@ export const PastResultsPage = () => {
     }
   };
 
-  const handleShowMeSomeResults = () => {
-    console.log(oldSessionResults);
-    console.log(quizQuestions);
-    console.log(currSessionResults);
-  };
-
   const prevSession = () => {
     setCurrSessionResults({
       ...oldSessionResults[currSessionResults.id - 1],
@@ -75,42 +69,68 @@ export const PastResultsPage = () => {
     });
   };
 
+  const mainContent = () => {
+    if (
+      currSessionResults.results === undefined ||
+      currSessionResults.results.length === 0
+    ) {
+      return (
+        <Grid container>Empty quiz - nothing happened in this quiz O.o</Grid>
+      );
+    } else {
+      return (
+        <Grid container spacing={3}>
+          <Grid item md={4} xs={12}>
+            <ResultsTopPlayerTable
+              results={currSessionResults.results}
+              questionDetails={quizQuestions}
+            />
+          </Grid>
+          <Grid item md={12} xs={12}>
+            <Grid container spacing={3}>
+              <Grid item md={6} xs={12}>
+                <ResultsPercentCorrectGraph
+                  results={currSessionResults.results}
+                  questionDetails={quizQuestions}
+                />
+              </Grid>
+              <Grid item md={6} xs={12}>
+                <ResultsAverageAnswerTimeGraph
+                  results={currSessionResults.results}
+                  questionDetails={quizQuestions}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      );
+    }
+  };
+
   return (
-    <Box textAlign="center">
-      <Grid container className={styles.resultsContainer}>
-        <Grid item md={12} xs={12}>
-          <ResultsTopPlayerTable
-            results={currSessionResults.results}
-            questionDetails={quizQuestions}
-          />
-        </Grid>
-        <Grid item></Grid>
-      </Grid>
-      <ResultsPercentCorrectGraph
-        results={currSessionResults.results}
-        questionDetails={quizQuestions}
-      />
-      <Grid
-        container
-        direction="row"
-        justify="space-between"
-        alignItems="flex-end">
-        <Grid item md={2} xs={4}>
-          {currSessionResults.id !== 0 ? (
-            <Button onClick={prevSession}>Go back</Button>
-          ) : (
-            <></>
-          )}
-        </Grid>
-        <Grid item md={4} xs={4}>
-          <Button onClick={handleShowMeSomeResults}>show me da deets</Button>
-        </Grid>
-        <Grid item md={2} xs={4}>
-          {currSessionResults.id !== oldSessionResults.length - 1 ? (
-            <Button onClick={nextSession}>Go forward</Button>
-          ) : (
-            <></>
-          )}
+    <Box textAlign="center" display="flex" height="90vh">
+      <Grid container>
+        {mainContent()}
+        <Grid
+          container
+          direction="row"
+          justify="space-between"
+          alignItems="flex-end">
+          <Grid item md={2} xs={4}>
+            {currSessionResults.id !== 0 ? (
+              <Button onClick={prevSession}>Go back</Button>
+            ) : (
+              <></>
+            )}
+          </Grid>
+
+          <Grid item md={2} xs={4}>
+            {currSessionResults.id !== oldSessionResults.length - 1 ? (
+              <Button onClick={nextSession}>Go forward</Button>
+            ) : (
+              <></>
+            )}
+          </Grid>
         </Grid>
       </Grid>
     </Box>
