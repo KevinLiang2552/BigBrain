@@ -9,6 +9,11 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 import { Paper } from '@material-ui/core';
 
+/**
+ * @param {array} results The results of a given quiz session
+ * @param {array} questionDetails The questions of a quiz and their details;
+ */
+
 export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
   ResultsAverageAnswerTimeGraph.propTypes = {
     results: PropTypes.array,
@@ -21,6 +26,7 @@ export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
     defineGraphData();
   }, [results]);
 
+  // Set the graph data with the given results
   const defineGraphData = () => {
     let questionAverageTime;
 
@@ -30,6 +36,8 @@ export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
       return;
     }
 
+    // For all the questions, set each of them with an object
+    // with an id and the total time every player took to answer
     for (const i in questionDetails) {
       questionAverageTime.push({
         id: i,
@@ -37,6 +45,10 @@ export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
       });
     }
 
+    // If the results has stuff in there
+    // (aka the admin didn't decide to start a game without any players)
+    // For each player, check the time it took them to answer
+    // and add it to the question's total time
     if (results !== undefined) {
       for (const playerResult of results) {
         let questionCounter = 0;
@@ -51,6 +63,8 @@ export const ResultsAverageAnswerTimeGraph = ({ results, questionDetails }) => {
         }
       }
 
+      // Finds the average time for all players to answer.
+      // Then turns the data into something that the graph API can read.
       const newGraphData = [];
       for (const question of questionAverageTime) {
         const averageTime = question.totalAnswerTime / results.length;

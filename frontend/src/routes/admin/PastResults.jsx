@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import API from '../../api/api.js';
 import { emptyQuizResults } from '../../helpers/emptyTypes.js';
 import { useParams } from 'react-router';
-import { Box, Button, Grid } from '@material-ui/core';
+import { Box, Grid, IconButton, Typography } from '@material-ui/core';
+import styles from '../../styles/pastResults.module.css';
 import { ResultsTopPlayerTable } from '../../components/pastResults/resultsTopPlayerTable.jsx';
 import { ResultsPercentCorrectGraph } from '../../components/pastResults/resultsPercentCorrectGraph.jsx';
 import { ResultsAverageAnswerTimeGraph } from '../../components/pastResults/resultsAverageAnswerTimeGraph.jsx';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
+// Results for all past sessions of a quiz
 export const PastResultsPage = () => {
   const api = new API('http://localhost:5005');
   const { id, sessionID } = useParams();
@@ -21,12 +25,15 @@ export const PastResultsPage = () => {
     setOldSessionDetails();
   }, []);
 
+  // Set the various data related to the session and quiz
   const setOldSessionDetails = async () => {
+    // Grabbing all the previous sessionIDs and question details
     const quizDetailsRes = await api.authorisedRequest(
       'GET',
       `admin/quiz/${id}`,
     );
     if (quizDetailsRes.status === 200) {
+      // Grabbing the data using the sessionIDs
       const prevSessions = [];
       for (const session of quizDetailsRes.data.oldSessions) {
         const sessionResultRes = await api.authorisedRequest(
@@ -42,9 +49,11 @@ export const PastResultsPage = () => {
       setOldSessionResults(prevSessions);
       setQuizQuestions(quizDetailsRes.data.questions);
 
+      // If the url isn't given a particular sessionID, use the first one found.
       if (sessionID === undefined) {
         setCurrSessionResults({ ...prevSessions[0], id: 0 });
       } else {
+        // If there is a particular sessionID parameter, find that and set it as the current session
         const currSession = prevSessions.find(
           (session) => session.sessionID === sessionID,
         );
@@ -55,6 +64,7 @@ export const PastResultsPage = () => {
     }
   };
 
+  // Sets the data to the previous session
   const prevSession = () => {
     setCurrSessionResults({
       ...oldSessionResults[currSessionResults.id - 1],
@@ -62,6 +72,7 @@ export const PastResultsPage = () => {
     });
   };
 
+  // Sets the data to the next session
   const nextSession = () => {
     setCurrSessionResults({
       ...oldSessionResults[currSessionResults.id + 1],
@@ -69,32 +80,58 @@ export const PastResultsPage = () => {
     });
   };
 
+  // What the main content will display depending on if the found results are for the
+  // session is valid/not
   const mainContent = () => {
     if (
       currSessionResults.results === undefined ||
       currSessionResults.results.length === 0
     ) {
       return (
-        <Grid container>Empty quiz - nothing happened in this quiz O.o</Grid>
+        <Grid container direction="row" justify="center" alignItems="center">
+          <Typography variant="h3">
+            Empty quiz session - nothing happened in this quiz O.o
+          </Typography>
+        </Grid>
       );
     } else {
       return (
-        <Grid container spacing={3}>
+        <Grid
+          container
+          direction="row"
+          justify="space-around"
+          alignItems="center">
+          <Grid item md={2} xs={6}>
+            {/* Some basic information about the current session */}
+            <Typography variant="h5">Session Details</Typography>
+            <Typography variant="subtitle1">
+              Session ID: {currSessionResults.sessionID}
+            </Typography>
+            <Typography variant="subtitle1">
+              Number of players: {currSessionResults.results.length}
+            </Typography>
+          </Grid>
+
+          {/* Top 5 players table */}
           <Grid item md={4} xs={12}>
             <ResultsTopPlayerTable
               results={currSessionResults.results}
               questionDetails={quizQuestions}
             />
           </Grid>
+
+          {/* Graphs section */}
           <Grid item md={12} xs={12}>
-            <Grid container spacing={3}>
+            <Grid container>
               <Grid item md={6} xs={12}>
+                {/* Percent Correct */}
                 <ResultsPercentCorrectGraph
                   results={currSessionResults.results}
                   questionDetails={quizQuestions}
                 />
               </Grid>
               <Grid item md={6} xs={12}>
+                {/* Average time taken to answer */}
                 <ResultsAverageAnswerTimeGraph
                   results={currSessionResults.results}
                   questionDetails={quizQuestions}
@@ -108,7 +145,11 @@ export const PastResultsPage = () => {
   };
 
   return (
-    <Box textAlign="center" display="flex" height="90vh">
+    <Box
+      textAlign="center"
+      display="flex"
+      height="90vh"
+      className={styles.resultsContainer}>
       <Grid container>
         {mainContent()}
         <Grid
@@ -116,9 +157,12 @@ export const PastResultsPage = () => {
           direction="row"
           justify="space-between"
           alignItems="flex-end">
+          {/* Navigation Button Section */}
           <Grid item md={2} xs={4}>
             {currSessionResults.id !== 0 ? (
-              <Button onClick={prevSession}>Go back</Button>
+              <IconButton onClick={prevSession} aria-label="previous session">
+                <NavigateBeforeIcon />
+              </IconButton>
             ) : (
               <></>
             )}
@@ -126,7 +170,9 @@ export const PastResultsPage = () => {
 
           <Grid item md={2} xs={4}>
             {currSessionResults.id !== oldSessionResults.length - 1 ? (
-              <Button onClick={nextSession}>Go forward</Button>
+              <IconButton onClick={nextSession} aria-label="next session">
+                <NavigateNextIcon />
+              </IconButton>
             ) : (
               <></>
             )}

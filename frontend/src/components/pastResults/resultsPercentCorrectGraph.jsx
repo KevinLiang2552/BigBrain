@@ -9,6 +9,11 @@ import {
 } from '@devexpress/dx-react-chart-material-ui';
 import { Paper } from '@material-ui/core';
 
+/**
+ * @param {array} results The results of a given quiz session
+ * @param {array} questionDetails The questions of a quiz and their details;
+ */
+
 export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
   ResultsPercentCorrectGraph.propTypes = {
     results: PropTypes.array,
@@ -21,6 +26,7 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
     defineGraphData();
   }, [results]);
 
+  // Set the graph data with the given results
   const defineGraphData = () => {
     let questionCorrect;
 
@@ -30,6 +36,8 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
       return;
     }
 
+    // For all the questions, set each of them with an object
+    // with an id and the number of players that got it correct
     for (const i in questionDetails) {
       questionCorrect.push({
         id: i,
@@ -37,6 +45,10 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
       });
     }
 
+    // If the results has stuff in there
+    // (aka the admin didn't decide to start a game without any players)
+    // For each player, check if they got the question correct and add to
+    // the number of people who got it correct.
     if (results !== undefined) {
       for (const playerResult of results) {
         let questionCounter = 0;
@@ -48,10 +60,11 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
         }
       }
 
+      // Finds the percent of players that got the question right.
+      // Then turns the data into something that the graph API can read.
       const newGraphData = [];
       for (const question of questionCorrect) {
-        const percentCorrect =
-          (question.playersCorrect / questionDetails.length) * 100;
+        const percentCorrect = (question.playersCorrect / results.length) * 100;
 
         newGraphData.push({
           argument: question.id,

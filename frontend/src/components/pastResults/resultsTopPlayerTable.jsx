@@ -72,7 +72,11 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
 
   return (
     <>
-      <Grid container>
+      <Grid
+        container
+        direction="row"
+        justify="space-around"
+        alignItems="center">
         <Grid item>
           <Typography variant="h5">Top 5 Players</Typography>
           <TableContainer component={Paper}>
