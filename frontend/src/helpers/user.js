@@ -11,11 +11,11 @@ export const setAuthToken = (authToken) => {
 
 // Get Player token from storage, return empty string if null
 export const getPlayerToken = () => {
-  const authToken = localStorage.getItem('bigBrain-PlayerToken');
+  const authToken = window.sessionStorage.getItem('bigBrain-PlayerToken');
   return authToken === null ? '' : authToken;
 };
 
 // Set Player token from storage
 export const setPlayerToken = (authToken) => {
-  localStorage.setItem('bigBrain-PlayerToken', authToken);
+  window.sessionStorage.setItem('bigBrain-PlayerToken', authToken);
 };
