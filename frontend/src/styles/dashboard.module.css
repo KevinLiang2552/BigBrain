@@ -45,7 +45,7 @@
   color: white;
 }
 
-.createPlus {
+.createIcon {
   margin-right: 5px;
   color: white;
 }
@@ -73,7 +73,7 @@
 
 .quizCard {
   width: 390px;
-  height: 250px;
+  height: 275px;
   margin-top: 20px;
 }
 

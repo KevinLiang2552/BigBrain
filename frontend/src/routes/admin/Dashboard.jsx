@@ -18,6 +18,7 @@ import {
   Button,
   Container,
   Grid,
+  Hidden,
   Popover,
   TextField,
   Toolbar,
@@ -353,7 +354,7 @@ export const DashboardPage = () => {
                   <input
                     type="file"
                     onChange={handleUploadGame}
-                    accept=".json, .csv"
+                    accept=".json"
                     id="gameFileUpload"
                     hidden
                   />
@@ -361,9 +362,11 @@ export const DashboardPage = () => {
                     className={styles.createPlus}
                     fontSize="default"
                   />
-                  <Typography className={styles.createText}>
-                    Upload Game
-                  </Typography>
+                  <Hidden smDown>
+                    <Typography className={styles.createIcon}>
+                      Upload Game
+                    </Typography>
+                  </Hidden>
                 </Button>
               </Grid>
               <Grid item md={2} xs={2}>
@@ -372,9 +375,11 @@ export const DashboardPage = () => {
                     className={styles.createPlus}
                     fontSize="default"
                   />
-                  <Typography className={styles.createText}>
-                    Create Quiz
-                  </Typography>
+                  <Hidden smDown>
+                    <Typography className={styles.createIcon}>
+                      Create Quiz
+                    </Typography>
+                  </Hidden>
                 </Button>
                 <Popover
                   open={Boolean(createAnchorEl)}

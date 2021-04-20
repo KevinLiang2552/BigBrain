@@ -137,7 +137,7 @@ export const QuizCard = ({
               className={`${styles.controls} ${styles.controlsStop}`}
               startIcon={<BarChartIcon />}
               onClick={handleShowPastResults}>
-              <Typography>Past Results</Typography>
+              <Typography variant="p">Past Results</Typography>
             </Button>
             <Button
               className={`${styles.controls} ${styles.controlsEdit}`}
