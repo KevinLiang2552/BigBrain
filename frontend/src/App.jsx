@@ -7,6 +7,7 @@ import { LobbyPage } from './routes/user/Lobby.jsx';
 import { DashboardPage } from './routes/admin/Dashboard.jsx';
 import { EditQuizPage } from './routes/admin/EditQuiz.jsx';
 import { EditQuestionPage } from './routes/admin/EditQuestion.jsx';
+import { PastResultsPage } from './routes/admin/PastResults.jsx';
 import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Header } from './components/Header';
@@ -92,6 +93,9 @@ function App() {
         </Route>
         <Route path="/dashboard/edit/:id">
           <EditQuizPage />
+        </Route>
+        <Route path="/dashboard/pastResults/:id">
+          <PastResultsPage />
         </Route>
         <Route path="/dashboard">
           <DashboardPage></DashboardPage>

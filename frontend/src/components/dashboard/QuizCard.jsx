@@ -19,7 +19,7 @@ import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
 import EditIcon from '@material-ui/icons/Edit';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import StopIcon from '@material-ui/icons/Stop';
+import BarChartIcon from '@material-ui/icons/BarChart';
 import LinkIcon from '@material-ui/icons/Link';
 
 /**
@@ -84,20 +84,8 @@ export const QuizCard = ({
     changeModalState();
   };
 
-  // Stop current quiz session
-  const handleStopQuiz = async () => {
-    // TO DO VIEW RESULTS
-
-    const stopQuizRes = await api.authorisedRequest(
-      'POST',
-      `admin/quiz/${quiz.id}/end`,
-    );
-
-    if (stopQuizRes.status === 200) {
-      updateQuiz();
-    } else {
-      console.log(stopQuizRes.data.error);
-    }
+  const handleShowPastResults = async () => {
+    history.push(`/dashboard/pastResults/${quiz.id}`);
   };
 
   const handleEdit = () => {
@@ -147,9 +135,9 @@ export const QuizCard = ({
             </Button>
             <Button
               className={`${styles.controls} ${styles.controlsStop}`}
-              startIcon={<StopIcon />}
-              onClick={handleStopQuiz}>
-              <Typography>Stop</Typography>
+              startIcon={<BarChartIcon />}
+              onClick={handleShowPastResults}>
+              <Typography>Past Results</Typography>
             </Button>
             <Button
               className={`${styles.controls} ${styles.controlsEdit}`}
