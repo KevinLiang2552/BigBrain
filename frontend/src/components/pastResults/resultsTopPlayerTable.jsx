@@ -26,7 +26,7 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
 
   const findTopPlayers = () => {
     const playerScores = [];
-    if (results.results.length > 0)
+    if (results.results !== undefined)
       for (const playerResult of results.results) {
         let questionCounter = 0;
         let playerScore = 0;
@@ -50,7 +50,12 @@ export const ResultsTopPlayerTable = ({ results, questionDetails }) => {
     playerScores.sort((a, b) => {
       return b.score - a.score;
     });
-    setTopPlayers(playerScores);
+    if (playerScores.length > 5) {
+      const topFivePlayers = playerScores.splice(0, 5);
+      setTopPlayers(topFivePlayers);
+    } else {
+      setTopPlayers(playerScores);
+    }
   };
 
   return (

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import API from '../../api/api.js';
 import { emptyQuizResults } from '../../helpers/emptyTypes.js';
 import { useParams } from 'react-router';
-import { Button, Grid } from '@material-ui/core';
+import { Box, Button, Grid } from '@material-ui/core';
 import { ResultsTopPlayerTable } from '../../components/pastResults/resultsTopPlayerTable.jsx';
+import styles from '../../styles/pastResults.module.css';
 
 export const PastResultsPage = () => {
   const api = new API('http://localhost:5005');
@@ -74,26 +75,39 @@ export const PastResultsPage = () => {
   };
 
   return (
-    <Grid container spacing={4}>
-      <Grid item md={12} xs={12}>
-        <ResultsTopPlayerTable
-          results={currSessionResults}
-          questionDetails={quizQuestions}
-        />
+    <Box textAlign="center">
+      <Grid container className={styles.resultsContainer}>
+        <Grid item md={12} xs={12}>
+          <ResultsTopPlayerTable
+            results={currSessionResults}
+            questionDetails={quizQuestions}
+          />
+        </Grid>
       </Grid>
-      <Grid item>
-        {currSessionResults.id !== 0 ? (
-          <Button onClick={prevSession}>Go back</Button>
-        ) : (
-          <></>
-        )}
-        <Button onClick={handleShowMeSomeResults}>show me da deets</Button>
-        {currSessionResults.id !== oldSessionResults.length - 1 ? (
-          <Button onClick={nextSession}>Go forward</Button>
-        ) : (
-          <></>
-        )}
+
+      <Grid
+        container
+        direction="row"
+        justify="space-between"
+        alignItems="center">
+        <Grid item md={4} xs={4}>
+          {currSessionResults.id !== 0 ? (
+            <Button onClick={prevSession}>Go back</Button>
+          ) : (
+            <></>
+          )}
+        </Grid>
+        <Grid item md={4} xs={4}>
+          <Button onClick={handleShowMeSomeResults}>show me da deets</Button>
+        </Grid>
+        <Grid item md={4} xs={4}>
+          {currSessionResults.id !== oldSessionResults.length - 1 ? (
+            <Button onClick={nextSession}>Go forward</Button>
+          ) : (
+            <></>
+          )}
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 };
