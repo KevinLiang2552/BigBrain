@@ -5,6 +5,7 @@ import API from '../../../api/api.js';
 
 import ActiveQuizItem from './ActiveQuizItem.jsx';
 import ActiveQuizControls from './ActiveQuizControls.jsx';
+import ResultsModal from './ResultsModal.jsx';
 import {
   emptyQuizIdDetails,
   emptySessionStatus,
@@ -25,24 +26,28 @@ import {
  * The selected quiz changes which quiz the controller is interacting with
  * @param {array} quizzes                     The current active quizzes
  * @param {func} updateDashboardQuizzes       Update the dashboard main quiz useState
- * @param {func} setModalQuiz                 Show quiz link
- * @param {func} changeModalState             Show quiz link
+ * @param {func} setLinkModalQuiz                 Show quiz link
+ * @param {func} changeLinkModalState             Show quiz link
  * @returns
  */
 export const ActiveQuizExplorer = ({
   quizzes,
   updateDashboardQuizzes,
-  setModalQuiz,
-  changeModalState,
+  setLinkModalQuiz,
+  changeLinkModalState,
 }) => {
   const api = new API('http://localhost:5005');
 
   ActiveQuizExplorer.propTypes = {
     quizzes: PropTypes.array,
     updateDashboardQuizzes: PropTypes.func,
-    setModalQuiz: PropTypes.func,
-    changeModalState: PropTypes.func,
+    setLinkModalQuiz: PropTypes.func,
+    changeLinkModalState: PropTypes.func,
   };
+
+  // Result modal state
+  const [resultModalState, setResultModalState] = useState(false);
+  const [resultModalQuiz, setResultModalQuiz] = useState(emptyQuizIdDetails);
 
   // Store the current quiz ids in the explorer
   const [activeQuizIds, setActiveQuizIds] = useState([]);
@@ -124,59 +129,76 @@ export const ActiveQuizExplorer = ({
   // Child select quizfor ActiveQuizItem.jsx
   const selectQuiz = (id) => {
     setSelectedQuizId(id);
+    setResultModalQuiz(getQuizDetails(id));
+  };
+
+  const childSetResultModalState = () => {
+    setResultModalState(!resultModalState);
   };
 
   return (
-    <Grid container className={styles.explorerWrapper}>
-      <Grid item xs={12} md={6}>
-        <div>
-          <div className={styles.explorerItemHeading}>
-            <Typography variant="h5" className={styles.explorerItemHeadingText}>
-              Quiz Name
-            </Typography>
-            <Typography variant="h5" className={styles.explorerItemHeadingText}>
-              Quiz Status
-            </Typography>
-          </div>
+    <>
+      <ResultsModal
+        modalState={resultModalState}
+        changeModalState={childSetResultModalState}
+        quiz={resultModalQuiz}
+      />
+      <Grid container className={styles.explorerWrapper}>
+        <Grid item xs={12} md={6}>
+          <div>
+            <div className={styles.explorerItemHeading}>
+              <Typography
+                variant="h5"
+                className={styles.explorerItemHeadingText}>
+                Quiz Name
+              </Typography>
+              <Typography
+                variant="h5"
+                className={styles.explorerItemHeadingText}>
+                Quiz Status
+              </Typography>
+            </div>
 
-          <List className={styles.explorerList}>
-            {quizzes.length > 0 ? (
-              quizzes.map((quiz) => {
-                return (
-                  <ActiveQuizItem
-                    key={quiz.id}
-                    quiz={quiz}
-                    status={getSessionStatus(quiz.id)}
-                    selectQuiz={selectQuiz}
-                    selectedQuizId={selectedQuizId}
-                  />
-                );
-              })
-            ) : (
-              //  If no items show some helper text
-              <ListItem>
-                <ListItemText>
-                  {
-                    "No active quizzes. Start a quiz in 'My Quizzes' to activate a quiz."
-                  }
-                </ListItemText>
-              </ListItem>
-            )}
-          </List>
-        </div>
+            <List className={styles.explorerList}>
+              {quizzes.length > 0 ? (
+                quizzes.map((quiz) => {
+                  return (
+                    <ActiveQuizItem
+                      key={quiz.id}
+                      quiz={quiz}
+                      status={getSessionStatus(quiz.id)}
+                      selectQuiz={selectQuiz}
+                      selectedQuizId={selectedQuizId}
+                    />
+                  );
+                })
+              ) : (
+                //  If no items show some helper text
+                <ListItem>
+                  <ListItemText>
+                    {
+                      "No active quizzes. Start a quiz in 'My Quizzes' to activate a quiz."
+                    }
+                  </ListItemText>
+                </ListItem>
+              )}
+            </List>
+          </div>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ActiveQuizControls
+            quiz={getQuizDetails(selectedQuizId)}
+            status={getSessionStatus(selectedQuizId)}
+            fetchSessionStatus={fetchSessionStatus}
+            updateDashboardQuizzes={updateDashboardQuizzes}
+            selectQuiz={selectQuiz}
+            changeResultState={childSetResultModalState}
+            setLinkModalQuiz={setLinkModalQuiz}
+            changeLinkModalState={changeLinkModalState}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12} md={6}>
-        <ActiveQuizControls
-          quiz={getQuizDetails(selectedQuizId)}
-          status={getSessionStatus(selectedQuizId)}
-          fetchSessionStatus={fetchSessionStatus}
-          updateDashboardQuizzes={updateDashboardQuizzes}
-          selectQuiz={selectQuiz}
-          setModalQuiz={setModalQuiz}
-          changeModalState={changeModalState}
-        />
-      </Grid>
-    </Grid>
+    </>
   );
 };
 

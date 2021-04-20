@@ -1,6 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import ErrorModal from '../../components/ErrorModal.jsx';
+import ErrorModal from '../components/ErrorModal.jsx';
 
 export const testErrorModal = () => {
   describe('Error Modal', () => {

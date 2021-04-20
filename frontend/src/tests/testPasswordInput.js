@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme';
 // import { createShallow } from '@material-ui/core/test-utils';
 import React from 'react';
-import { PasswordInput } from '../../components/FormInputs.jsx';
+import { PasswordInput } from '../components/FormInputs.jsx';
 
 export const testPasswordInput = () => {
   describe('password input', () => {

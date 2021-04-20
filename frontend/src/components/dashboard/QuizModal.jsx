@@ -20,17 +20,11 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
  * @param {changeModalState} changeModalState  Flip the modalState
  * @returns
  */
-export const QuizModal = ({
-  modalState,
-  quiz,
-  changeModalState,
-  results = false,
-}) => {
+export const QuizModal = ({ modalState, quiz, changeModalState }) => {
   QuizModal.propTypes = {
     modalState: PropTypes.bool,
     quiz: PropTypes.object,
     changeModalState: PropTypes.func,
-    results: PropTypes.bool,
   };
 
   const CopyButton = withStyles({
@@ -49,48 +43,18 @@ export const QuizModal = ({
     navigator.clipboard.writeText(linkBox.innerText);
   };
 
-  // Go to results page
-  const gotoResultsPage = () => {
-    console.log('TODO GO TO RESULTS PAGE');
-  };
-
   return (
     <Dialog
       className={styles.quizModal}
       open={modalState}
       onClose={changeModalState}
-      aria-labelledby={results ? `Quiz result popup` : ` Quiz link popup`}
-      aria-describedby={
-        results
-          ? `Do you want to see the results of the quiz`
-          : ` A link to the quiz`
-      }>
-      <DialogTitle>
-        {results
-          ? `Do you want to see quiz ${quiz.name} results`
-          : `${quiz.name} link`}
-      </DialogTitle>
+      aria-labelledby={`Quiz link popup`}
+      aria-describedby={` A link to the quiz`}>
+      <DialogTitle>{`${quiz.name} link`}</DialogTitle>
 
       <DialogContent className={styles.modalLinkWrapper}>
         {/* Result modal */}
-        {results ? (
-          <div className={styles.modalResultWrapper}>
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.modalResultButton}
-              onClick={gotoResultsPage}>
-              Yes
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              className={styles.modalResultButton}
-              onClick={changeModalState}>
-              No
-            </Button>
-          </div>
-        ) : (
+        {
           <>
             <Link to={`play/${quiz.active}`} target="_blank">
               <Typography id="linkBox" className={styles.linkBox}>
@@ -101,7 +65,7 @@ export const QuizModal = ({
               Copy Link
             </CopyButton>
           </>
-        )}
+        }
       </DialogContent>
     </Dialog>
   );

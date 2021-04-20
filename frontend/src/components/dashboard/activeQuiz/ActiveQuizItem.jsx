@@ -34,7 +34,7 @@ export const ActiveQuizItem = ({
     if (position === -1) {
       positionLabel = 'Lobby';
     } else if (position < questionsLength) {
-      positionLabel = `Question  ${position + 1}: ${
+      positionLabel = `Question ${position + 1}: ${
         status.questions[position].question
       }`;
     } else {

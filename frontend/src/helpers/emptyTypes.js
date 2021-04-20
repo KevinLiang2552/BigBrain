@@ -24,7 +24,7 @@ export const emptySessionStatus = {
   answerAvailable: false,
   isoTimeLastQuestionStarted: '',
   position: -1,
-  questions: [{}],
+  questions: [],
   numQuestions: 0,
   players: [],
 };

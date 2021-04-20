@@ -41,8 +41,9 @@ export const ActiveQuizControls = ({
   fetchSessionStatus,
   updateDashboardQuizzes,
   selectQuiz,
-  setModalQuiz,
-  changeModalState,
+  changeResultState,
+  setLinkModalQuiz,
+  changeLinkModalState,
 }) => {
   ActiveQuizControls.propTypes = {
     quiz: PropTypes.object,
@@ -50,8 +51,9 @@ export const ActiveQuizControls = ({
     fetchSessionStatus: PropTypes.func,
     updateDashboardQuizzes: PropTypes.func,
     selectQuiz: PropTypes.func,
-    setModalQuiz: PropTypes.func,
-    changeModalState: PropTypes.func,
+    changeResultState: PropTypes.func,
+    setLinkModalQuiz: PropTypes.func,
+    changeLinkModalState: PropTypes.func,
   };
   const api = new API('http://localhost:5005');
 
@@ -60,8 +62,7 @@ export const ActiveQuizControls = ({
     if (status.position === status.questions.length) {
       selectQuiz(-1);
       updateDashboardQuizzes();
-      setModalQuiz(quiz, true);
-      changeModalState();
+      changeResultState();
     }
   }, [status]);
 
@@ -107,8 +108,7 @@ export const ActiveQuizControls = ({
     if (stopQuizRes.status === 200) {
       selectQuiz(-1);
       updateDashboardQuizzes();
-      setModalQuiz(quiz, true);
-      changeModalState();
+      changeResultState();
     } else {
       console.log(stopQuizRes.data.error);
     }
@@ -131,8 +131,8 @@ export const ActiveQuizControls = ({
   };
 
   const handleLink = () => {
-    setModalQuiz(quiz);
-    changeModalState();
+    setLinkModalQuiz(quiz);
+    changeLinkModalState();
   };
 
   const quizCardImage =

@@ -8,8 +8,10 @@
 //   expect(linkElement).toBeInTheDocument();
 // });
 
-import testErrorModal from './tests/components/testErrorModal.js';
-import testPasswordInput from './tests/components/testPasswordInput';
+import testErrorModal from './tests/testErrorModal.js';
+import testPasswordInput from './tests/testPasswordInput';
+import testActiveQuizItem from './tests/testActiveQuizItem';
 
 testErrorModal();
 testPasswordInput();
+testActiveQuizItem();
