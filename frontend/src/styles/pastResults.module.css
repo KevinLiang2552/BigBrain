@@ -1,3 +1,11 @@
 .resultsContainer {
   margin-top: 10px;
 }
+
+.top5PlayersWrapper {
+  display: flex;
+}
+
+.resultScoreExplanation {
+  text-align: left;
+}

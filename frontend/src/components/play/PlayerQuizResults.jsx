@@ -52,7 +52,7 @@ export const PlayerQuizResults = ({ playerResults, totalScore }) => {
         <Grid xs={12} className={styles.resultsCenterText}>
           <Box className={styles.resultScoreExplanation}>
             <Typography variant="h6">
-              How the total score is calculated
+              How the each question score is calculated
             </Typography>
             <Typography variant="subtitle">
               <ul>
@@ -67,9 +67,8 @@ export const PlayerQuizResults = ({ playerResults, totalScore }) => {
                 </li>
 
                 <li>
-                  This mutliplied is added with the points given by the question
-                  and then times by 100 to make you think the scores are worth
-                  alot.
+                  This value is added with the points given by the question and
+                  then times by 100 to make you think the scores are worth alot.
                 </li>
                 {totalScore === 0 && (
                   <li>
