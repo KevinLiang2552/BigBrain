@@ -59,13 +59,17 @@ export const SplashPage = () => {
                   <Button
                     variant="contained"
                     color="primary"
+                    id="loginButton"
                     className={styles.controlsButton}>
                     <Link to="/login" className={styles.link}>
                       Login
                     </Link>
                   </Button>
                 </Box>
-                <Button variant="contained" color="secondary">
+                <Button
+                  id="registerButton"
+                  variant="contained"
+                  color="secondary">
                   <Link to="/register" className={styles.link}>
                     Register
                   </Link>

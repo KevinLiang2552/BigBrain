@@ -151,6 +151,7 @@ export const RegisterPage = ({ setAuthToken }) => {
           </Box>
           <p className={styles.errorText}>{registerError}</p>
           <Button
+            name="register"
             type="submit"
             variant="contained"
             color="primary"
