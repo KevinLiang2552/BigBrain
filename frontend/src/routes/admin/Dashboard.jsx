@@ -353,7 +353,7 @@ export const DashboardPage = () => {
                   <input
                     type="file"
                     onChange={handleUploadGame}
-                    accept=".json"
+                    accept="application/JSON"
                     id="gameFileUpload"
                     hidden
                   />

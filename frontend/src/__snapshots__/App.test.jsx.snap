@@ -2,6 +2,8 @@
 
 exports[`Error Modal Error modal renders correctly 1`] = `ShallowWrapper {}`;
 
+exports[`Results Table top player table renders correctly 1`] = `ShallowWrapper {}`;
+
 exports[`active quiz item Active quiz item renders correctly 1`] = `ShallowWrapper {}`;
 
 exports[`password input Password Input renders correctly 1`] = `ShallowWrapper {}`;
