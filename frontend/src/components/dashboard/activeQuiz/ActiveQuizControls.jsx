@@ -41,8 +41,10 @@ export const ActiveQuizControls = ({
   fetchSessionStatus,
   updateDashboardQuizzes,
   selectQuiz,
-  setModalQuiz,
-  changeModalState,
+  changeResultState,
+  setLinkModalQuiz,
+  changeLinkModalState,
+  setResultIds,
 }) => {
   ActiveQuizControls.propTypes = {
     quiz: PropTypes.object,
@@ -50,18 +52,20 @@ export const ActiveQuizControls = ({
     fetchSessionStatus: PropTypes.func,
     updateDashboardQuizzes: PropTypes.func,
     selectQuiz: PropTypes.func,
-    setModalQuiz: PropTypes.func,
-    changeModalState: PropTypes.func,
+    changeResultState: PropTypes.func,
+    setLinkModalQuiz: PropTypes.func,
+    changeLinkModalState: PropTypes.func,
+    setResultIds: PropTypes.func,
   };
   const api = new API('http://localhost:5005');
 
   useEffect(() => {
     // When the admin ends the quiz update the quiz state and display if the admin wants to see the results
     if (status.position === status.questions.length) {
+      setResultIds(quiz.id, quiz.active);
       selectQuiz(-1);
       updateDashboardQuizzes();
-      setModalQuiz(quiz, true);
-      changeModalState();
+      changeResultState();
     }
   }, [status]);
 
@@ -105,10 +109,10 @@ export const ActiveQuizControls = ({
       `admin/quiz/${quiz.id}/end`,
     );
     if (stopQuizRes.status === 200) {
+      setResultIds(quiz.id, quiz.active);
       selectQuiz(-1);
       updateDashboardQuizzes();
-      setModalQuiz(quiz, true);
-      changeModalState();
+      changeResultState();
     } else {
       console.log(stopQuizRes.data.error);
     }
@@ -131,8 +135,8 @@ export const ActiveQuizControls = ({
   };
 
   const handleLink = () => {
-    setModalQuiz(quiz);
-    changeModalState();
+    setLinkModalQuiz(quiz);
+    changeLinkModalState();
   };
 
   const quizCardImage =

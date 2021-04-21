@@ -121,15 +121,13 @@ export const DashboardPage = () => {
 
   const [modalState, setModalState] = useState(false);
   const [modalQuiz, setModalQuiz] = useState(emptyQuizDetails);
-  const [modalResults, setModalResults] = useState(false);
 
   const changeModalState = () => {
     setModalState(!modalState);
   };
 
   // Set is results to true, if results popup
-  const childSetModalQuiz = (quiz, isResult = false) => {
-    setModalResults(isResult);
+  const childSetModalQuiz = (quiz) => {
     setModalQuiz(quiz);
   };
 
@@ -339,7 +337,6 @@ export const DashboardPage = () => {
       <QuizModal
         modalState={modalState}
         quiz={modalQuiz}
-        results={modalResults}
         changeModalState={changeModalState}
       />
       <Grid container className={styles.dashboardWrapper}>
@@ -427,8 +424,8 @@ export const DashboardPage = () => {
               <ActiveQuizExplorer
                 quizzes={activeQuizzes}
                 updateDashboardQuizzes={updateDashboardQuizzes}
-                setModalQuiz={childSetModalQuiz}
-                changeModalState={changeModalState}
+                setLinkModalQuiz={childSetModalQuiz}
+                changeLinkModalState={changeModalState}
               />
             </AccordionDetails>
           </Accordion>

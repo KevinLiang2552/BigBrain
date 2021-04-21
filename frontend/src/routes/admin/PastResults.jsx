@@ -3,6 +3,7 @@ import API from '../../api/api.js';
 import { emptyQuizResults } from '../../helpers/emptyTypes.js';
 import { useParams } from 'react-router';
 import { Box, Grid, IconButton, Typography } from '@material-ui/core';
+import { useHistory, useLocation } from 'react-router-dom';
 import styles from '../../styles/pastResults.module.css';
 import { ResultsTopPlayerTable } from '../../components/pastResults/resultsTopPlayerTable.jsx';
 import { ResultsPercentCorrectGraph } from '../../components/pastResults/resultsPercentCorrectGraph.jsx';
@@ -20,6 +21,9 @@ export const PastResultsPage = () => {
   const [currSessionResults, setCurrSessionResults] = useState(
     emptyQuizResults,
   );
+
+  const location = useLocation();
+  const history = useHistory();
 
   useEffect(async () => {
     setOldSessionDetails();
@@ -55,14 +59,30 @@ export const PastResultsPage = () => {
       } else {
         // If there is a particular sessionID parameter, find that and set it as the current session
         const currSession = prevSessions.find(
-          (session) => session.sessionID === sessionID,
+          (session) => session.sessionID === parseInt(sessionID),
         );
-        setCurrSessionResults(currSession);
+        // Set index so we can turn pages
+        const currSessionIndex = prevSessions.findIndex(
+          (session) => session.sessionID === parseInt(sessionID),
+        );
+
+        setCurrSessionResults({ ...currSession, id: currSessionIndex });
       }
     } else {
       console.log(quizDetailsRes.data.error);
     }
   };
+
+  // Change the url to the current session id we are looking at.
+  useEffect(() => {
+    if (currSessionResults.sessionID === undefined) return;
+    let path = location.pathname;
+    if (sessionID !== undefined) {
+      path = path.slice(0, -7);
+    }
+    path += `/${currSessionResults.sessionID}`;
+    history.replace(path);
+  }, [currSessionResults]);
 
   // Sets the data to the previous session
   const prevSession = () => {
