@@ -108,10 +108,23 @@ export const PastResultsPage = () => {
       currSessionResults.results.length === 0
     ) {
       return (
-        <Grid container direction="row" justify="center" alignItems="center">
-          <Typography variant="h3">
-            Empty quiz session - nothing happened in this quiz O.o
-          </Typography>
+        <Grid
+          container
+          direction="row"
+          justify="space-around"
+          alignItems="center">
+          <Grid item md={12} xs={12}>
+            {/* Some basic information about the current session */}
+            <Typography variant="h5">Session Details</Typography>
+            <Typography variant="subtitle1">
+              Session ID: {currSessionResults.sessionID}
+            </Typography>
+          </Grid>
+          <Grid item md={12} xs={12}>
+            <Typography variant="h3">
+              There was no active players for this quiz session.
+            </Typography>
+          </Grid>
         </Grid>
       );
     } else {

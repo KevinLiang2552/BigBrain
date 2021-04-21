@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import styles from '../../styles/dashboard.module.css';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { withStyles } from '@material-ui/core/styles';
 import {
@@ -9,6 +10,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  IconButton,
   Typography,
 } from '@material-ui/core';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -50,7 +52,14 @@ export const QuizModal = ({ modalState, quiz, changeModalState }) => {
       onClose={changeModalState}
       aria-labelledby={`Quiz link popup`}
       aria-describedby={` A link to the quiz`}>
-      <DialogTitle>{`${quiz.name} link`}</DialogTitle>
+      <DialogTitle>
+        <div className={styles.modalTitle}>
+          <Typography variant="h6">{`${quiz.name} link`}</Typography>
+          <IconButton name="closeModal" onClick={changeModalState}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+      </DialogTitle>
 
       <DialogContent className={styles.modalLinkWrapper}>
         {/* Result modal */}

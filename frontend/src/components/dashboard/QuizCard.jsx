@@ -124,6 +124,7 @@ export const QuizCard = ({
           </div>
           <div className={styles.controlsWrapper}>
             <Button
+              name="startQuiz"
               className={`${styles.controls} ${styles.controlsPlay}`}
               startIcon={
                 quiz.active !== null ? <LinkIcon /> : <PlayArrowIcon />

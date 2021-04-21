@@ -22,7 +22,7 @@ export const Header = ({ authToken, setAuthToken }) => {
     <header className={styles.header}>
       <Box m={2}>
         <Button variant="contained" color="primary">
-          <Link className={styles.navLink} to="/">
+          <Link name="headerHome" className={styles.navLink} to="/">
             Home
           </Link>
         </Button>
@@ -33,13 +33,16 @@ export const Header = ({ authToken, setAuthToken }) => {
         {authToken === '' ? (
           <>
             <Box mr={1}>
-              <Button variant="contained" color="primary">
+              <Button name="headerLogin" variant="contained" color="primary">
                 <Link to="/login">Login</Link>
               </Button>
             </Box>
             <Box mr={2}>
               <Link to="/register">
-                <Button variant="contained" color="secondary">
+                <Button
+                  name="headerRegister"
+                  variant="contained"
+                  color="secondary">
                   Register
                 </Button>
               </Link>
@@ -48,6 +51,7 @@ export const Header = ({ authToken, setAuthToken }) => {
         ) : (
           <Box mr={2}>
             <Button
+              name="headerLogout"
               variant="contained"
               color="secondary"
               onClick={handleLogOut}>

@@ -41,13 +41,14 @@ export const ResultsModal = ({
       onClose={changeModalState}
       aria-labelledby={`Quiz result popup`}
       aria-describedby={'Do you want to see the results of the quiz'}>
-      <DialogTitle>{`Do you want to see quiz ${quiz.name} results`}</DialogTitle>
+      <DialogTitle>{`Would you like to view the results?`}</DialogTitle>
 
       <DialogContent className={styles.modalLinkWrapper}>
         {/* Result modal */}
 
         <div className={styles.modalResultWrapper}>
           <Button
+            name="yesResults"
             variant="contained"
             color="primary"
             className={styles.modalResultButton}
@@ -55,6 +56,7 @@ export const ResultsModal = ({
             Yes
           </Button>
           <Button
+            name="noResults"
             variant="contained"
             color="secondary"
             className={styles.modalResultButton}

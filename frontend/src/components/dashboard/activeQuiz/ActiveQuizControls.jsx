@@ -161,6 +161,7 @@ export const ActiveQuizControls = ({
         </Typography>
         <div className={styles.buttonWrapper}>
           <Button
+            name="acitveQuizAdvance"
             className={styles.buttons}
             size="large"
             variant="contained"
@@ -171,6 +172,7 @@ export const ActiveQuizControls = ({
             {getAdvanceButtonLabel()}
           </Button>
           <Button
+            name="activeQuizStop"
             className={styles.buttons}
             size="large"
             variant="contained"
@@ -208,6 +210,7 @@ export const ActiveQuizControls = ({
           </List>
           <div className={styles.quizLink}>
             <Button
+              name="activeQuizLink"
               startIcon={<LinkIcon />}
               onClick={handleLink}
               disabled={noSelected}>
