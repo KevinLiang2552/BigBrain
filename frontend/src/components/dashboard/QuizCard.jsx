@@ -135,12 +135,14 @@ export const QuizCard = ({
               </Typography>
             </Button>
             <Button
+              name="pastResults"
               className={`${styles.controls} ${styles.controlsStop}`}
               startIcon={<BarChartIcon />}
               onClick={handleShowPastResults}>
               <Typography variant="button">Past Results</Typography>
             </Button>
             <Button
+              name="editQuiz"
               className={`${styles.controls} ${styles.controlsEdit}`}
               startIcon={<EditIcon />}
               onClick={handleEdit}>

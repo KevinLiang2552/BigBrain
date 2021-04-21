@@ -271,12 +271,12 @@ export const AddQuestionModal = ({
                 onChange={handleQuestionTypeChange}>
                 <FormControlLabel
                   value="single"
-                  control={<Radio />}
+                  control={<Radio id="typeSingle" />}
                   label="Single"
                 />
                 <FormControlLabel
                   value="multiple"
-                  control={<Radio />}
+                  control={<Radio id="typeMultiple" />}
                   label="Multiple"
                 />
               </RadioGroup>
@@ -297,6 +297,7 @@ export const AddQuestionModal = ({
               <FormLabel component="legend">Duration in seconds</FormLabel>
               <br />
               <TextField
+                name="questionDuration"
                 label="Duration"
                 type="number"
                 onChange={handleFormChange('duration')}
@@ -311,6 +312,7 @@ export const AddQuestionModal = ({
               </FormLabel>
               <br />
               <TextField
+                name="questionPoints"
                 label="Points"
                 type="number"
                 onChange={handleFormChange('points')}
@@ -405,6 +407,7 @@ export const AddQuestionModal = ({
                 })}
                 <ListItem>
                   <TextField
+                    name="addAnswerField"
                     type="answer"
                     onChange={handleAnswersFormChange}
                     error={errors.answer !== ''}
@@ -413,6 +416,7 @@ export const AddQuestionModal = ({
                   />
                   <ListItemSecondaryAction>
                     <IconButton
+                      name="addAnswerButton"
                       edge="end"
                       aria-label="add"
                       onClick={handleAddAnswer}>
@@ -424,10 +428,16 @@ export const AddQuestionModal = ({
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={closeModal} color="primary">
+            <Button
+              name="cancelQuestionButton"
+              onClick={closeModal}
+              color="primary">
               Cancel
             </Button>
-            <Button onClick={handleAddQuestion} color="primary">
+            <Button
+              name="addQuestionButton"
+              onClick={handleAddQuestion}
+              color="primary">
               Add Question
             </Button>
           </DialogActions>

@@ -67,7 +67,7 @@ export const QuestionCard = ({ quizID, question, deleteQuestion }) => {
 
   return (
     <>
-      <Accordion>
+      <Accordion name={`myQuestion${question.id}`}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-label="Expand">
           {question.id} : {question.question}
         </AccordionSummary>

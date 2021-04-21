@@ -106,6 +106,7 @@ export const LoginPage = ({ setAuthToken }) => {
           <p className={styles.errorText}>{loginError}</p>
           <Box mb={1}>
             <Button
+              name="login"
               id="loginButton"
               variant="contained"
               type="submit"
