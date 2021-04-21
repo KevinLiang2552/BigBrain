@@ -92,6 +92,27 @@ export const QuizCard = ({
     history.push('/dashboard/edit/' + quiz.id);
   };
 
+  // Calculate and return how long the quiz will take to complete
+  const getQuizDuration = () => {
+    let seconds = 0;
+    for (const question of quiz.questions) {
+      seconds += parseInt(question.duration);
+    }
+    let durationString;
+    if (seconds > 60) {
+      const minutes = Math.ceil(seconds / 60);
+      if (minutes > 60) {
+        const hours = Math.ceil(minutes / 60);
+        durationString = hours + ' hours';
+      } else {
+        durationString = minutes + ' minutes';
+      }
+    } else {
+      durationString = seconds + ' seconds';
+    }
+    return durationString;
+  };
+
   // const image
   const quizCardImage =
     quiz.thumbnail === null ? placeholderImage : quiz.thumbnail;
@@ -115,7 +136,7 @@ export const QuizCard = ({
           <div className={styles.detailWrapper}>
             <div className={styles.detail}>
               <AccessTimeIcon className={styles.detailIcon} />
-              <Typography>10 mins</Typography>
+              <Typography>{getQuizDuration()}</Typography>
             </div>
             <div className={styles.detail}>
               <QuestionAnswerIcon className={styles.detailIcon} />
