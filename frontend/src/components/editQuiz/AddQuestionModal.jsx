@@ -5,7 +5,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
   FormControlLabel,
   FormLabel,
   List,
@@ -17,6 +16,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Box,
 } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -262,7 +262,7 @@ export const AddQuestionModal = ({
         <DialogTitle id="form-dialog-title">Create Question</DialogTitle>
         <form>
           <DialogContent>
-            <FormControl component="fieldset">
+            <Box mb={2}>
               <FormLabel component="legend">Question Type</FormLabel>
               <RadioGroup
                 aria-label="Question Type"
@@ -280,7 +280,9 @@ export const AddQuestionModal = ({
                   label="Multiple"
                 />
               </RadioGroup>
-              <br />
+            </Box>
+
+            <Box mb={2}>
               <FormLabel component="legend">Question to ask</FormLabel>
               <br />
               <DefaultInput
@@ -289,7 +291,9 @@ export const AddQuestionModal = ({
                 error={errors.question !== ''}
                 errorMessage={errors.question}
               />
-              <br />
+            </Box>
+
+            <Box mb={2}>
               <FormLabel component="legend">Duration in seconds</FormLabel>
               <br />
               <TextField
@@ -300,7 +304,8 @@ export const AddQuestionModal = ({
                 helperText={errors.duration}
                 variant="outlined"
               />
-              <br />
+            </Box>
+            <Box mb={2}>
               <FormLabel component="legend">
                 Number of points for the question
               </FormLabel>
@@ -313,7 +318,9 @@ export const AddQuestionModal = ({
                 helperText={errors.points}
                 variant="outlined"
               />
-              <br />
+            </Box>
+
+            <Box mb={2} style={{ display: 'flex', flexDirection: 'column' }}>
               <FormLabel component="legend">Attach a video</FormLabel>
               <br />
               <DefaultInput
@@ -339,7 +346,9 @@ export const AddQuestionModal = ({
                   hidden
                 />
               </Button>
-              <br />
+            </Box>
+
+            <Box mb={2}>
               <FormLabel component="legend">
                 Add answer & select correct Answer/s
               </FormLabel>
@@ -412,7 +421,7 @@ export const AddQuestionModal = ({
                   </ListItemSecondaryAction>
                 </ListItem>
               </List>
-            </FormControl>
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={closeModal} color="primary">

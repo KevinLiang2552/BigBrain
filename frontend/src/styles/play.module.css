@@ -124,9 +124,14 @@
   justify-content: center;
 }
 
+.resultScoreExplanation {
+  max-width: 600px;
+}
+
 .resultLine {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .resultLineTextWrapper {

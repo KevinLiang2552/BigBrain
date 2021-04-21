@@ -146,11 +146,34 @@ export const PastResultsPage = () => {
           </Grid>
 
           {/* Top 5 players table */}
-          <Grid item md={4} xs={12}>
+          <Grid item md={4} xs={12} className={styles.top5PlayersWrapper}>
             <ResultsTopPlayerTable
               results={currSessionResults.results}
               questionDetails={quizQuestions}
             />
+            <Box className={styles.resultScoreExplanation}>
+              <Typography variant="h6">
+                How the each question score is calculated
+              </Typography>
+              <Typography variant="subtitle">
+                <ul>
+                  <li>
+                    The score of each question is calculated by the ratio of
+                    time left by the amount of time given the result is rounded
+                    to a whole number between 1 to 10.
+                  </li>
+                  <li>
+                    This value is mutliplied by 0.05 giving you a maximum value
+                    of 0.5 bonus points possible each question.
+                  </li>
+                  <li>
+                    This value is added with the points given by the question
+                    and then times by 100 to make you think the scores are worth
+                    alot.
+                  </li>
+                </ul>
+              </Typography>
+            </Box>
           </Grid>
 
           {/* Graphs section */}
