@@ -100,7 +100,8 @@ export const DashboardPage = () => {
   const [createNameError, setCreateNameError] = useState('');
 
   // Create quiz with given name, show error if blank
-  const handleCreateQuiz = async () => {
+  const handleCreateQuiz = async (event) => {
+    event.preventDefault();
     if (createName === '') {
       setCreateNameError('Quiz name must not be blank');
     } else {
@@ -111,6 +112,7 @@ export const DashboardPage = () => {
       );
       if (createQuizRes.status === 200) {
         updateDashboardQuizzes();
+        handleCreateButtonClose();
       } else {
         setCreateNameError(createQuizRes.data.error);
       }
@@ -390,9 +392,10 @@ export const DashboardPage = () => {
                     vertical: 'top',
                     horizontal: 'right',
                   }}>
-                  <div className={styles.createPopover}>
+                  <form className={styles.createPopover}>
                     <TextField
                       className={styles.createName}
+                      name="createQuizName"
                       onChange={handleCreateNameChange}
                       error={createNameError !== ''}
                       helperText={createNameError}
@@ -400,10 +403,11 @@ export const DashboardPage = () => {
                     <Button
                       color="primary"
                       variant="outlined"
+                      type="submit"
                       onClick={handleCreateQuiz}>
                       Create Quiz
                     </Button>
-                  </div>
+                  </form>
                 </Popover>
               </Grid>
             </Grid>
@@ -414,7 +418,7 @@ export const DashboardPage = () => {
 
         {/* Active Quizzes */}
         <Grid item xs={12}>
-          <Accordion>
+          <Accordion name="activeQuizzes">
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="active quizzes">
@@ -431,7 +435,7 @@ export const DashboardPage = () => {
           </Accordion>
         </Grid>
         <Grid item xs={12}>
-          <Accordion>
+          <Accordion name="myQuizzes">
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="My quizzes">
