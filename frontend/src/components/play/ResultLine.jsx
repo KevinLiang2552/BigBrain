@@ -1,8 +1,11 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { ListItem, ListItemIcon, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 import styles from '../../styles/play.module.css';
+
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 export const ResultLine = ({ question, index }) => {
   ResultLine.propTypes = {
@@ -21,11 +24,14 @@ export const ResultLine = ({ question, index }) => {
   };
 
   return (
-    <Grid item xs={12} className={styles.resultsCenterText}>
+    <ListItem className={styles.resultLine}>
       <div className={styles.resultLineTextWrapper}>
         <Typography variant="h5">{getText()}</Typography>
       </div>
-    </Grid>
+      <ListItemIcon>
+        {question.correct ? <CheckIcon /> : <CloseIcon />}
+      </ListItemIcon>
+    </ListItem>
   );
 };
 

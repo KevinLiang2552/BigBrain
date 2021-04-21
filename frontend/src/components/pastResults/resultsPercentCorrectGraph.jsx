@@ -82,7 +82,7 @@ export const ResultsPercentCorrectGraph = ({ results, questionDetails }) => {
         <ArgumentAxis />
         <ValueAxis />
         <LineSeries valueField="lineValue" argumentField="argument" />
-        <Title text="Percent of users answering question correctly" />
+        <Title text="Percentage of users answering each question correctly" />
       </Chart>
     </Paper>
   );
