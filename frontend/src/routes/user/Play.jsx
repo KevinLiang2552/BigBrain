@@ -5,7 +5,7 @@ import API from '../../api/api.js';
 import { useHistory, useParams } from 'react-router';
 import { DefaultInput } from '../../components/FormInputs.jsx';
 import { ErrorModal } from '../../components/ErrorModal.jsx';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Container, Typography } from '@material-ui/core';
 import { defaultErrorModalState } from '../../helpers/emptyTypes.js';
 import { isObjectValueEmpty } from '../../helpers/generalHelpers.js';
 
@@ -92,36 +92,37 @@ export const PlayPage = ({ setPlayerToken }) => {
         errorMessage={modalState.errorMessage}
         setModalState={setModalState}
       />
-      <Container className={styles.playForm}>
-        <Box>
-          <form>
-            <h1>Join a game</h1>
-            <Box mt={2}>
-              <DefaultInput
-                type="gameID"
-                handleFormChange={handleFormChange}
-                error={errors.gameID !== ''}
-                errorMessage={errors.gameID}
-                defaultValue={id !== undefined ? id : ''}
-              />
-            </Box>
-            <Box mt={2} mb={2}>
-              <DefaultInput
-                type="name"
-                handleFormChange={handleFormChange}
-                error={errors.name !== ''}
-                errorMessage={errors.name}
-              />
-            </Box>
-            <Button
-              variant="contained"
-              type="submit"
-              color="primary"
-              onClick={handleJoinGame()}>
-              Search for game
-            </Button>
-          </form>
-        </Box>
+      <Container>
+        <form className={styles.playForm}>
+          <Typography variant="h2">
+            <b>Join a game</b>
+          </Typography>
+          <Box mt={5}>
+            <DefaultInput
+              type="gameID"
+              handleFormChange={handleFormChange}
+              error={errors.gameID !== ''}
+              errorMessage={errors.gameID}
+              defaultValue={id !== undefined ? id : ''}
+            />
+          </Box>
+          <Box mt={2} mb={2}>
+            <DefaultInput
+              type="name"
+              handleFormChange={handleFormChange}
+              error={errors.name !== ''}
+              errorMessage={errors.name}
+            />
+          </Box>
+          <Button
+            className={styles.joinButton}
+            variant="contained"
+            type="submit"
+            color="primary"
+            onClick={handleJoinGame()}>
+            <Typography variant="h6">Join</Typography>
+          </Button>
+        </form>
       </Container>
     </>
   );

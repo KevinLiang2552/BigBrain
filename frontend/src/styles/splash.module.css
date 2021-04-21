@@ -20,3 +20,32 @@ a.link:visited {
   text-decoration: none;
   color: white;
 }
+
+.descriptionSplash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+}
+
+.splashControls {
+  border-radius: 5px;
+  padding: 40px 0px;
+}
+
+.adminControls {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .descriptionSplashHeader {
+    font-size: 3em;
+    text-align: center;
+  }
+  .descriptionSplashText {
+    font-size: 1.3em;
+    text-align: center;
+  }
+}
