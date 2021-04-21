@@ -237,8 +237,13 @@ export const PlayQuestion = ({
     if (!playerSubmit) {
       return false;
     }
+    // If answers are not the same amount it is obviously not correct
+    if (playerAnswerIds.length !== questionAnswerIds.length) {
+      return false;
+    }
+
+    // As answers can only have the same length, check if play ids does include every question id
     let correct = true;
-    console.log({ playerAnswerIds, questionAnswerIds });
     for (const questionAnswer of questionAnswerIds) {
       if (!playerAnswerIds.includes(questionAnswer)) {
         correct = false;
