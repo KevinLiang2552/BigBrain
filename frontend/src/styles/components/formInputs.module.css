@@ -34,3 +34,9 @@
 .editCheck:hover {
   color: var(--green);
 }
+
+@media (max-width: 600px) {
+  .textfield {
+    width: 300px;
+  }
+}
