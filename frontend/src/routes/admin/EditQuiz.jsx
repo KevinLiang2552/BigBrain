@@ -190,6 +190,7 @@ export const EditQuizPage = () => {
         <Grid item className={styles.questionHeading}>
           <Box mr={1}>
             <StyledButton
+              name="openAddQuestionButton"
               className={styles.addQuestion}
               startIcon={<AddCircleIcon />}
               onClick={openModal}>

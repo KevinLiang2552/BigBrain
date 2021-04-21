@@ -12,8 +12,10 @@ import testErrorModal from './tests/testErrorModal.js';
 import testPasswordInput from './tests/testPasswordInput';
 import testActiveQuizItem from './tests/testActiveQuizItem';
 import testQuizTime from './tests/testQuizTimer';
+import testTopPlayerTable from './tests/testTopPlayerTable';
 
 testErrorModal();
 testPasswordInput();
 testActiveQuizItem();
 testQuizTime();
+testTopPlayerTable();
