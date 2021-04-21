@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Button,
   Grid,
   IconButton,
@@ -53,7 +54,7 @@ export const EditExternalMedia = ({
             alt={'question image'}
           />
           {enabledInput === true && (
-            <>
+            <Box mb={2}>
               <Button variant="contained" component="label">
                 Upload picture
                 <input
@@ -64,7 +65,7 @@ export const EditExternalMedia = ({
                   hidden
                 />
               </Button>
-            </>
+            </Box>
           )}
         </Grid>
 
