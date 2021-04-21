@@ -349,7 +349,7 @@ export const DashboardPage = () => {
                 <Typography variant="h4"> Dashboard</Typography>
               </Grid>
               <Grid item md={2} xs={2}>
-                <Button component="label">
+                <Button component="label" className={styles.headerButtons}>
                   <input
                     type="file"
                     onChange={handleUploadGame}
@@ -358,6 +358,7 @@ export const DashboardPage = () => {
                     hidden
                   />
                   <PublishIcon
+                    style={{ fill: 'white' }}
                     className={styles.createPlus}
                     fontSize="default"
                   />
@@ -369,8 +370,12 @@ export const DashboardPage = () => {
                 </Button>
               </Grid>
               <Grid item md={2} xs={2}>
-                <Button id="createButton" onClick={handleCreateButtonOpen}>
+                <Button
+                  id="createButton"
+                  className={styles.headerButtons}
+                  onClick={handleCreateButtonOpen}>
                   <AddCircleIcon
+                    style={{ fill: 'white' }}
                     className={styles.createPlus}
                     fontSize="default"
                   />
